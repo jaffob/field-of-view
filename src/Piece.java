@@ -33,6 +33,10 @@ public class Piece {
 		this.owner = ownerNumber;
 	}
 	
+	/**
+	 * Gets the actual Player object that owns this piece.
+	 * @return The Player object of the owner
+	 */
 	public Player getOwnerPlayer() {
 		return game.getPlayer(getOwnerNumber());
 	}
@@ -53,10 +57,18 @@ public class Piece {
 		this.maxSquares = maxSquares;
 	}
 
+	/**
+	 * True if this piece can walk through enemy pieces (and vice versa).
+	 * @return True if this piece is a ghost; false otherwise
+	 */
 	public boolean isGhost() {
 		return isGhost;
 	}
 
+	/**
+	 * Set whether this piece is a ghost.
+	 * @param isGhost True for ghost; false otherwise
+	 */
 	public void setGhost(boolean isGhost) {
 		this.isGhost = isGhost;
 	}

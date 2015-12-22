@@ -1,3 +1,5 @@
+import java.io.FileNotFoundException;
+
 /**
  * Field Of View Game
  * @author Jack Boffa
@@ -16,8 +18,10 @@ public class FieldOfView {
 
 	/**
 	 * Constructor: initialize gameplay.
+	 * @throws FileNotFoundException if the given map file doesn't exist.
+	 * @throws InvalidMapException if the map was deemed invalid.
 	 */
-	public FieldOfView(String mapFileName) {
+	public FieldOfView(String mapFileName) throws FileNotFoundException, InvalidMapException {
 		players = new Player[2];
 		players[0] = new Player(this, 1);
 		players[1] = new Player(this, 2);
