@@ -1,0 +1,7 @@
+1
+name King's Gambit
+author Jack Boffa
+version 1.0
+required mod *
+64
+64

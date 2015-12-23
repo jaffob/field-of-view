@@ -1,4 +1,4 @@
-import java.io.FileNotFoundException;
+import java.io.IOException;
 
 /**
  * Field Of View Game
@@ -21,7 +21,7 @@ public class FieldOfView {
 	 * @throws FileNotFoundException if the given map file doesn't exist.
 	 * @throws InvalidMapException if the map was deemed invalid.
 	 */
-	public FieldOfView(String mapFileName) throws FileNotFoundException, InvalidMapException {
+	public FieldOfView(String mapFileName) throws IOException, InvalidMapException {
 		players = new Player[2];
 		players[0] = new Player(this, 1);
 		players[1] = new Player(this, 2);
