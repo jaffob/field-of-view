@@ -3,18 +3,28 @@ import java.awt.Point;
 
 public class Piece {
 
+	public static final String NAME = "";
+	
 	private final FieldOfView game;
 	private int owner;
+	
 	private Point position;
 	
+	// Attributes applicable to all pieces.
 	private int maxSquares;
 	private boolean isGhost;
+	private boolean isGoalPiece;
+	private int powerReq;
 	
 	public Piece(FieldOfView fovGame, int ownerNumber, Point startPosition) {
 		game = fovGame;
 		owner = ownerNumber;
 		position = startPosition;
-		setMaxSquares(0);
+		
+		maxSquares = 0;
+		isGhost = false;
+		isGoalPiece = false;
+		powerReq = 0;
 	}
 
 	/**
@@ -71,6 +81,22 @@ public class Piece {
 	 */
 	public void setGhost(boolean isGhost) {
 		this.isGhost = isGhost;
+	}
+
+	public boolean isGoalPiece() {
+		return isGoalPiece;
+	}
+
+	public void setGoalPiece(boolean isGoalPiece) {
+		this.isGoalPiece = isGoalPiece;
+	}
+
+	public int getPowerReq() {
+		return powerReq;
+	}
+
+	public void setPowerReq(int powerReq) {
+		this.powerReq = powerReq;
 	}
 
 }
