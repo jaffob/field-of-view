@@ -1,4 +1,5 @@
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.FileReader;
 
@@ -33,7 +34,7 @@ public class Map {
 	 * @throws InvalidMapException if the map file is invalid for any
 	 * reason (see message for details).
 	 */
-	private void loadMapFile(String mapFilePath) throws IOException, InvalidMapException {
+	public void loadMapFile(String mapFilePath) throws IOException, InvalidMapException {
 		
 		// Open the file.
 		BufferedReader file = new BufferedReader(new FileReader(mapFilePath));
@@ -68,8 +69,11 @@ public class Map {
 				size.x > Utils.MAX_MAP_SIZE || size.y > Utils.MAX_MAP_SIZE) {
 			throw new InvalidMapException(InvalidMapException.MESSAGE_SIZE_BAD);
 		}
+		
+		// The rest of the file stores all of the squares. Load that into the squares array.
+		squares = loadMapFileSquares(file);
 	}
-	
+
 	/**
 	 * Reads in a line from the map file, throwing exceptions if it can't
 	 * be read or isn't valid.
@@ -101,6 +105,27 @@ public class Map {
 		return result.substring(fieldName.length() + 1);
 	}
 	
+	private Square[][] loadMapFileSquares(BufferedReader file) throws IOException, InvalidMapException {
+		
+		// Create an empty array of squares, and an array of chars. Each square is
+		// represented by 2 chars, the first identifying the type of square, and the
+		// second specifying properties that apply to that square (siding, rotation, etc).
+		Square[][] squareObjects = new Square[getSize().x][getSize().y];
+		char[] squareData = new char[getNumSquares() * 2];
+		
+		// Read all of the square data into the char array, throwing an exception if it ends early.
+		if (file.read(squareData, 0, squareData.length) < squareData.length) {
+			throw new InvalidMapException("The map file does not contain enough squares.");
+		}
+		
+		// For each pair of chars, create a square and put it in the final array.
+		for (int i = 0; i < squareData.length; i += 2) {
+			
+		}
+		
+		return squareObjects;
+	}
+	
 	public Square[][] getSquares() {
 		return squares;
 	}
@@ -113,13 +138,17 @@ public class Map {
 	public Square getSquare(Vector2D pos) {
 		if (!positionIsInBounds(pos))
 			return null;
-		return squares[pos.x][pos.y];
+		return getSquares()[pos.x][pos.y];
 	}
 	
 	public Vector2D getSize() {
 		return size;
 	}
 
+	public int getNumSquares() {
+		return getSize().x * getSize().y;
+	}
+	
 	/**
 	 * Check if a position is within the bounds of the map.
 	 * @param pos Vector2D representing the position
