@@ -10,7 +10,6 @@ public class Piece {
 	
 	// Attributes applicable to all pieces.
 	private int maxSquares;
-	private boolean isGhost;
 	private boolean isGoalPiece;
 	private boolean isInvulnerable;
 	private boolean canUseSpecialSquares;
@@ -25,7 +24,6 @@ public class Piece {
 		setPosition(startPosition);
 		
 		setMaxSquares(0);
-		setGhost(false);
 		setGoalPiece(false);
 		setInvulnerable(false);
 		setCanUseSpecialSquares(false);
@@ -102,22 +100,6 @@ public class Piece {
 		this.maxSquares = maxSquares;
 	}
 
-	/**
-	 * True if this piece can walk through enemy pieces (and vice versa).
-	 * @return True if this piece is a ghost; false otherwise
-	 */
-	public boolean isGhost() {
-		return isGhost;
-	}
-
-	/**
-	 * Set whether this piece is a ghost.
-	 * @param isGhost True for ghost; false otherwise
-	 */
-	public void setGhost(boolean isGhost) {
-		this.isGhost = isGhost;
-	}
-
 	public boolean isGoalPiece() {
 		return isGoalPiece;
 	}
@@ -171,6 +153,14 @@ public class Piece {
 	// ------------- Methods ------------ //
 	// ---------------------------------- //
 
+	/**
+	 * Attempt to move this piece one square in a given direction.
+	 * Call this whenever the piece wants to move; it will check that
+	 * the move is valid (although it won't check if it's the correct
+	 * player's turn).
+	 * @param dir The direction to move in
+	 * @return Whether the move was successfully completed
+	 */
 	public boolean move(Direction dir) {
 		
 		// Get the squares we're exiting and entering.
@@ -196,6 +186,30 @@ public class Piece {
 		
 		// The move was invalid.
 		return false;
+	}
+	
+	/**
+	 * Gets the set of actions available from the current square.
+	 * Doesn't check if it's actually this player's turn.
+	 * @return An ActionSet of all the possible actions.
+	 */
+	public ActionSet getActions() {
+		return getCurrentSquare().getActions(this);
+	}
+	
+	/**
+	 * Gets the set of actions this particular piece can perform
+	 * in its current square. This are actions that are unique to
+	 * this type of piece.
+	 * @return ActionSet containing unique actions.
+	 */
+	public ActionSet getCurrentSquareActions() {
+		return new ActionSet();
+	}
+	
+	public ActionSet getAdjacentSquareActions() {
+		// TODO: how do we decide which adjacent square to act on? if you're a swordsman near 2 enemies
+		return new ActionSet();
 	}
 
 	public void kill(boolean forceKill) {

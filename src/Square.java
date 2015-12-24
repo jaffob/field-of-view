@@ -60,8 +60,24 @@ public class Square {
 	// ------------- Methods ------------ //
 	// ---------------------------------- //
 
-
-	public ActionSet getSpecialActions(Piece piece) {
+	public ActionSet getActions(Piece piece) {
+		return new ActionSet();
+	}
+	/**
+	 * Gets the set of special actions this square can perform. These
+	 * actions can generally only be performed by the king.
+	 * @return An ActionSet of special actions
+	 */
+	public ActionSet getSpecialActions() {
+		return new ActionSet();
+	}
+	
+	/**
+	 * Gets the set of actions a goal piece can perform here. Winning
+	 * is the primary use case here.
+	 * @return An ActionSet of goal actions
+	 */
+	public ActionSet getGoalActions() {
 		return new ActionSet();
 	}
 
