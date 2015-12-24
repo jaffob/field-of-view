@@ -5,11 +5,13 @@ public class Player {
 
 	private final FieldOfView game;
 	private final int number;
+	private final Controller controller;
 	private ArrayList<Piece> pieces;
 	
-	public Player(FieldOfView fovGame, int playerNum) {
+	public Player(FieldOfView fovGame, int playerNum, Controller controller) {
 		game = fovGame;
 		number = playerNum;
+		this.controller = controller;
 	}
 
 	/**
@@ -35,6 +37,10 @@ public class Player {
 	 */
 	public int getNumber() {
 		return number;
+	}
+
+	public Controller getController() {
+		return controller;
 	}
 
 	public ArrayList<Piece> getPieces() {

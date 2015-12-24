@@ -13,9 +13,10 @@ public class FieldOfView {
 
 	private final Player[] players;			// Array of all players in the game.
 	private final Map map;					// Object representing the map.
+	private final Drawer drawer;			// Drawing interface.
+	
 	private int turn;						// Whose turn it is.
 	private int turnCount;					// Total number of turns taken this game.
-	
 	private SquareFactory squareFactory;
 
 	/**
@@ -23,11 +24,12 @@ public class FieldOfView {
 	 * @throws FileNotFoundException if the given map file doesn't exist.
 	 * @throws InvalidMapException if the map was deemed invalid.
 	 */
-	public FieldOfView(String mapFileName) throws IOException, InvalidMapException {
+	public FieldOfView(String mapFileName, Controller[] controllers, Drawer drawer) throws IOException, InvalidMapException {
 		map = new Map(this, mapFileName);
+		this.drawer = drawer;
 		players = new Player[2];
-		players[0] = new Player(this, 1);
-		players[1] = new Player(this, 2);
+		players[0] = new Player(this, 1, controllers[0]);
+		players[1] = new Player(this, 2, controllers[1]);
 		setSquareFactory(new SquareFactory());
 		turn = 1;
 	}
@@ -86,6 +88,10 @@ public class FieldOfView {
 		return map;
 	}
 	
+	public Drawer getDrawer() {
+		return drawer;
+	}
+
 	/**
 	 * Gets the number of turns taken this game. This includes both
 	 * players' turns, so divide by two if you want to get the number

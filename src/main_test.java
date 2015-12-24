@@ -7,7 +7,7 @@ public class main_test {
 		FieldOfView game;
 		System.out.println(System.getProperty("user.dir"));
 		try {
-			game = new FieldOfView("testmap.txt");
+			game = new FieldOfView("testmap.txt", null, null);
 			System.out.println("Player " + game.play() + " has won!");
 		} catch (IOException e) {
 			System.out.println("Oh no! The map file doesn't exist. " + e.getMessage());
