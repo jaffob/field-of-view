@@ -15,6 +15,8 @@ public class FieldOfView {
 	private final Map map;					// Object representing the map.
 	private int turn;						// Whose turn it is.
 	private int turnCount;					// Total number of turns taken this game.
+	
+	private SquareFactory squareFactory;
 
 	/**
 	 * Constructor: initialize gameplay.
@@ -26,6 +28,7 @@ public class FieldOfView {
 		players[0] = new Player(this, 1);
 		players[1] = new Player(this, 2);
 		map = new Map(this, mapFileName);
+		setSquareFactory(new SquareFactory());
 		turn = 1;
 	}
 	
@@ -93,6 +96,10 @@ public class FieldOfView {
 		return turnCount;
 	}
 	
+	public void setTurnCount(int turnCount) {
+		this.turnCount = turnCount;
+	}
+	
 	/**
 	 * Adds one to the turn count.
 	 */
@@ -122,5 +129,13 @@ public class FieldOfView {
 	 */
 	protected void nextTurn() {
 		setTurn((turn % getNumberOfPlayers()) + 1);
+	}
+
+	public SquareFactory getSquareFactory() {
+		return squareFactory;
+	}
+
+	protected void setSquareFactory(SquareFactory squareFactory) {
+		this.squareFactory = squareFactory;
 	}
 }

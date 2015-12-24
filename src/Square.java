@@ -6,13 +6,14 @@ public class Square {
 	
 	private Piece occupant;
 	private boolean isPlayable, isTransparent;
-	private int moveToll;
+	private int side, moveToll;
 	
 	public Square() {
 		setOccupant(null);
 		setPlayable(false);
 		setTransparent(false);
 		setMoveToll(1);
+		setSide(0);
 	}
 
 	
@@ -58,6 +59,16 @@ public class Square {
 
 	public void setTransparent(boolean isTransparent) {
 		this.isTransparent = isTransparent;
+	}
+
+
+	public int getSide() {
+		return side;
+	}
+
+
+	public void setSide(int side) {
+		this.side = side;
 	}
 
 
