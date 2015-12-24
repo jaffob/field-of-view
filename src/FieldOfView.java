@@ -79,6 +79,10 @@ public class FieldOfView {
 		return getPlayer(getTurn());
 	}
 	
+	public Map getMap() {
+		return map;
+	}
+	
 	/**
 	 * Gets the number of turns taken this game. This includes both
 	 * players' turns, so divide by two if you want to get the number

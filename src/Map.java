@@ -102,6 +102,19 @@ public class Map {
 		return result.substring(fieldName.length() + 1);
 	}
 	
+	public Square[][] getSquares() {
+		return squares;
+	}
+	
+	/**
+	 * Get the square at a certain position (origin is top left).
+	 * @param pos Point representing the position
+	 * @return Square at that point.
+	 */
+	public Square getSquare(Point pos) {
+		return squares[pos.x][pos.y];
+	}
+
 	@Override
 	public String toString() {
 		return mapName + " (Version " + mapVersion + ") by " + mapAuthor + " [" + size.x + "x" + size.y + "]";

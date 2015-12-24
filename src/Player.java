@@ -5,7 +5,7 @@ public class Player {
 
 	private final FieldOfView game;
 	private final int number;
-	ArrayList<Piece> pieces;
+	private ArrayList<Piece> pieces;
 	
 	public Player(FieldOfView fovGame, int playerNum) {
 		game = fovGame;
@@ -35,6 +35,22 @@ public class Player {
 	 */
 	public int getNumber() {
 		return number;
+	}
+
+	public ArrayList<Piece> getPieces() {
+		return pieces;
+	}
+
+	/**
+	 * Called by a piece this player owns that is killed. This will be
+	 * called even if the piece is a goal piece (and therefore will
+	 * respawn), so use wasDestroyed to tell whether it should be
+	 * removed from the piece list.
+	 * @param piece The piece that got killed
+	 * @param wasDestroyed Whether the piece is actually destroyed
+	 */
+	public void notifyKilledPiece(Piece piece, boolean wasDestroyed) {
+		if (wasDestroyed) getPieces().remove(piece);
 	}
 
 }

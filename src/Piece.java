@@ -1,4 +1,6 @@
 import java.awt.Point;
+import java.awt.geom.Point2D;
+import java.util.Vector;
 
 
 public class Piece {
@@ -14,19 +16,31 @@ public class Piece {
 	private int maxSquares;
 	private boolean isGhost;
 	private boolean isGoalPiece;
+	private boolean isInvulnerable;
+	private boolean canUseSpecialSquares;
 	private int powerReq;
+	
+	// State of this piece.
+	private int shieldLevel;
 	
 	public Piece(FieldOfView fovGame, int ownerNumber, Point startPosition) {
 		game = fovGame;
 		owner = ownerNumber;
-		position = startPosition;
+		setPosition(startPosition);
 		
-		maxSquares = 0;
-		isGhost = false;
-		isGoalPiece = false;
-		powerReq = 0;
+		setMaxSquares(0);
+		setGhost(false);
+		setGoalPiece(false);
+		setInvulnerable(false);
+		setCanUseSpecialSquares(false);
+		setPowerReq(0);
+		setShieldLevel(0);
 	}
-
+	
+	// ---------------------------------- //
+	// ------- Getters and Setters ------ //
+	// ---------------------------------- //
+	
 	/**
 	 * Get the number of the player that owns this piece.
 	 * @return Player number of owner
@@ -51,6 +65,22 @@ public class Piece {
 		return game.getPlayer(getOwnerNumber());
 	}
 
+	public Point getPosition() {
+		return position;
+	}
+
+	public void setPosition(Point position) {
+		this.position = position;
+	}
+
+	/**
+	 * Gets the Square object that this piece currently occupies.
+	 * @return The Square this piece is standing on.
+	 */
+	public Square getCurrentSquare() {
+		return game.getMap().getSquare(getPosition());
+	}
+	
 	/**
 	 * Gets the maximum number of squares this piece can move in a turn.
 	 * @return Maximum squares
@@ -91,6 +121,14 @@ public class Piece {
 		this.isGoalPiece = isGoalPiece;
 	}
 
+	public boolean isInvulnerable() {
+		return isInvulnerable;
+	}
+
+	public void setInvulnerable(boolean isInvulnerable) {
+		this.isInvulnerable = isInvulnerable;
+	}
+
 	public int getPowerReq() {
 		return powerReq;
 	}
@@ -99,4 +137,60 @@ public class Piece {
 		this.powerReq = powerReq;
 	}
 
+	public boolean canUseSpecialSquares() {
+		return canUseSpecialSquares;
+	}
+
+	public void setCanUseSpecialSquares(boolean canUseSpecialSquares) {
+		this.canUseSpecialSquares = canUseSpecialSquares;
+	}
+	
+	public int getShieldLevel() {
+		return shieldLevel;
+	}
+
+	public void setShieldLevel(int shieldLevel) {
+		this.shieldLevel = shieldLevel;
+	}
+	
+	public void addShieldLevel() {
+		shieldLevel++;
+	}
+	
+	public void removeShieldLevel() {
+		if (shieldLevel > 0) shieldLevel--;
+	}
+	
+	
+	// ---------------------------------- //
+	// ------------- Methods ------------ //
+	// ---------------------------------- //
+
+	public boolean move(Direction dir) {
+		return true;
+	}
+	
+	public void kill(boolean forceKill) {
+		
+		// The piece is killed.
+		if (forceKill || shieldLevel == 0) {
+			getCurrentSquare().setOccupant(null);
+			getOwnerPlayer().notifyKilledPiece(this, !isInvulnerable());
+			
+			// If invulnerable, respawn this piece.
+			if (isInvulnerable()) {
+				// Respawn
+			}
+			
+			// Otherwise, kill it for good.
+			else
+			{
+				// destroy if you can do that
+			}
+		}
+		
+		// The piece was shielded; simply remove one shield level.
+		removeShieldLevel();
+	}
+	
 }
