@@ -12,7 +12,7 @@ public class Map {
 	// Map metadata.
 	private String mapName, mapAuthor, mapVersion, mapRequiredMod;
 	
-	private char[][] data;
+	private Square[][] squares;
 	private Point size;
 	
 	/**
@@ -100,6 +100,11 @@ public class Map {
 		}
 		
 		return result.substring(fieldName.length() + 1);
+	}
+	
+	@Override
+	public String toString() {
+		return mapName + " (Version " + mapVersion + ") by " + mapAuthor + " [" + size.x + "x" + size.y + "]";
 	}
 
 }
