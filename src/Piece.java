@@ -1,7 +1,3 @@
-import java.awt.Point;
-import java.awt.geom.Point2D;
-import java.util.Vector;
-
 
 public class Piece {
 
@@ -10,7 +6,7 @@ public class Piece {
 	private final FieldOfView game;
 	private int owner;
 	
-	private Point position;
+	private Vector2D position;
 	
 	// Attributes applicable to all pieces.
 	private int maxSquares;
@@ -23,7 +19,7 @@ public class Piece {
 	// State of this piece.
 	private int shieldLevel;
 	
-	public Piece(FieldOfView fovGame, int ownerNumber, Point startPosition) {
+	public Piece(FieldOfView fovGame, int ownerNumber, Vector2D startPosition) {
 		game = fovGame;
 		owner = ownerNumber;
 		setPosition(startPosition);
@@ -65,11 +61,11 @@ public class Piece {
 		return game.getPlayer(getOwnerNumber());
 	}
 
-	public Point getPosition() {
+	public Vector2D getPosition() {
 		return position;
 	}
 
-	public void setPosition(Point position) {
+	public void setPosition(Vector2D position) {
 		this.position = position;
 	}
 
@@ -79,6 +75,15 @@ public class Piece {
 	 */
 	public Square getCurrentSquare() {
 		return game.getMap().getSquare(getPosition());
+	}
+	
+	/**
+	 * Gets a square adjacent to the player in a certain direction.
+	 * @param dir The direction from the player of the square to get
+	 * @return The Square object, or null if over edge of the map
+	 */
+	public Square getAdjacentSquare(Direction dir) {
+		return null;
 	}
 	
 	/**
@@ -167,30 +172,55 @@ public class Piece {
 	// ---------------------------------- //
 
 	public boolean move(Direction dir) {
-		return true;
+		
+		// Get the squares we're exiting and entering.
+		Square originSquare = getCurrentSquare();
+		// TODO: replace with + operator
+		Vector2D destPos = new Vector2D(getPosition().x + dir.getUnitVector().x, getPosition().y + dir.getUnitVector().y);
+		Square destSquare = game.getMap().getSquare(destPos);
+		
+		// Return false if we're trying to move off the map.
+		if (destSquare == null || originSquare == null)
+			return false;
+		
+		// Make sure both squares are okay with this piece moving. Then ask the player.
+		if (originSquare.canExit(this)
+				&& destSquare.canEnter(this)
+				&& getOwnerPlayer().notifyPieceMove(this, dir, originSquare, destSquare))
+		{
+			// The move is valid. 
+			originSquare.setOccupant(null);
+			destSquare.setOccupant(this);
+			setPosition(destPos);
+		}
+		
+		// The move was invalid.
+		return false;
 	}
-	
+
 	public void kill(boolean forceKill) {
 		
 		// The piece is killed.
 		if (forceKill || shieldLevel == 0) {
 			getCurrentSquare().setOccupant(null);
-			getOwnerPlayer().notifyKilledPiece(this, !isInvulnerable());
+			getOwnerPlayer().notifyPieceKilled(this, !isInvulnerable());
 			
 			// If invulnerable, respawn this piece.
 			if (isInvulnerable()) {
-				// Respawn
+				// TODO: Respawn
 			}
 			
 			// Otherwise, kill it for good.
 			else
 			{
-				// destroy if you can do that
+				// TODO: destroy if you can do that
 			}
 		}
 		
 		// The piece was shielded; simply remove one shield level.
-		removeShieldLevel();
+		else {
+			removeShieldLevel();
+		}
 	}
 	
 }

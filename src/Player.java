@@ -49,8 +49,24 @@ public class Player {
 	 * @param piece The piece that got killed
 	 * @param wasDestroyed Whether the piece is actually destroyed
 	 */
-	public void notifyKilledPiece(Piece piece, boolean wasDestroyed) {
+	public void notifyPieceKilled(Piece piece, boolean wasDestroyed) {
 		if (wasDestroyed) getPieces().remove(piece);
+	}
+
+	/**
+	 * Called by a piece that is moving from originSquare to destSquare.
+	 * This is where the player handles a piece moving after it tells
+	 * the piece to move. This method will return false if the piece
+	 * can't move (e.g. if the player is out of moves).
+	 * @param piece The piece that is moving
+	 * @param dir The direction the piece is moving in
+	 * @param originSquare The square the piece is leaving
+	 * @param destSquare The square the piece is entering
+	 * @return Whether the move is permitted
+	 */
+	public boolean notifyPieceMove(Piece piece, Direction dir,
+			Square originSquare, Square destSquare) {
+		return true;
 	}
 
 }

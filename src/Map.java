@@ -1,4 +1,3 @@
-import java.awt.Point;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.FileReader;
@@ -13,7 +12,7 @@ public class Map {
 	private String mapName, mapAuthor, mapVersion, mapRequiredMod;
 	
 	private Square[][] squares;
-	private Point size;
+	private Vector2D size;
 	
 	/**
 	 * Initializes and loads the map.
@@ -56,7 +55,7 @@ public class Map {
 		// The next two lines are the size of the map in squares. Unlike the
 		// rest of the map, these are stored as text.
 		try {
-			size = new Point();
+			size = new Vector2D();
 			size.x = Integer.parseInt(loadMapFileLine(file, ""));
 			size.y = Integer.parseInt(loadMapFileLine(file, ""));
 		}
@@ -108,11 +107,26 @@ public class Map {
 	
 	/**
 	 * Get the square at a certain position (origin is top left).
-	 * @param pos Point representing the position
-	 * @return Square at that point.
+	 * @param pos Vector2D representing the position
+	 * @return Square at that position.
 	 */
-	public Square getSquare(Point pos) {
+	public Square getSquare(Vector2D pos) {
+		if (!positionIsInBounds(pos))
+			return null;
 		return squares[pos.x][pos.y];
+	}
+	
+	public Vector2D getSize() {
+		return size;
+	}
+
+	/**
+	 * Check if a position is within the bounds of the map.
+	 * @param pos Vector2D representing the position
+	 * @return Whether it's in bounds
+	 */
+	public boolean positionIsInBounds(Vector2D pos) {
+		return pos.x >= 0 && pos.y >= 0 && pos.x < size.x && pos.y < size.y;
 	}
 
 	@Override

@@ -3,6 +3,7 @@ public class Square {
 
 	private Piece occupant;
 	private boolean isPlayable;
+	private int moveToll;
 	
 	public Square() {
 		setOccupant(null);
@@ -45,9 +46,44 @@ public class Square {
 		}
 	}
 	
+	public int getMoveToll() {
+		return moveToll;
+	}
+
+
+	public void setMoveToll(int moveToll) {
+		this.moveToll = moveToll;
+	}
+	
 	
 	// ---------------------------------- //
 	// ------------- Methods ------------ //
 	// ---------------------------------- //
 
+
+	public ActionSet getSpecialActions(Piece piece) {
+		return new ActionSet();
+	}
+
+	/**
+	 * Check if a piece is allowed to enter this square. This doesn't
+	 * check if the piece is actually able to move to this square.
+	 * Note: Subclasses should always call super.canEnter()
+	 * @param piece The piece to test
+	 * @return Whether the piece is allowed to enter
+	 */
+	public boolean canEnter(Piece piece) {
+		return isPlayable() && !isOccupied();
+	}
+	
+	/**
+	 * Check if a piece is allowed to exit this square. This doesn't
+	 * check if the piece is actually currently in this square.
+	 * Note: Subclasses should always call super.canExit()
+	 * @param piece The piece to test
+	 * @return Whether the piece is allowed to exit
+	 */
+	public boolean canExit(Piece piece) {
+		return true;
+	}
 }
