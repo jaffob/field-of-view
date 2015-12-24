@@ -1,9 +1,11 @@
 
 public final class Utils {
 
+	public static final boolean DEBUG_MODE = true;
+	
 	public static final int MAX_NAME_LENGTH = 64;
 	public static final int MIN_MAP_SIZE = 4;
-	public static final int MAX_MAP_SIZE = 65536;	
+	public static final int MAX_MAP_SIZE = 65536;
 	private Utils() {}
 	
 	public static boolean isValidName(String s)
@@ -20,5 +22,11 @@ public final class Utils {
 		}
 		
 		return true;
+	}
+	
+	public static void log(String s) {
+		if (DEBUG_MODE) {
+			System.out.println(s);
+		}
 	}
 }

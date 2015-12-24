@@ -8,15 +8,27 @@ public class Square {
 	private boolean isPlayable, isTransparent;
 	private int side, moveToll;
 	
-	public Square() {
+	public Square(char properties) {	// Public square. Ha ha.
 		setOccupant(null);
 		setPlayable(false);
 		setTransparent(false);
 		setMoveToll(1);
-		setSide(0);
+		
+		initializeProperties(properties);
+	}
+	
+	/**
+	 * Set up this square instance from the char read in from the file.
+	 * @param properties Byte of property data
+	 */
+	protected void initializeProperties(char properties) {
+		// First 2 bits represent the side.
+		int props = (int)properties;
+		setSide(props & 0b11);
+		props >>= 2;
 	}
 
-	
+
 	// ---------------------------------- //
 	// ------- Getters and Setters ------ //
 	// ---------------------------------- //

@@ -24,10 +24,10 @@ public class FieldOfView {
 	 * @throws InvalidMapException if the map was deemed invalid.
 	 */
 	public FieldOfView(String mapFileName) throws IOException, InvalidMapException {
+		map = new Map(this, mapFileName);
 		players = new Player[2];
 		players[0] = new Player(this, 1);
 		players[1] = new Player(this, 2);
-		map = new Map(this, mapFileName);
 		setSquareFactory(new SquareFactory());
 		turn = 1;
 	}

@@ -18,7 +18,7 @@ public class Player {
 	 * perform) and doesn't return until the turn is over.
 	 */
 	public void takeTurn() {
-		System.out.println("Player " + number + " takes turn (turn #" + game.getTurnCount() + " of game)");
+		Utils.log("Player " + number + " starts turn (turn #" + game.getTurnCount() + " of game)");
 	}
 	
 	/**

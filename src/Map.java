@@ -1,10 +1,9 @@
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.FileReader;
 
 
-public class Map {
+public final class Map {
 
 	// Reference to the game object.
 	private final FieldOfView game;
@@ -48,10 +47,10 @@ public class Map {
 		}
 		
 		// Load name, author, version, and mod required. Each of these is on its own line.
-		mapName = loadMapFileLine(file, "name");
-		mapAuthor = loadMapFileLine(file, "author");
-		mapVersion = loadMapFileLine(file, "version");
-		mapRequiredMod = loadMapFileLine(file, "required mod");
+		setMapName(loadMapFileLine(file, "name"));
+		setMapAuthor(loadMapFileLine(file, "author"));
+		setMapVersion(loadMapFileLine(file, "version"));
+		setMapRequiredMod(loadMapFileLine(file, "required mod"));
 		
 		// The next two lines are the size of the map in squares. Unlike the
 		// rest of the map, these are stored as text.
@@ -131,6 +130,38 @@ public class Map {
 		return squareObjects;
 	}
 	
+	public String getMapName() {
+		return mapName;
+	}
+
+	private void setMapName(String mapName) {
+		this.mapName = mapName;
+	}
+
+	public String getMapAuthor() {
+		return mapAuthor;
+	}
+
+	private void setMapAuthor(String mapAuthor) {
+		this.mapAuthor = mapAuthor;
+	}
+
+	public String getMapVersion() {
+		return mapVersion;
+	}
+
+	private void setMapVersion(String mapVersion) {
+		this.mapVersion = mapVersion;
+	}
+
+	public String getMapRequiredMod() {
+		return mapRequiredMod;
+	}
+
+	private void setMapRequiredMod(String mapRequiredMod) {
+		this.mapRequiredMod = mapRequiredMod;
+	}
+
 	public Square[][] getSquares() {
 		return squares;
 	}
@@ -165,7 +196,7 @@ public class Map {
 
 	@Override
 	public String toString() {
-		return mapName + " (Version " + mapVersion + ") by " + mapAuthor + " [" + size.x + "x" + size.y + "]";
+		return getMapName() + " (Version " + getMapVersion() + ") by " + getMapAuthor() + " [" + getSize().x + "x" + getSize().y + "]";
 	}
 
 }

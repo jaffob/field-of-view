@@ -18,7 +18,7 @@ public class SquareFactory {
 	}
 	
 	public Square createSquare(char squareType, char squareProperties) {
-		Square sq = new Square();
+		Square sq = new Square('\0');
 		return sq;
 	}
 
