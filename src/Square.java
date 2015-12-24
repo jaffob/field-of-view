@@ -1,13 +1,18 @@
 
 public class Square {
 
+	public static final String NAME = "";			// The user-friendly name of this type of square
+	public static final int TRANSPARENCY_TYPE = 0;	// 0 = never transparent, 1 = sometimes transparent (e.g. gate), 2 = always transparent
+	
 	private Piece occupant;
-	private boolean isPlayable;
+	private boolean isPlayable, isTransparent;
 	private int moveToll;
 	
 	public Square() {
 		setOccupant(null);
 		setPlayable(false);
+		setTransparent(false);
+		setMoveToll(1);
 	}
 
 	
@@ -46,6 +51,16 @@ public class Square {
 		}
 	}
 	
+	public boolean isTransparent() {
+		return isTransparent;
+	}
+
+
+	public void setTransparent(boolean isTransparent) {
+		this.isTransparent = isTransparent;
+	}
+
+
 	public int getMoveToll() {
 		return moveToll;
 	}
@@ -86,9 +101,10 @@ public class Square {
 	 * check if the piece is actually able to move to this square.
 	 * Note: Subclasses should always call super.canEnter()
 	 * @param piece The piece to test
+	 * @param dir The direction the piece is moving to get here
 	 * @return Whether the piece is allowed to enter
 	 */
-	public boolean canEnter(Piece piece) {
+	public boolean canEnter(Piece piece, Direction dir) {
 		return isPlayable() && !isOccupied();
 	}
 	
@@ -97,9 +113,10 @@ public class Square {
 	 * check if the piece is actually currently in this square.
 	 * Note: Subclasses should always call super.canExit()
 	 * @param piece The piece to test
+	 * @param dir The direction the piece is going to leave
 	 * @return Whether the piece is allowed to exit
 	 */
-	public boolean canExit(Piece piece) {
+	public boolean canExit(Piece piece, Direction dir) {
 		return true;
 	}
 }

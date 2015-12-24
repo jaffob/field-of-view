@@ -1,5 +1,3 @@
-import java.awt.Point;
-
 
 public enum Direction {
 	RIGHT,

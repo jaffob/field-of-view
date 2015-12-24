@@ -174,8 +174,8 @@ public class Piece {
 			return false;
 		
 		// Make sure both squares are okay with this piece moving. Then ask the player.
-		if (originSquare.canExit(this)
-				&& destSquare.canEnter(this)
+		if (originSquare.canExit(this, dir)
+				&& destSquare.canEnter(this, dir)
 				&& getOwnerPlayer().notifyPieceMove(this, dir, originSquare, destSquare))
 		{
 			// The move is valid. 
@@ -194,13 +194,14 @@ public class Piece {
 	 * @return An ActionSet of all the possible actions.
 	 */
 	public ActionSet getActions() {
-		return getCurrentSquare().getActions(this);
+		// return getCurrentSquare().getActions(this) + getCurrentSquareActions() + getAdjacentSquareActions();
+		return new ActionSet();
 	}
 	
 	/**
 	 * Gets the set of actions this particular piece can perform
-	 * in its current square. This are actions that are unique to
-	 * this type of piece.
+	 * in its current square. These are actions that are unique to
+	 * this type of piece, excluding special and goal actions.
 	 * @return ActionSet containing unique actions.
 	 */
 	public ActionSet getCurrentSquareActions() {
@@ -208,7 +209,6 @@ public class Piece {
 	}
 	
 	public ActionSet getAdjacentSquareActions() {
-		// TODO: how do we decide which adjacent square to act on? if you're a swordsman near 2 enemies
 		return new ActionSet();
 	}
 
