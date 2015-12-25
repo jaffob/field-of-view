@@ -1,7 +1,7 @@
 
-public class SuicidePlayAction extends PlayAction {
+public class PlayAction_Suicide extends PlayAction {
 
-	public SuicidePlayAction(Piece actor) {
+	public PlayAction_Suicide(Piece actor) {
 		super(actor, "Suicide");
 		setKillsActor(true);
 	}

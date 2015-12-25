@@ -1,17 +1,14 @@
 
-public class Square {
-
-	public static final String NAME = "";			// The user-friendly name of this type of square
-	public static final int TRANSPARENCY_TYPE = 0;	// 0 = never transparent, 1 = sometimes transparent (e.g. gate), 2 = always transparent
+public abstract class Square {
 	
 	private Piece occupant;
-	private boolean isPlayable, isTransparent;
+	private boolean isOpen, isTransparent;
 	private int side, moveToll;
 	
 	public Square(char properties) {	// Public square. Ha ha.
 		setOccupant(null);
-		setPlayable(false);
-		setTransparent(false);
+		setOpen(true);
+		setTransparent(true);
 		setMoveToll(1);
 		
 		initializeProperties(properties);
@@ -27,8 +24,11 @@ public class Square {
 		setSide(props & 0b11);
 		props >>= 2;
 	}
-
-
+	
+	public static String getFriendlyName() {
+		return "";
+	}
+	
 	// ---------------------------------- //
 	// ------- Getters and Setters ------ //
 	// ---------------------------------- //
@@ -51,15 +51,15 @@ public class Square {
 	 * squares are walls and closed gates.
 	 * @return
 	 */
-	public boolean isPlayable() {
-		return isPlayable;
+	public boolean isOpen() {
+		return isOpen;
 	}
 
-	public void setPlayable(boolean isPlayable) {
-		this.isPlayable = isPlayable;
+	public void setOpen(boolean isOpen) {
+		this.isOpen = isOpen;
 		
 		// If this square is set to non-playable, kill any piece that occupies it.
-		if (!isPlayable && isOccupied()) {
+		if (!isOpen && isOccupied()) {
 			getOccupant().kill(true);
 		}
 	}
@@ -99,7 +99,17 @@ public class Square {
 	// ---------------------------------- //
 
 	public ActionList getActions(Piece piece) {
-		return new ActionList();
+		ActionList actions = new ActionList();
+		
+		if (piece.canUseSpecialSquares()) {
+			actions.addList(getSpecialActions());
+		}
+		
+		if (piece.isGoalPiece()) {
+			actions.addList(getGoalActions());
+		}
+		
+		return actions;
 	}
 	/**
 	 * Gets the set of special actions this square can perform. These
@@ -128,7 +138,7 @@ public class Square {
 	 * @return Whether the piece is allowed to enter
 	 */
 	public boolean canEnter(Piece piece, Direction dir) {
-		return isPlayable() && !isOccupied();
+		return isOpen() && !isOccupied();
 	}
 	
 	/**

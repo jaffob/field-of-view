@@ -1,8 +1,6 @@
 
 public class Piece {
 
-	public static final String NAME = "";
-	
 	private final FieldOfView game;
 	private int owner;
 	
@@ -38,6 +36,10 @@ public class Piece {
 		setAllowEndTurn(true);
 		setPowerReq(0);
 		setShieldLevel(0);
+	}
+	
+	public static String getFriendlyName() {
+		return "";
 	}
 	
 	// ---------------------------------- //
@@ -247,11 +249,11 @@ public class Piece {
 		actions.addList(getAdjacentUniqueActions());
 		
 		if (canSuicide()) {
-			actions.addAction(new SuicidePlayAction(this));
+			actions.addAction(new PlayAction_Suicide(this));
 		}
 		
 		if (allowEndTurn()) {
-			actions.addAction(new EndTurnPlayAction(this));
+			actions.addAction(new PlayAction_EndTurn(this));
 		}
 		
 		return actions;
