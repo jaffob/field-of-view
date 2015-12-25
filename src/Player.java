@@ -6,12 +6,13 @@ public class Player {
 	private final FieldOfView game;
 	private final int number;
 	private final Controller controller;
-	private ArrayList<Piece> pieces;
+	private final ArrayList<Piece> pieces;
 	
 	public Player(FieldOfView fovGame, int playerNum, Controller controller) {
 		game = fovGame;
 		number = playerNum;
 		this.controller = controller;
+		pieces = new ArrayList<Piece>();
 	}
 
 	/**
@@ -21,6 +22,8 @@ public class Player {
 	 */
 	public void takeTurn() {
 		Utils.log("Player " + number + " starts turn (turn #" + game.getTurnCount() + " of game)");
+		
+		
 	}
 	
 	/**
@@ -47,13 +50,18 @@ public class Player {
 		return pieces;
 	}
 
+	public boolean pieceCanMove(Piece piece, Direction dir,
+			Square currentSquare, Square destSquare) {
+		return true;
+	}
+	
 	/**
-	 * Called by a piece this player owns that is killed. This will be
-	 * called even if the piece is a goal piece (and therefore will
-	 * respawn), so use wasDestroyed to tell whether it should be
-	 * removed from the piece list.
+	 * Called by a piece this player owns when it is killed, right before
+	 * the piece itself handles it. This will be called even if the piece is a
+	 * goal piece (and therefore will respawn), so use wasDestroyed to tell
+	 * whether it should be removed from the piece list.
 	 * @param piece The piece that got killed
-	 * @param wasDestroyed Whether the piece is actually destroyed
+	 * @param wasDestroyed True if killed; false if respawned
 	 */
 	public void notifyPieceKilled(Piece piece, boolean wasDestroyed) {
 		if (wasDestroyed) getPieces().remove(piece);
@@ -61,18 +69,14 @@ public class Player {
 
 	/**
 	 * Called by a piece that is moving from originSquare to destSquare.
-	 * This is where the player handles a piece moving after it tells
-	 * the piece to move. This method will return false if the piece
-	 * can't move (e.g. if the player is out of moves).
+	 * This occurs right before the piece itself executes the move.
 	 * @param piece The piece that is moving
 	 * @param dir The direction the piece is moving in
 	 * @param originSquare The square the piece is leaving
 	 * @param destSquare The square the piece is entering
-	 * @return Whether the move is permitted
 	 */
-	public boolean notifyPieceMove(Piece piece, Direction dir,
+	public void notifyPieceMove(Piece piece, Direction dir,
 			Square originSquare, Square destSquare) {
-		return true;
 	}
 
 }

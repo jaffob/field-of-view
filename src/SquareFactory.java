@@ -3,10 +3,10 @@ import java.util.HashMap;
 
 public class SquareFactory {
 
-	private HashMap<Character, Class<Square>> squareTypes;
+	private final HashMap<Character, Class<Square>> squareTypes;
 	
 	public SquareFactory() {
-		
+		squareTypes = new HashMap<Character, Class<Square>>();
 	}
 	
 	protected Class<Square> getSquareType(char squareType) {

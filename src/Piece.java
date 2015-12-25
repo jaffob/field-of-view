@@ -13,6 +13,7 @@ public class Piece {
 	private boolean isGoalPiece;
 	private boolean isInvulnerable;
 	private boolean canUseSpecialSquares;
+	private boolean canSuicide;
 	private int powerReq;
 	
 	// State of this piece.
@@ -27,6 +28,7 @@ public class Piece {
 		setGoalPiece(false);
 		setInvulnerable(false);
 		setCanUseSpecialSquares(false);
+		setCanSuicide(true);
 		setPowerReq(0);
 		setShieldLevel(0);
 	}
@@ -39,7 +41,7 @@ public class Piece {
 	 * Get the number of the player that owns this piece.
 	 * @return Player number of owner
 	 */
-	public int getOwnerNumber() {
+	public int getOwner() {
 		return this.owner;
 	}
 
@@ -47,7 +49,7 @@ public class Piece {
 	 * Sets who owns this piece.
 	 * @param ownerNumber New owner
 	 */
-	public void setOwnerNumber(int ownerNumber) {
+	public void setOwner(int ownerNumber) {
 		this.owner = ownerNumber;
 	}
 	
@@ -56,7 +58,7 @@ public class Piece {
 	 * @return The Player object of the owner
 	 */
 	public Player getOwnerPlayer() {
-		return game.getPlayer(getOwnerNumber());
+		return game.getPlayer(getOwner());
 	}
 
 	public Vector2D getPosition() {
@@ -132,6 +134,14 @@ public class Piece {
 		this.canUseSpecialSquares = canUseSpecialSquares;
 	}
 	
+	public boolean canSuicide() {
+		return canSuicide;
+	}
+
+	public void setCanSuicide(boolean canSuicide) {
+		this.canSuicide = canSuicide;
+	}
+
 	public int getShieldLevel() {
 		return shieldLevel;
 	}
@@ -169,23 +179,18 @@ public class Piece {
 		Vector2D destPos = new Vector2D(getPosition().x + dir.getUnitVector().x, getPosition().y + dir.getUnitVector().y);
 		Square destSquare = game.getMap().getSquare(destPos);
 		
-		// Return false if we're trying to move off the map.
+		// Return false if we're trying to move off the map. Should never happen because
+		// we assume MoveActions are only created for valid moves.
 		if (destSquare == null || originSquare == null)
 			return false;
 		
-		// Make sure both squares are okay with this piece moving. Then ask the player.
-		if (originSquare.canExit(this, dir)
-				&& destSquare.canEnter(this, dir)
-				&& getOwnerPlayer().notifyPieceMove(this, dir, originSquare, destSquare))
-		{
-			// The move is valid. 
-			originSquare.setOccupant(null);
-			destSquare.setOccupant(this);
-			setPosition(destPos);
-		}
-		
-		// The move was invalid.
-		return false;
+		// Tell the player we are moving.
+		getOwnerPlayer().notifyPieceMove(this, dir, originSquare, destSquare);
+		originSquare.setOccupant(null);
+		destSquare.setOccupant(this);
+		setPosition(destPos);
+	
+		return true;
 	}
 	
 	/**
@@ -194,8 +199,34 @@ public class Piece {
 	 * @return An ActionSet of all the possible actions.
 	 */
 	public ActionSet getActions() {
-		// return getCurrentSquare().getActions(this) + getCurrentSquareActions() + getAdjacentSquareActions();
+		ActionSet actions = new ActionSet();
+		if (canSuicide()) {
+			actions.addAction(new PlayAction(getOwnerPlayer(), this, null, "Suicide"));
+		}
+		// return getCurrentSquare().getActions(this) + getCurrentSquareActions() + getAdjacentSquareActions() + getMoveActions();
 		return new ActionSet();
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public ActionSet getMoveActions() {
+		ActionSet actions = new ActionSet();
+		
+		// Create a MoveAction for every direction.
+		for (Direction dir : Direction.values()) {
+			// TODO: use + operator
+			Square destSquare =  game.getMap().getSquare(new Vector2D(getPosition().x + dir.getUnitVector().x, getPosition().y + dir.getUnitVector().y));
+			if (getCurrentSquare().canExit(this, dir)
+					&& destSquare != null
+					&& destSquare.canEnter(this, dir)
+					&& getOwnerPlayer().pieceCanMove(this, dir, getCurrentSquare(), destSquare)) {
+				actions.addAction(new MoveAction(getOwnerPlayer(), this, dir));
+			}
+		}
+		
+		return actions;
 	}
 	
 	/**

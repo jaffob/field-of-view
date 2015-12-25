@@ -1,66 +1,45 @@
-import java.util.ArrayList;
+/**
+ * Action
+ * @author Jack Boffa
+ * Defines the abstract concept of an action a player can perform as part
+ * of his/her turn. On a turn, the player gets a fixed number of chances
+ * to "move" or "play", and Actions can represent both of these operations.
+ * It is not guaranteed that an action will succeed (e.g. movement might be
+ * blocked), so they should be used with that in mind.
+ */
+public abstract class Action {
 
-
-public class Action {
-
-	private String name, description;
-	private boolean killsActor, winsGame, actsOnPiece;
-	private ArrayList<Square> squares;
+	private final Player player;
+	private final Piece actor;
+	private final boolean endsTurn;
 	
-	public Action(Object placeholder, String name) {
-		setName(name);
-		setDescription("");
-		setKillsActor(false);
-		setWinsGame(false);
-		setActsOnPiece(false);
+	public Action(Player player, Piece actor, boolean endsTurn) {
+		this.player = player;
+		this.actor = actor;
+		this.endsTurn = endsTurn;
+	}
+	
+	public Action(Piece actor, boolean endsTurn) {
+		this(actor.getOwnerPlayer(), actor, endsTurn);
+	}
+	
+	public Player getPlayer() {
+		return player;
+	}
+	
+	
+	public Piece getActor() {
+		return actor;
 	}
 
-	public String getName() {
-		return name;
+	public boolean endsTurn() {
+		return endsTurn;
 	}
 
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public String getDescription() {
-		return description;
-	}
-
-	public void setDescription(String description) {
-		this.description = description;
-	}
-
-	public boolean killsActor() {
-		return killsActor;
-	}
-
-	public void setKillsActor(boolean killsActor) {
-		this.killsActor = killsActor;
-	}
-
-	public boolean winsGame() {
-		return winsGame;
-	}
-
-	public void setWinsGame(boolean winsGame) {
-		this.winsGame = winsGame;
-	}
-
-	public boolean actsOnPiece() {
-		return actsOnPiece;
-	}
-
-	public void setActsOnPiece(boolean actsOnPiece) {
-		this.actsOnPiece = actsOnPiece;
-	}
-
-	public ArrayList<Square> getSquares() {
-		return squares;
-	}
-
-	public void addSquare(Square square) {
-		squares.add(square);
-	}
+	/**
+	 * Performs this action.
+	 * @return Whether the action succeeded.
+	 */
+	public abstract boolean doAction();
 
 }
