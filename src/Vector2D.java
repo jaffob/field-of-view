@@ -16,5 +16,24 @@ public class Vector2D extends Point {
 	public Vector2D(int x, int y) {
 		super(x, y);
 	}
+	
+	/**
+	 * Get the result of adding this and another Vector2D, without
+	 * affecting this vector.
+	 * @param v The other Vector2D
+	 * @return A new Vector2D of the sum
+	 */
+	public Vector2D plus(Vector2D v) {
+		return new Vector2D(x + v.x, y + v.y);
+	}
+	
+	/**
+	 * Adds another Vector2D to this Vector2D.
+	 * @param v Other vector
+	 */
+	public void add(Vector2D v) {
+		x += v.x;
+		y += v.y;
+	}
 
 }

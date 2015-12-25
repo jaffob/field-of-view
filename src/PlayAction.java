@@ -1,13 +1,13 @@
 import java.util.ArrayList;
 
 
-public class PlayAction extends Action {
+public abstract class PlayAction extends Action {
 
 	private String name, description;
 	private boolean killsActor, winsGame, actsOnPiece;
 	private final ArrayList<Square> squares;
 	
-	public PlayAction(Player player, Piece actor, Object placeholder, String name) {
+	public PlayAction(Player player, Piece actor, String name) {
 		super(player, actor, true);
 		setName(name);
 		setDescription("");
@@ -15,6 +15,10 @@ public class PlayAction extends Action {
 		setWinsGame(false);
 		setActsOnPiece(false);
 		squares = new ArrayList<Square>();
+	}
+	
+	public PlayAction(Piece actor, String name) {
+		this(actor.getOwnerPlayer(), actor, name);
 	}
 
 	public String getName() {
@@ -64,13 +68,9 @@ public class PlayAction extends Action {
 	public void addSquare(Square square) {
 		squares.add(square);
 	}
-
-	@Override
-	public boolean doAction() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
 	
-
+	@Override
+	public String toString() {
+		return "[" + getPlayer() + "] [" + getActor() + "] " + getName();
+	}
 }

@@ -21,4 +21,8 @@ public class MoveAction extends Action {
 		return getActor().move(getDirection());
 	}
 
+	@Override
+	public String toString() {
+		return "[" + getPlayer() + "] [" + getActor() + "] Move " + getDirection();
+	}
 }

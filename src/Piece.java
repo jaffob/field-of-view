@@ -6,29 +6,34 @@ public class Piece {
 	private final FieldOfView game;
 	private int owner;
 	
-	private Vector2D position;
-	
 	// Attributes applicable to all pieces.
 	private int maxSquares;
 	private boolean isGoalPiece;
 	private boolean isInvulnerable;
 	private boolean canUseSpecialSquares;
 	private boolean canSuicide;
+	private boolean allowEndTurn;
 	private int powerReq;
 	
 	// State of this piece.
+	private Vector2D position;
+	private boolean isSelected;
+	private int movesThisTurn;
 	private int shieldLevel;
 	
 	public Piece(FieldOfView fovGame, int ownerNumber, Vector2D startPosition) {
 		game = fovGame;
 		owner = ownerNumber;
 		setPosition(startPosition);
+		setMovesThisTurn(0);
+		setSelected(false);
 		
 		setMaxSquares(0);
 		setGoalPiece(false);
 		setInvulnerable(false);
 		setCanUseSpecialSquares(false);
 		setCanSuicide(true);
+		setAllowEndTurn(true);
 		setPowerReq(0);
 		setShieldLevel(0);
 	}
@@ -67,6 +72,22 @@ public class Piece {
 
 	public void setPosition(Vector2D position) {
 		this.position = position;
+	}
+
+	public int getMovesThisTurn() {
+		return movesThisTurn;
+	}
+
+	public void setMovesThisTurn(int movesThisTurn) {
+		this.movesThisTurn = movesThisTurn;
+	}
+
+	public boolean isSelected() {
+		return isSelected;
+	}
+
+	public void setSelected(boolean isSelected) {
+		this.isSelected = isSelected;
 	}
 
 	/**
@@ -142,6 +163,14 @@ public class Piece {
 		this.canSuicide = canSuicide;
 	}
 
+	public boolean allowEndTurn() {
+		return allowEndTurn;
+	}
+
+	public void setAllowEndTurn(boolean allowEndTurn) {
+		this.allowEndTurn = allowEndTurn;
+	}
+
 	public int getShieldLevel() {
 		return shieldLevel;
 	}
@@ -175,8 +204,7 @@ public class Piece {
 		
 		// Get the squares we're exiting and entering.
 		Square originSquare = getCurrentSquare();
-		// TODO: replace with + operator
-		Vector2D destPos = new Vector2D(getPosition().x + dir.getUnitVector().x, getPosition().y + dir.getUnitVector().y);
+		Vector2D destPos = getPosition().plus(dir.getUnitVector());
 		Square destSquare = game.getMap().getSquare(destPos);
 		
 		// Return false if we're trying to move off the map. Should never happen because
@@ -186,10 +214,13 @@ public class Piece {
 		
 		// Tell the player we are moving.
 		getOwnerPlayer().notifyPieceMove(this, dir, originSquare, destSquare);
+		
+		// Do the move.
 		originSquare.setOccupant(null);
 		destSquare.setOccupant(this);
 		setPosition(destPos);
-	
+		setMovesThisTurn(getMovesThisTurn() + destSquare.getMoveToll());
+		
 		return true;
 	}
 	
@@ -198,26 +229,36 @@ public class Piece {
 	 * Doesn't check if it's actually this player's turn.
 	 * @return An ActionSet of all the possible actions.
 	 */
-	public ActionSet getActions() {
-		ActionSet actions = new ActionSet();
+	public ActionList getActions() {
+		
+		ActionList actions = new ActionList();
+		
+		actions.addList(getMoveActions());
+		actions.addList(getCurrentSquare().getActions(this));
+		actions.addList(getCurrentSquareActions());
+		actions.addList(getAdjacentSquareActions());
+		
 		if (canSuicide()) {
-			actions.addAction(new PlayAction(getOwnerPlayer(), this, null, "Suicide"));
+			actions.addAction(new SuicidePlayAction(this));
 		}
-		// return getCurrentSquare().getActions(this) + getCurrentSquareActions() + getAdjacentSquareActions() + getMoveActions();
-		return new ActionSet();
+		
+		if (allowEndTurn()) {
+			actions.addAction(new EndTurnPlayAction(this));
+		}
+		
+		return actions;
 	}
 	
 	/**
 	 * 
 	 * @return
 	 */
-	public ActionSet getMoveActions() {
-		ActionSet actions = new ActionSet();
+	public ActionList getMoveActions() {
+		ActionList actions = new ActionList();
 		
 		// Create a MoveAction for every direction.
 		for (Direction dir : Direction.values()) {
-			// TODO: use + operator
-			Square destSquare =  game.getMap().getSquare(new Vector2D(getPosition().x + dir.getUnitVector().x, getPosition().y + dir.getUnitVector().y));
+			Square destSquare =  game.getMap().getSquare(getPosition().plus(dir.getUnitVector()));
 			if (getCurrentSquare().canExit(this, dir)
 					&& destSquare != null
 					&& destSquare.canEnter(this, dir)
@@ -235,12 +276,12 @@ public class Piece {
 	 * this type of piece, excluding special and goal actions.
 	 * @return ActionSet containing unique actions.
 	 */
-	public ActionSet getCurrentSquareActions() {
-		return new ActionSet();
+	public ActionList getCurrentSquareActions() {
+		return new ActionList();
 	}
 	
-	public ActionSet getAdjacentSquareActions() {
-		return new ActionSet();
+	public ActionList getAdjacentSquareActions() {
+		return new ActionList();
 	}
 
 	public void kill(boolean forceKill) {
@@ -253,12 +294,6 @@ public class Piece {
 			// If invulnerable, respawn this piece.
 			if (isInvulnerable()) {
 				// TODO: Respawn
-			}
-			
-			// Otherwise, kill it for good.
-			else
-			{
-				// TODO: destroy if you can do that
 			}
 		}
 		

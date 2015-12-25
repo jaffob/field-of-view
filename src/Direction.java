@@ -11,4 +11,12 @@ public enum Direction {
 		if (this == LEFT) return new Vector2D(-1, 0);
 		return new Vector2D(0, -1);
 	}
+	
+	@Override
+	public String toString() {
+		if (this == RIGHT) return "Right";
+		if (this == DOWN) return "Down";
+		if (this == LEFT) return "Left";
+		return "Up";
+	}
 }
