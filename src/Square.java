@@ -2,6 +2,7 @@
 public abstract class Square {
 	
 	protected final FieldOfView game;
+	private String friendlyName;
 	
 	private Piece occupant;
 	private boolean isOpen, isTransparent;
@@ -9,6 +10,7 @@ public abstract class Square {
 	
 	public Square(FieldOfView fovGame, char properties) {	// Public square. Ha ha.
 		game = fovGame;
+		setFriendlyName("");
 		setOccupant(null);
 		setOpen(true);
 		setTransparent(true);
@@ -28,14 +30,18 @@ public abstract class Square {
 		props >>= 2;
 	}
 	
-	public static String getFriendlyName() {
-		return "";
-	}
-	
 	// ---------------------------------- //
 	// ------- Getters and Setters ------ //
 	// ---------------------------------- //
 	
+	public String getFriendlyName() {
+		return friendlyName;
+	}
+
+	protected void setFriendlyName(String friendlyName) {
+		this.friendlyName = friendlyName;
+	}
+
 	public Piece getOccupant() {
 		return occupant;
 	}
@@ -49,7 +55,7 @@ public abstract class Square {
 	}
 
 	/**
-	 * Whether this square is playable. Playable squares can be occupied
+	 * Whether this square is open. Open squares can be occupied
 	 * and don't obstruct the player's view. Examples of non-playable
 	 * squares are walls and closed gates.
 	 * @return
@@ -154,5 +160,17 @@ public abstract class Square {
 	 */
 	public boolean canExit(Piece piece, Direction dir) {
 		return true;
+	}
+	
+	/**
+	 * Check if a particular piece is able to see through this square.
+	 * This can be used by subclasses to (for example) create squares
+	 * that are only transparent to one player. Otherwise, it's the
+	 * same is isTransparent().
+	 * @param piece
+	 * @return
+	 */
+	public boolean canSeeThrough(Piece piece) {
+		return isTransparent();
 	}
 }

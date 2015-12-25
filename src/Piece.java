@@ -3,6 +3,7 @@ public class Piece {
 
 	protected final FieldOfView game;
 	private int owner;
+	private String friendlyName;
 	
 	// Attributes applicable to all pieces.
 	private int maxMoves;
@@ -23,6 +24,7 @@ public class Piece {
 	public Piece(FieldOfView fovGame, int ownerNumber, Vector2D startPosition) {
 		game = fovGame;
 		owner = ownerNumber;
+		setFriendlyName("");
 		setPosition(startPosition);
 		setMovesThisTurn(0);
 		setSelected(false);
@@ -38,9 +40,6 @@ public class Piece {
 		setShieldLevel(0);
 	}
 	
-	public static String getFriendlyName() {
-		return "";
-	}
 	
 	// ---------------------------------- //
 	// ------- Getters and Setters ------ //
@@ -69,6 +68,16 @@ public class Piece {
 	public Player getOwnerPlayer() {
 		return game.getPlayer(getOwner());
 	}
+
+	public String getFriendlyName() {
+		return friendlyName;
+	}
+
+
+	protected void setFriendlyName(String friendlyName) {
+		this.friendlyName = friendlyName;
+	}
+
 
 	public Vector2D getPosition() {
 		return position;
