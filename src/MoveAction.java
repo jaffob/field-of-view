@@ -17,8 +17,8 @@ public class MoveAction extends Action {
 	}
 
 	@Override
-	public boolean doAction() {
-		return getActor().move(getDirection());
+	public void doAction() {
+		getActor().move(getDirection());
 	}
 
 	@Override

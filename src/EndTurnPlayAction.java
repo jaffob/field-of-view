@@ -6,8 +6,6 @@ public class EndTurnPlayAction extends PlayAction {
 	}
 
 	@Override
-	public boolean doAction() {
-		return true;
-	}
+	public void doAction() {}
 
 }

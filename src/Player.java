@@ -23,7 +23,29 @@ public class Player {
 	public void takeTurn() {
 		Utils.log("Player " + number + " starts turn (turn #" + game.getTurnCount() + " of game)");
 		
+		// Use the controller to select a piece.
+		Piece selectedPiece = controller.selectPiece(pieces);
+		selectedPiece.setSelected(true);
 		
+		// Main turn loop.
+		ActionList availableActions;
+		while (true) {
+			
+			// Get available actions, ending the turn if there aren't any.
+			availableActions = selectedPiece.getActions();
+			if (availableActions.size() == 0) {
+				break;
+			}
+			
+			Action selectedAction = controller.selectAction(availableActions);
+			selectedAction.doAction();
+			
+			if (selectedAction.endsTurn()) {
+				break;
+			}
+		}
+		
+		selectedPiece.setSelected(false);
 	}
 	
 	/**

@@ -11,9 +11,7 @@ public interface Controller {
 	 */
 	public Piece selectPiece(ArrayList<Piece> pieces);
 	
-	/**
-	 * Select a direction to move one space in.
-	 * @return
-	 */
-	public Action act();
+	
+	
+	public Action selectAction(ActionList availableActions);
 }

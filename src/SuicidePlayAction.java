@@ -6,9 +6,8 @@ public class SuicidePlayAction extends PlayAction {
 		setKillsActor(true);
 	}
 
-	public boolean doAction() {
+	public void doAction() {
 		getActor().kill(true);
-		return true;
 	}
 
 }

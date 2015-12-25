@@ -4,8 +4,8 @@
  * Defines the abstract concept of an action a player can perform as part
  * of his/her turn. On a turn, the player gets a fixed number of chances
  * to "move" or "play", and Actions can represent both of these operations.
- * It is not guaranteed that an action will succeed (e.g. movement might be
- * blocked), so they should be used with that in mind.
+ * It is guaranteed that an action will succeed, so they should only be
+ * created and presented to the user when it is known they will work.
  */
 public abstract class Action {
 
@@ -40,6 +40,6 @@ public abstract class Action {
 	 * Performs this action.
 	 * @return Whether the action succeeded.
 	 */
-	public abstract boolean doAction();
+	public abstract void doAction();
 
 }

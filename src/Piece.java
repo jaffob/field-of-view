@@ -7,7 +7,8 @@ public class Piece {
 	private int owner;
 	
 	// Attributes applicable to all pieces.
-	private int maxSquares;
+	private int maxMoves;
+	private Class<Square> spawnSquareClass;
 	private boolean isGoalPiece;
 	private boolean isInvulnerable;
 	private boolean canUseSpecialSquares;
@@ -28,7 +29,8 @@ public class Piece {
 		setMovesThisTurn(0);
 		setSelected(false);
 		
-		setMaxSquares(0);
+		setSpawnSquareClass(null);
+		setMaxMoves(0);
 		setGoalPiece(false);
 		setInvulnerable(false);
 		setCanUseSpecialSquares(false);
@@ -111,16 +113,24 @@ public class Piece {
 	 * Gets the maximum number of squares this piece can move in a turn.
 	 * @return Maximum squares
 	 */
-	public int getMaxSquares() {
-		return maxSquares;
+	public int getMaxMoves() {
+		return maxMoves;
 	}
 
 	/**
 	 * Set the maximum number of squares this piece can move in a turn.
 	 * @param maxSquares New square limit
 	 */
-	public void setMaxSquares(int maxSquares) {
-		this.maxSquares = maxSquares;
+	public void setMaxMoves(int maxMoves) {
+		this.maxMoves = maxMoves;
+	}
+
+	public Class<Square> getSpawnSquareClass() {
+		return spawnSquareClass;
+	}
+
+	public void setSpawnSquareClass(Class<Square> spawnSquareClass) {
+		this.spawnSquareClass = spawnSquareClass;
 	}
 
 	public boolean isGoalPiece() {
@@ -200,7 +210,7 @@ public class Piece {
 	 * @param dir The direction to move in
 	 * @return Whether the move was successfully completed
 	 */
-	public boolean move(Direction dir) {
+	public void move(Direction dir) {
 		
 		// Get the squares we're exiting and entering.
 		Square originSquare = getCurrentSquare();
@@ -210,7 +220,7 @@ public class Piece {
 		// Return false if we're trying to move off the map. Should never happen because
 		// we assume MoveActions are only created for valid moves.
 		if (destSquare == null || originSquare == null)
-			return false;
+			return;
 		
 		// Tell the player we are moving.
 		getOwnerPlayer().notifyPieceMove(this, dir, originSquare, destSquare);
@@ -220,8 +230,6 @@ public class Piece {
 		destSquare.setOccupant(this);
 		setPosition(destPos);
 		setMovesThisTurn(getMovesThisTurn() + destSquare.getMoveToll());
-		
-		return true;
 	}
 	
 	/**
@@ -235,8 +243,8 @@ public class Piece {
 		
 		actions.addList(getMoveActions());
 		actions.addList(getCurrentSquare().getActions(this));
-		actions.addList(getCurrentSquareActions());
-		actions.addList(getAdjacentSquareActions());
+		actions.addList(getUniqueActions());
+		actions.addList(getAdjacentUniqueActions());
 		
 		if (canSuicide()) {
 			actions.addAction(new SuicidePlayAction(this));
@@ -256,6 +264,11 @@ public class Piece {
 	public ActionList getMoveActions() {
 		ActionList actions = new ActionList();
 		
+		// If this piece has no moves left, stop here.
+		if (getMovesThisTurn() >= getMaxMoves()) {
+			return actions;
+		}
+		
 		// Create a MoveAction for every direction.
 		for (Direction dir : Direction.values()) {
 			Square destSquare =  game.getMap().getSquare(getPosition().plus(dir.getUnitVector()));
@@ -273,14 +286,22 @@ public class Piece {
 	/**
 	 * Gets the set of actions this particular piece can perform
 	 * in its current square. These are actions that are unique to
-	 * this type of piece, excluding special and goal actions.
+	 * this type of piece (e.g. placing a camera), and it excludes
+	 * special and goal actions (those are handled by the Square).
 	 * @return ActionSet containing unique actions.
 	 */
-	public ActionList getCurrentSquareActions() {
+	public ActionList getUniqueActions() {
 		return new ActionList();
 	}
 	
-	public ActionList getAdjacentSquareActions() {
+	/**
+	 * Gets the set of actions this particular piece can perform
+	 * in adjacent squares. These are actions that are unique to
+	 * this type of piece (e.g. opening a gate), and it excludes
+	 * special and goal actions (those are handled by the Square).
+	 * @return ActionSet containing unique actions.
+	 */
+	public ActionList getAdjacentUniqueActions() {
 		return new ActionList();
 	}
 
