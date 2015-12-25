@@ -1,11 +1,14 @@
 
 public abstract class Square {
 	
+	protected final FieldOfView game;
+	
 	private Piece occupant;
 	private boolean isOpen, isTransparent;
 	private int side, moveToll;
 	
-	public Square(char properties) {	// Public square. Ha ha.
+	public Square(FieldOfView fovGame, char properties) {	// Public square. Ha ha.
+		game = fovGame;
 		setOccupant(null);
 		setOpen(true);
 		setTransparent(true);

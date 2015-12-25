@@ -3,12 +3,15 @@ import java.util.ArrayList;
 
 public abstract class PlayAction extends Action {
 
+	protected final FieldOfView game;
+	
 	private String name, description;
 	private boolean killsActor, winsGame, actsOnPiece;
 	private final ArrayList<Square> squares;
 	
-	public PlayAction(Player player, Piece actor, String name) {
+	public PlayAction(FieldOfView fovGame, Player player, Piece actor, String name) {
 		super(player, actor, true);
+		game = fovGame;
 		setName(name);
 		setDescription("");
 		setKillsActor(false);
@@ -17,8 +20,8 @@ public abstract class PlayAction extends Action {
 		squares = new ArrayList<Square>();
 	}
 	
-	public PlayAction(Piece actor, String name) {
-		this(actor.getOwnerPlayer(), actor, name);
+	public PlayAction(FieldOfView fovGame, Piece actor, String name) {
+		this(fovGame, actor.getOwnerPlayer(), actor, name);
 	}
 
 	public String getName() {

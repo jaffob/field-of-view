@@ -6,7 +6,7 @@ import java.io.FileReader;
 public final class Map {
 
 	// Reference to the game object.
-	private final FieldOfView game;
+	protected final FieldOfView game;
 	
 	// Map metadata.
 	private String mapName, mapAuthor, mapVersion, mapRequiredMod;

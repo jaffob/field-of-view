@@ -3,7 +3,7 @@ import java.util.ArrayList;
 
 public class Player {
 
-	private final FieldOfView game;
+	protected final FieldOfView game;
 	private final int number;
 	private final Controller controller;
 	private final ArrayList<Piece> pieces;

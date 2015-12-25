@@ -1,7 +1,7 @@
 
 public class Piece {
 
-	private final FieldOfView game;
+	protected final FieldOfView game;
 	private int owner;
 	
 	// Attributes applicable to all pieces.
@@ -249,11 +249,11 @@ public class Piece {
 		actions.addList(getAdjacentUniqueActions());
 		
 		if (canSuicide()) {
-			actions.addAction(new PlayAction_Suicide(this));
+			actions.addAction(new PlayAction_Suicide(game, this));
 		}
 		
 		if (allowEndTurn()) {
-			actions.addAction(new PlayAction_EndTurn(this));
+			actions.addAction(new PlayAction_EndTurn(game, this));
 		}
 		
 		return actions;

@@ -3,9 +3,11 @@ import java.util.HashMap;
 
 public class SquareFactory {
 
+	protected final FieldOfView game;
 	private final HashMap<Character, Class<Square>> squareTypes;
 	
-	public SquareFactory() {
+	public SquareFactory(FieldOfView fovGame) {
+		game = fovGame;
 		squareTypes = new HashMap<Character, Class<Square>>();
 	}
 	
@@ -20,7 +22,7 @@ public class SquareFactory {
 	public Square createSquare(char squareType, char squareProperties) {
 		Square sq;
 		try {
-			sq = getSquareType(squareType).getConstructor(Character.class).newInstance(squareProperties);
+			sq = getSquareType(squareType).getConstructor(FieldOfView.class, Character.class).newInstance(game, squareProperties);
 		} catch (Exception e) {
 			return null;
 		}

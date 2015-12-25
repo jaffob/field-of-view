@@ -1,8 +1,8 @@
 
 public class PlayAction_Suicide extends PlayAction {
 
-	public PlayAction_Suicide(Piece actor) {
-		super(actor, "Suicide");
+	public PlayAction_Suicide(FieldOfView fovGame, Piece actor) {
+		super(fovGame, actor, "Suicide");
 		setKillsActor(true);
 	}
 

@@ -1,8 +1,8 @@
 
 public class Square_Wall extends Square {
 
-	public Square_Wall(char properties) {
-		super(properties);
+	public Square_Wall(FieldOfView fovGame, char properties) {
+		super(fovGame, properties);
 		setOpen(false);
 		setTransparent(false);
 	}
