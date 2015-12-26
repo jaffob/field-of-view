@@ -26,4 +26,16 @@ public class MoveAction extends Action {
 	public String toString() {
 		return "[" + getPlayer() + "] [" + getActor() + "] Move " + getDirection();
 	}
+
+	@Override
+	public ClientAction createClientAction() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public boolean verifyClientAction(ClientAction ca) {
+		// TODO Auto-generated method stub
+		return false;
+	}
 }

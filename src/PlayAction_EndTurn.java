@@ -12,4 +12,16 @@ public class PlayAction_EndTurn extends PlayAction {
 	@Override
 	public void doAction(FieldOfView game) {}
 
+	@Override
+	public ClientAction createClientAction() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public boolean verifyClientAction(ClientAction ca) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 }

@@ -12,12 +12,16 @@ public class ActionList {
 		actions.add(action);
 	}
 	
-	public ArrayList<Action> getActions() {
+	public Action getAction(int index) {
+		return actions.get(index);
+	}
+	
+	public ArrayList<Action> getArrayList() {
 		return actions;
 	}
 
 	public void addList(ActionList list) {
-		for (Action a : list.getActions()) {
+		for (Action a : list.getArrayList()) {
 			addAction(a);
 		}
 	}
@@ -29,10 +33,9 @@ public class ActionList {
 	@Override
 	public String toString() {
 		String output = "";
-		for (Action a : getActions()) {
+		for (Action a : actions) {
 			output += a + "\n";
 		}
 		return output;
 	}
-
 }

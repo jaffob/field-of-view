@@ -40,10 +40,23 @@ public abstract class Action {
 		this.endsTurn = endsTurn;
 	}
 
+	
+	// ---------------------------------- //
+	// -------- Abstract Methods -------- //
+	// ---------------------------------- //
+	
 	/**
 	 * Performs this action.
 	 * @return Whether the action succeeded.
 	 */
 	public abstract void doAction(FieldOfView game);
+	
+	/**
+	 * Generates and returns a ClientAction that represents this action.
+	 * @return A new ClientAction
+	 */
+	public abstract ClientAction createClientAction();
+	
+	public abstract boolean verifyClientAction(ClientAction ca);
 
 }

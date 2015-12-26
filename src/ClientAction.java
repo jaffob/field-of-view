@@ -1,8 +1,22 @@
 
-public class ClientAction {
+public abstract class ClientAction {
 
-	public ClientAction() {
-		// TODO Auto-generated constructor stub
+	private final int player;
+	private final ClientPiece actor;
+	
+	public ClientAction(int player, ClientPiece actor) {
+		this.player = player;
+		this.actor = actor;
 	}
 
+	public int getPlayer() {
+		return player;
+	}
+
+	public ClientPiece getActor() {
+		return actor;
+	}
+
+	public abstract String getFriendlyName();
+	public abstract void applyAction(KnowledgeState ks);
 }

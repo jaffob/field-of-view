@@ -15,4 +15,16 @@ public class PlayAction_Suicide extends PlayAction {
 		getActor().kill(true);
 	}
 
+	@Override
+	public ClientAction createClientAction() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public boolean verifyClientAction(ClientAction ca) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 }
