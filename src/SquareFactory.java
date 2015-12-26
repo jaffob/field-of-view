@@ -19,10 +19,10 @@ public class SquareFactory {
 		squareTypes.put(squareType, squareClass);
 	}
 	
-	public Square createSquare(char squareType, char squareProperties) {
+	public Square createSquare(char squareType, Vector2D position, char squareProperties) {
 		Square sq;
 		try {
-			sq = getSquareType(squareType).getConstructor(FieldOfView.class, Character.class).newInstance(game, squareProperties);
+			sq = getSquareType(squareType).getConstructor(FieldOfView.class, Vector2D.class, Character.class).newInstance(game, squareProperties);
 		} catch (Exception e) {
 			return null;
 		}

@@ -119,11 +119,12 @@ public final class Map {
 		
 		// For each pair of chars, create a square and put it in the final array.
 		for (int i = 0; i < squareData.length; i += 2) {
-			int x = (i/2) % getSize().x;
-			int y = (i/2) / getSize().x;
-			squareObjects[x][y] = game.getSquareFactory().createSquare(squareData[i], squareData[i + 1]);
-			if (squareObjects[x][y] == null) {
-				throw new InvalidMapException("The square at (" + x + ", " + y + ") is invalid.");
+			Vector2D pos = new Vector2D();
+			pos.x = (i/2) % getSize().x;
+			pos.y = (i/2) / getSize().x;
+			squareObjects[pos.x][pos.y] = game.getSquareFactory().createSquare(squareData[i], pos, squareData[i + 1]);
+			if (squareObjects[pos.x][pos.y] == null) {
+				throw new InvalidMapException("The square at " + pos + " is invalid.");
 			}
 		}
 		

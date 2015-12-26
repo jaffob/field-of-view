@@ -2,15 +2,15 @@
 public abstract class Square {
 	
 	protected final FieldOfView game;
-	private String friendlyName;
+	private final Vector2D position;
 	
 	private Piece occupant;
 	private boolean isOpen, isTransparent;
 	private int side, moveToll;
 	
-	public Square(FieldOfView fovGame, char properties) {	// Public square. Ha ha.
+	public Square(FieldOfView fovGame, Vector2D position, char properties) {	// Public square. Ha ha.
 		game = fovGame;
-		setFriendlyName("");
+		this.position = position;
 		setOccupant(null);
 		setOpen(true);
 		setTransparent(true);
@@ -34,12 +34,10 @@ public abstract class Square {
 	// ------- Getters and Setters ------ //
 	// ---------------------------------- //
 	
-	public String getFriendlyName() {
-		return friendlyName;
-	}
+	public abstract String getFriendlyName();
 
-	protected void setFriendlyName(String friendlyName) {
-		this.friendlyName = friendlyName;
+	public Vector2D getPosition() {
+		return position;
 	}
 
 	public Piece getOccupant() {
