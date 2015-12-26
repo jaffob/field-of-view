@@ -9,4 +9,9 @@ public class Square_Open extends Square {
 	public String getFriendlyName() {
 		return "Open";
 	}
+
+	@Override
+	public Transparency getTransparencyGuarantee() {
+		return Transparency.ALWAYS_TRANSPARENT;
+	}
 }

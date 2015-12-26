@@ -5,14 +5,19 @@ public abstract class Square {
 	private final Vector2D position;
 	
 	private Piece occupant;
-	private boolean isOpen, isTransparent;
+	private boolean isWalkable, isTransparent;
 	private int side, moveToll;
+	
+	
+	// ---------------------------------- //
+	// --------- Initialization --------- //
+	// ---------------------------------- //
 	
 	public Square(FieldOfView fovGame, Vector2D position, char properties) {	// Public square. Ha ha.
 		game = fovGame;
 		this.position = position;
 		setOccupant(null);
-		setOpen(true);
+		setWalkable(true);
 		setTransparent(true);
 		setMoveToll(1);
 		
@@ -30,11 +35,18 @@ public abstract class Square {
 		props >>= 2;
 	}
 	
+	
 	// ---------------------------------- //
-	// ------- Getters and Setters ------ //
+	// -------- Abstract Methods -------- //
 	// ---------------------------------- //
 	
 	public abstract String getFriendlyName();
+	public abstract Transparency getTransparencyGuarantee();
+	
+	
+	// ---------------------------------- //
+	// ------- Getters and Setters ------ //
+	// ---------------------------------- //
 
 	public Vector2D getPosition() {
 		return position;
@@ -53,20 +65,21 @@ public abstract class Square {
 	}
 
 	/**
-	 * Whether this square is open. Open squares can be occupied
-	 * and don't obstruct the player's view. Examples of non-playable
-	 * squares are walls and closed gates.
+	 * Whether this square is walkable. Walkable squares, such as open
+	 * squares and all special squares, can be occupied by a piece.
+	 * Blocking (non-walkable) squares such as walls and closed gates
+	 * cannot contain a piece.
 	 * @return
 	 */
-	public boolean isOpen() {
-		return isOpen;
+	public boolean isWalkable() {
+		return isWalkable;
 	}
 
-	public void setOpen(boolean isOpen) {
-		this.isOpen = isOpen;
+	public void setWalkable(boolean isWalkable) {
+		this.isWalkable = isWalkable;
 		
 		// If this square is set to non-playable, kill any piece that occupies it.
-		if (!isOpen && isOccupied()) {
+		if (!isWalkable && isOccupied()) {
 			getOccupant().kill(true);
 		}
 	}
@@ -86,7 +99,7 @@ public abstract class Square {
 	}
 
 
-	public void setSide(int side) {
+	protected void setSide(int side) {
 		this.side = side;
 	}
 
@@ -145,7 +158,7 @@ public abstract class Square {
 	 * @return Whether the piece is allowed to enter
 	 */
 	public boolean canEnter(Piece piece, Direction dir) {
-		return isOpen() && !isOccupied();
+		return isWalkable() && !isOccupied();
 	}
 	
 	/**

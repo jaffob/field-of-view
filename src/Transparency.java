@@ -1,0 +1,6 @@
+
+public enum Transparency {
+	NEVER_TRANSPARENT,
+	SOMETIMES_TRANSPARENT,
+	ALWAYS_TRANSPARENT
+}
