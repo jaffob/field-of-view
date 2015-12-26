@@ -103,6 +103,10 @@ public class Piece {
 		this.isSelected = isSelected;
 	}
 
+	public boolean allowSelect() {
+		return true;
+	}
+	
 	/**
 	 * Gets the Square object that this piece currently occupies.
 	 * @return The Square this piece is standing on.
