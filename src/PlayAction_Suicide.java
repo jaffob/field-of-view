@@ -1,12 +1,17 @@
 
 public class PlayAction_Suicide extends PlayAction {
 
-	public PlayAction_Suicide(FieldOfView fovGame, Piece actor) {
-		super(fovGame, actor, "Suicide");
+	public PlayAction_Suicide(Player player, Piece actor) {
+		super(player, actor, "Suicide");
 		setKillsActor(true);
 	}
+	
+	public PlayAction_Suicide(Piece actor) {
+		this(actor.getOwnerPlayer(), actor);
+	}
+	
 
-	public void doAction() {
+	public void doAction(FieldOfView game) {
 		getActor().kill(true);
 	}
 

@@ -262,11 +262,11 @@ public class Piece {
 		actions.addList(getAdjacentUniqueActions());
 		
 		if (canSuicide()) {
-			actions.addAction(new PlayAction_Suicide(game, this));
+			actions.addAction(new PlayAction_Suicide(this));
 		}
 		
 		if (allowEndTurn()) {
-			actions.addAction(new PlayAction_EndTurn(game, this));
+			actions.addAction(new PlayAction_EndTurn(this));
 		}
 		
 		return actions;
@@ -329,7 +329,7 @@ public class Piece {
 			
 			// If invulnerable, respawn this piece.
 			if (isInvulnerable()) {
-				// TODO: Respawn
+				// TODO: Respawn. Do this by having a spawn queue that gets flushed to the controller at the beginning of its turn, so if you have two king spawns you can choose one.
 			}
 		}
 		

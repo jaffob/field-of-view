@@ -11,16 +11,16 @@ public abstract class Action {
 
 	private final Player player;
 	private final Piece actor;
-	private final boolean endsTurn;
+	private boolean endsTurn;
 	
-	public Action(Player player, Piece actor, boolean endsTurn) {
+	public Action(Player player, Piece actor) {
 		this.player = player;
 		this.actor = actor;
-		this.endsTurn = endsTurn;
+		setEndsTurn(false);
 	}
 	
-	public Action(Piece actor, boolean endsTurn) {
-		this(actor.getOwnerPlayer(), actor, endsTurn);
+	public Action(Piece actor) {
+		this(actor.getOwnerPlayer(), actor);
 	}
 	
 	public Player getPlayer() {
@@ -36,10 +36,14 @@ public abstract class Action {
 		return endsTurn;
 	}
 
+	protected void setEndsTurn(boolean endsTurn) {
+		this.endsTurn = endsTurn;
+	}
+
 	/**
 	 * Performs this action.
 	 * @return Whether the action succeeded.
 	 */
-	public abstract void doAction();
+	public abstract void doAction(FieldOfView game);
 
 }

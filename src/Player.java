@@ -38,7 +38,7 @@ public class Player {
 			}
 			
 			Action selectedAction = controller.selectAction(availableActions);
-			selectedAction.doAction();
+			selectedAction.doAction(game);
 			
 			if (selectedAction.endsTurn()) {
 				break;

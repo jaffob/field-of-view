@@ -4,7 +4,8 @@ public class MoveAction extends Action {
 	private final Direction direction;
 	
 	public MoveAction(Player player, Piece actor, Direction direction) {
-		super(player, actor, false);
+		super(player, actor);
+		setEndsTurn(false);
 		this.direction = direction;
 	}
 	
@@ -17,7 +18,7 @@ public class MoveAction extends Action {
 	}
 
 	@Override
-	public void doAction() {
+	public void doAction(FieldOfView game) {
 		getActor().move(getDirection());
 	}
 
