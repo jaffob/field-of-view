@@ -22,7 +22,7 @@ public class PlayAction_Suicide extends PlayAction {
 	}
 
 	@Override
-	public boolean verifyClientAction(ClientAction ca) {
+	public boolean absorbClientAction(ClientAction ca) {
 		// TODO Auto-generated method stub
 		return false;
 	}

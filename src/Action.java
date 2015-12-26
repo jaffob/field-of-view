@@ -46,17 +46,30 @@ public abstract class Action {
 	// ---------------------------------- //
 	
 	/**
-	 * Performs this action.
+	 * Performs this action on the game.
+	 * @param game Reference to the game object
 	 * @return Whether the action succeeded.
 	 */
 	public abstract void doAction(FieldOfView game);
 	
 	/**
 	 * Generates and returns a ClientAction that represents this action.
+	 * This object returned should be whatever ClientAction subclass
+	 * corresponds to this Action subclass.
 	 * @return A new ClientAction
 	 */
 	public abstract ClientAction createClientAction();
 	
-	public abstract boolean verifyClientAction(ClientAction ca);
+	/**
+	 * Handle a ClientAction that a Controller has chosen to perform.
+	 * This should first verify that the ClientAction has been properly
+	 * configured with any response needed (and that this response is
+	 * valid). It should then internalize the response so that when
+	 * doAction() is called, it knows what to do.
+	 * @param ca The ClientAction returned by the Controller
+	 * @return False if the ClientAction and/or response was invalid in
+	 * any way. True otherwise.
+	 */
+	public abstract boolean absorbClientAction(ClientAction ca);
 
 }

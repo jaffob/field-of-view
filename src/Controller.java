@@ -3,6 +3,9 @@ import java.util.ArrayList;
 
 public interface Controller {
 
+	public void notifyStartTurn();
+	public void notifyEndTurn();
+	
 	/**
 	 * Before moving or performing any action, select which piece
 	 * to act on.
