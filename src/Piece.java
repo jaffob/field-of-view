@@ -1,9 +1,14 @@
 
 public class Piece {
 
+	// Basic stuff.
 	protected final FieldOfView game;
 	private int owner;
 	private String friendlyName;
+	
+	// Handle giving IDs to pieces.
+	private static int nextPieceId = 1;
+	private final int id;
 	
 	// Attributes applicable to all pieces.
 	private int maxMoves;
@@ -25,6 +30,9 @@ public class Piece {
 		game = fovGame;
 		owner = ownerNumber;
 		setFriendlyName("");
+		
+		id = Piece.generateNextId();
+		
 		setPosition(startPosition);
 		setMovesThisTurn(0);
 		setSelected(false);
@@ -40,7 +48,17 @@ public class Piece {
 		setShieldLevel(0);
 	}
 	
-	
+	/**
+	 * Gets the ID that should be assigned to a newly created piece.
+	 * This works by maintaining a static "next ID" field that is
+	 * returned then incremented every time this is called.
+	 * @return
+	 */
+	private static int generateNextId() {
+		return nextPieceId++;
+	}
+
+
 	// ---------------------------------- //
 	// ------- Getters and Setters ------ //
 	// ---------------------------------- //
@@ -78,6 +96,10 @@ public class Piece {
 		this.friendlyName = friendlyName;
 	}
 
+
+	public int getId() {
+		return id;
+	}
 
 	public Vector2D getPosition() {
 		return position;
