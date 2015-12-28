@@ -1,4 +1,5 @@
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
@@ -17,10 +18,10 @@ public class FieldOfView {
 	private final Drawer drawer;			// Drawing interface.
 	private final HashMap<String, Integer> gameStateVars;
 	private final KnowledgeHandler knowledgeHandler;
+	private ArrayList<Class<? extends Square>> squareTypes;
 	
 	private int turn;						// Whose turn it is.
 	private int turnCount;					// Total number of turns taken this game.
-	private SquareFactory squareFactory;
 
 	/**
 	 * Constructor: initialize gameplay.
@@ -28,6 +29,7 @@ public class FieldOfView {
 	 * @throws InvalidMapException if the map was deemed invalid.
 	 */
 	public FieldOfView(String mapFileName, Controller[] controllers, Drawer drawer) throws IOException, InvalidMapException {
+		initializeSquareTypes();
 		map = new Map(this, mapFileName);
 		gameStateVars = new HashMap<String, Integer>();
 		this.drawer = drawer;
@@ -35,7 +37,6 @@ public class FieldOfView {
 		players[0] = new Player(this, 1, controllers[0]);
 		players[1] = new Player(this, 2, controllers[1]);
 		knowledgeHandler = new KnowledgeHandler(this);
-		setSquareFactory(new SquareFactory(this));
 		turn = 1;
 	}
 	
@@ -147,14 +148,6 @@ public class FieldOfView {
 	protected void nextTurn() {
 		setTurn((turn % getNumberOfPlayers()) + 1);
 	}
-
-	public SquareFactory getSquareFactory() {
-		return squareFactory;
-	}
-
-	protected void setSquareFactory(SquareFactory squareFactory) {
-		this.squareFactory = squareFactory;
-	}
 	
 	public Integer getGameStateVar(String varName) {
 		return gameStateVars.get(varName);
@@ -173,5 +166,29 @@ public class FieldOfView {
 			}
 		}
 		return null;
+	}
+	
+	private void initializeSquareTypes() {
+		squareTypes.add(Square_Wall.class);
+		squareTypes.add(Square_Open.class);
+		squareTypes.add(Square_Window.class);
+	}
+	
+	public Class<? extends Square> getSquareClass(int squareType) {
+		return squareTypes.get(squareType);
+	}
+	
+	public int getSquareType(Class<? extends Square> squareClass) {
+		return squareTypes.indexOf(squareClass);
+	}
+	
+	public Square createSquare(int squareType, Vector2D position, int squareProperties) {
+		Square sq;
+		try {
+			sq = getSquareClass(squareType).getConstructor(FieldOfView.class, Vector2D.class, Integer.class).newInstance(this, position, squareProperties);
+		} catch (Exception e) {
+			return null;
+		}
+		return sq;
 	}
 }

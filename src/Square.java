@@ -13,7 +13,7 @@ public abstract class Square {
 	// --------- Initialization --------- //
 	// ---------------------------------- //
 	
-	public Square(FieldOfView fovGame, Vector2D position, char properties) {	// Public square. Ha ha.
+	public Square(FieldOfView fovGame, Vector2D position, Integer properties) {	// Public square. Ha ha.
 		game = fovGame;
 		this.position = position;
 		setOccupant(null);
@@ -21,18 +21,20 @@ public abstract class Square {
 		setTransparent(true);
 		setMoveToll(1);
 		
-		initializeProperties(properties);
+		absorbPropertyVal(properties);
 	}
 	
 	/**
 	 * Set up this square instance from the char read in from the file.
 	 * @param properties Byte of property data
 	 */
-	protected void initializeProperties(char properties) {
+	protected void absorbPropertyVal(int properties) {
 		// First 2 bits represent the side.
-		int props = (int)properties;
-		setSide(props & 0b11);
-		props >>= 2;
+		setSide(properties & 0b11);
+	}
+	
+	public int createPropertyVal() {
+		return side;
 	}
 	
 	public ClientSquare createClientSquare(boolean isKnown) {

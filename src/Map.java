@@ -1,4 +1,6 @@
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.FileReader;
 import java.util.ArrayList;
@@ -6,8 +8,8 @@ import java.util.ArrayList;
 
 public final class Map {
 
-	// Reference to the game object.
 	protected final FieldOfView game;
+	public static final String MAP_FILE_FORMAT = "1";
 	
 	// Map metadata.
 	private String mapName, mapAuthor, mapVersion, mapRequiredMod;
@@ -26,6 +28,10 @@ public final class Map {
 		game = fovGame;
 		loadMapFile(mapFilePath);
 	}
+	
+	// ---------------------------------- //
+	// ------------- Loading ------------ //
+	// ---------------------------------- //
 
 	/**
 	 * Load the map file into memory.
@@ -43,7 +49,7 @@ public final class Map {
 		// so if the first line of the file is anything else, we throw an error. This way
 		// if the format changes in the future, this version won't be unpredictable.
 		String mapFileFormat = loadMapFileLine(file, "");
-		if (!mapFileFormat.equals("1")) {
+		if (!mapFileFormat.equals(MAP_FILE_FORMAT)) {
 			throw new InvalidMapException(InvalidMapException.MESSAGE_FORMAT);
 		}
 		
@@ -123,7 +129,8 @@ public final class Map {
 			Vector2D pos = new Vector2D();
 			pos.x = (i/2) % getSize().x;
 			pos.y = (i/2) / getSize().x;
-			squareObjects[pos.x][pos.y] = game.getSquareFactory().createSquare(squareData[i], pos, squareData[i + 1]);
+			
+			squareObjects[pos.x][pos.y] = game.createSquare(squareData[i], pos, squareData[i + 1]);
 			if (squareObjects[pos.x][pos.y] == null) {
 				throw new InvalidMapException("The square at " + pos + " is invalid.");
 			}
@@ -131,6 +138,62 @@ public final class Map {
 		
 		return squareObjects;
 	}
+	
+	
+	// ---------------------------------- //
+	// ------------- Saving ------------- //
+	// ---------------------------------- //
+	
+	/**
+	 * Save the map as it is currently to a file.
+	 * @param mapFilePath
+	 * @throws FileNotFoundException if the map file does not exist.
+	 * @throws InvalidMapException if the map file is invalid for any
+	 * reason (see message for details).
+	 */
+	public void saveMapFile(String mapFilePath) throws IOException {
+		// Open the file for writing.
+		BufferedWriter file = new BufferedWriter(new FileWriter(mapFilePath));
+		
+		// Write the format version to the first line. We always save in the most current
+		// format, so we use MAP_FILE_FORMAT regardless of what format the map loaded in.
+		saveMapFileLine(file, "", MAP_FILE_FORMAT);
+		
+		// Save name, author, version, and mod required. Each of these is on its own line.
+		saveMapFileLine(file, "name", getMapName());
+		saveMapFileLine(file, "author", getMapAuthor());
+		saveMapFileLine(file, "version", getMapVersion());
+		saveMapFileLine(file, "required mod", getMapRequiredMod());
+		
+		// The next two lines are the size of the map in squares. Unlike the
+		// rest of the map, these are stored as text.
+		saveMapFileLine(file, "", "" + getSize().x);
+		saveMapFileLine(file, "", "" + getSize().y);
+		
+		// The rest of the file stores all of the squares. Dump the squares array.
+		saveMapFileSquares(file);
+	}
+
+	private void saveMapFileLine(BufferedWriter file, String fieldName, String line) throws IOException {
+		file.write((fieldName.isEmpty() ? "" : fieldName + " ") + line);
+	}
+	
+	private void saveMapFileSquares(BufferedWriter file) throws IOException {
+		char[] squareData = new char[getNumSquares() * 2];
+		
+		// For every Square, put 2 chars into the array.
+		for (int i = 0; i < squareData.length; i += 2) {
+			Square sq = getSquare((i/2) % getSize().x, (i/2) / getSize().x);
+			squareData[i] = (char)game.getSquareType(sq.getClass());
+			squareData[i+1] = (char)sq.createPropertyVal();
+		}
+		
+		file.write(squareData);
+	}
+	
+	// ---------------------------------- //
+	// ------- Getters and Setters ------ //
+	// ---------------------------------- //
 	
 	public String getMapName() {
 		return mapName;
@@ -192,6 +255,11 @@ public final class Map {
 	public int getNumSquares() {
 		return getSize().x * getSize().y;
 	}
+	
+	
+	// ---------------------------------- //
+	// ------------- Methods ------------ //
+	// ---------------------------------- //
 	
 	/**
 	 * Check if a position is within the bounds of the map.
