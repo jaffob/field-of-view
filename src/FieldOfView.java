@@ -169,6 +169,7 @@ public class FieldOfView {
 	}
 	
 	private void initializeSquareTypes() {
+		squareTypes = new ArrayList<Class<? extends Square>>();
 		squareTypes.add(Square_Wall.class);
 		squareTypes.add(Square_Open.class);
 		squareTypes.add(Square_Window.class);

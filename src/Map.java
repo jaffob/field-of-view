@@ -10,6 +10,7 @@ public final class Map {
 
 	protected final FieldOfView game;
 	public static final String MAP_FILE_FORMAT = "1";
+	public static final Vector2D DEFAULT_MAP_SIZE = new Vector2D(16, 16);
 	
 	// Map metadata.
 	private String mapName, mapAuthor, mapVersion, mapRequiredMod;
@@ -26,9 +27,18 @@ public final class Map {
 	 */
 	public Map(FieldOfView fovGame, String mapFilePath) throws IOException, InvalidMapException {
 		game = fovGame;
-		loadMapFile(mapFilePath);
+		
+		// If no map file was specified, initialize the square array to its default blank state.
+		if (mapFilePath == null || mapFilePath.isEmpty()) {
+			loadBlankMap();
+		}
+		
+		// Otherwise, load the given map file.
+		else {
+			loadMapFile(mapFilePath);
+		}
 	}
-	
+
 	// ---------------------------------- //
 	// ------------- Loading ------------ //
 	// ---------------------------------- //
@@ -139,6 +149,16 @@ public final class Map {
 		return squareObjects;
 	}
 	
+	private void loadBlankMap() {
+		size = DEFAULT_MAP_SIZE;
+		squares = new Square[size.x][size.y];
+		
+		for (int i = 0; i < getSize().x; i++) {
+			for (int j = 0; j < getSize().y; j++) {
+				squares[i][j] = game.createSquare(0, new Vector2D(i, j), 0);
+			}
+		}
+	}
 	
 	// ---------------------------------- //
 	// ------------- Saving ------------- //
