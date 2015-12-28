@@ -46,6 +46,8 @@ public class Piece {
 		setAllowEndTurn(true);
 		setPowerReq(0);
 		setShieldLevel(0);
+		
+		game.getKnowledgeHandler().notifyPieceCreated(this);
 	}
 	
 	/**
