@@ -8,13 +8,14 @@ public class Square_Wall extends Square {
 	}
 
 	@Override
-	public String getFriendlyName() {
-		return "Wall";
+	public Transparency getTransparencyGuarantee() {
+		return Transparency.NEVER_TRANSPARENT;
 	}
 
 	@Override
-	public Transparency getTransparencyGuarantee() {
-		return Transparency.NEVER_TRANSPARENT;
+	public String getFriendlyName() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 	

@@ -1,4 +1,5 @@
 import java.io.IOException;
+import java.util.HashMap;
 
 /**
  * Field Of View Game
@@ -14,6 +15,8 @@ public class FieldOfView {
 	private final Player[] players;			// Array of all players in the game.
 	private final Map map;					// Object representing the map.
 	private final Drawer drawer;			// Drawing interface.
+	private final HashMap<String, Integer> gameStateVars;
+	private final KnowledgeHandler knowledgeHandler;
 	
 	private int turn;						// Whose turn it is.
 	private int turnCount;					// Total number of turns taken this game.
@@ -26,6 +29,8 @@ public class FieldOfView {
 	 */
 	public FieldOfView(String mapFileName, Controller[] controllers, Drawer drawer) throws IOException, InvalidMapException {
 		map = new Map(this, mapFileName);
+		gameStateVars = new HashMap<String, Integer>();
+		knowledgeHandler = new KnowledgeHandler(this);
 		this.drawer = drawer;
 		players = new Player[2];
 		players[0] = new Player(this, 1, controllers[0]);
@@ -43,7 +48,9 @@ public class FieldOfView {
 		// Loop indefinitely until checkWin() is nonzero.
 		int winner = 0;
 		while ((winner = checkWin()) == 0) {
-			getCurrentPlayer().takeTurn();
+			knowledgeHandler.notifyStartTurn(turn, turnCount);
+			getCurrentPlayer().takeTurn(turnCount);
+			knowledgeHandler.notifyEndTurn(turn, turnCount);
 			nextTurn();
 			incrementTurnCount();
 		}
@@ -88,6 +95,10 @@ public class FieldOfView {
 		return map;
 	}
 	
+	public KnowledgeHandler getKnowledgeHandler() {
+		return knowledgeHandler;
+	}
+
 	public Drawer getDrawer() {
 		return drawer;
 	}
@@ -143,5 +154,24 @@ public class FieldOfView {
 
 	protected void setSquareFactory(SquareFactory squareFactory) {
 		this.squareFactory = squareFactory;
+	}
+	
+	public Integer getGameStateVar(String varName) {
+		return gameStateVars.get(varName);
+	}
+	
+	public void setGameStateVar(String varName, int newValue) {
+		gameStateVars.put(varName, newValue);
+		knowledgeHandler.notifyGameStateVarChange(varName);
+	}
+	
+	public Piece getPieceById(int pieceId) {
+		for (int i = 1; i <= getNumberOfPlayers(); i++) {
+			Piece p = getPlayer(i).getPieceById(pieceId);
+			if (p != null) {
+				return p;
+			}
+		}
+		return null;
 	}
 }

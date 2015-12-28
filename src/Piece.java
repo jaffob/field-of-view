@@ -19,6 +19,7 @@ public class Piece {
 	private boolean canSuicide;
 	private boolean allowEndTurn;
 	private int powerReq;
+	private int knowledgeMethod;
 	
 	// State of this piece.
 	private Vector2D position;
@@ -46,6 +47,7 @@ public class Piece {
 		setAllowEndTurn(true);
 		setPowerReq(0);
 		setShieldLevel(0);
+		setKnowledgeMethod(1);
 	}
 	
 	/**
@@ -58,6 +60,28 @@ public class Piece {
 		return nextPieceId++;
 	}
 
+	/**
+	 * Creates a ClientPiece based on this piece. This method lacks
+	 * an isKnown parameter because clients aren't even aware a piece
+	 * exists unless it can be seen. However, some qualities of pieces
+	 * should be hidden from other players (such as number of remaining
+	 * cameras for a scout). Therefore, this method should be passed
+	 * the player who will be sent this ClientPiece, so the appropriate
+	 * information can be hidden.
+	 * @param forPlayer The player this ClientPiece will be sent to
+	 * @return A ClientPiece representing this piece.
+	 */
+	public ClientPiece createClientPiece(int forPlayer) {
+		ClientPiece cp = new ClientPiece(getClass(), getId(), getOwner(), getPosition());
+		cp.setStateVar("maxMoves", getMaxMoves());
+		cp.setStateVar("isGoalPiece", isGoalPiece() ? 1 : 0);
+		cp.setStateVar("isInvulnerable", isInvulnerable() ? 1 : 0);
+		cp.setStateVar("canUseSpecialSquares", canUseSpecialSquares() ? 1 : 0);
+		cp.setStateVar("canSuicide", canSuicide() ? 1 : 0);
+		cp.setStateVar("powerReq", getPowerReq());
+		cp.setStateVar("shieldLevel", getShieldLevel());
+		return cp;
+	}
 
 	// ---------------------------------- //
 	// ------- Getters and Setters ------ //
@@ -232,6 +256,20 @@ public class Piece {
 	
 	public void removeShieldLevel() {
 		if (shieldLevel > 0) shieldLevel--;
+	}
+	
+	/**
+	 * How this piece gets revealed to the opponent. Returns 0 if the
+	 * opponent can never see this piece, 1 if knowledge is linked to
+	 * the current square (the norm), or 2 if always known.
+	 * @return The knowledge method
+	 */
+	public int getKnowledgeMethod() {
+		return knowledgeMethod;
+	}
+
+	public void setKnowledgeMethod(int knowledgeMethod) {
+		this.knowledgeMethod = knowledgeMethod;
 	}
 	
 	

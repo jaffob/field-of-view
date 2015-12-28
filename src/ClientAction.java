@@ -18,5 +18,6 @@ public abstract class ClientAction {
 	}
 
 	public abstract String getFriendlyName();
-	public abstract void applyAction(KnowledgeState ks);
+	
+	// something to get controller response
 }

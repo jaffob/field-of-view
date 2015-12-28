@@ -46,9 +46,13 @@ public abstract class Action {
 	// ---------------------------------- //
 	
 	/**
-	 * Performs this action on the game.
+	 * Performs this action on the game. This is where basically everything
+	 * that actually happens in the game is done. Using the game object,
+	 * this action can change the game at will, and assume that everything
+	 * done will be sent to the KnowledgeHandler appropriately. If this
+	 * action affects knowledge directly (e.g. surveillance), it can do
+	 * that by accessing the KnowledgeHandler through the game object.
 	 * @param game Reference to the game object
-	 * @return Whether the action succeeded.
 	 */
 	public abstract void doAction(FieldOfView game);
 	

@@ -1,8 +1,11 @@
 import java.util.ArrayList;
+import java.util.HashMap;
 
 
 public class KnowledgeState {
 
+	private final HashMap<String, Integer> stateVars;
+	
 	// Track squares and changes to squares.
 	private final ClientSquare[][] initialSquares;
 	private final ClientSquare[][] currentSquares;
@@ -14,8 +17,6 @@ public class KnowledgeState {
 	// Track turns as sets of actions, square updates, and piece updates.
 	private final ArrayList<KnowledgeTurn> turns;
 	private final int numberOfPlayers;
-	//private int currentTurnPlayer;
-	//private int currentTurnNum;
 	
 	
 	// ---------------------------------- //
@@ -42,12 +43,9 @@ public class KnowledgeState {
 		this.currentPieces = new ArrayList<ClientPiece>(this.initialPieces);
 		
 		// Initialize everything else.
+		stateVars = new HashMap<String, Integer>();
 		this.turns = new ArrayList<KnowledgeTurn>();
 		this.numberOfPlayers = numberOfPlayers;
-	}
-
-	public KnowledgeState(ClientSquare[][] initialSquares, ArrayList<ClientPiece> initialPieces) {
-		this(initialSquares, initialPieces, 2);
 	}
 			
 	
@@ -78,22 +76,6 @@ public class KnowledgeState {
 	public int getNumberOfPlayers() {
 		return numberOfPlayers;
 	}
-
-	/*public int getCurrentTurnPlayer() {
-		return currentTurnPlayer;
-	}
-
-	protected void setCurrentTurnPlayer(int currentTurnPlayer) {
-		this.currentTurnPlayer = currentTurnPlayer;
-	}
-
-	public int getCurrentTurnNum() {
-		return currentTurnNum;
-	}
-
-	protected void setCurrentTurnNum(int currentTurnNum) {
-		this.currentTurnNum = currentTurnNum;
-	}*/
 	
 	protected void addComponentToCurrentTurn(KnowledgeTurnComponent component) {
 		// TODO is this legal?
@@ -123,9 +105,12 @@ public class KnowledgeState {
 		
 		// First, push this turn component to the current turn.
 		addComponentToCurrentTurn(component);
-		// Update 
+		
+		// Update currentSquares with every new square we've received.
 		for (ClientSquare newSq : component.getSquareUpdates()) {
-			
+			currentSquares[newSq.getPosition().x][newSq.getPosition().y] = newSq;
 		}
+		
+		
 	}
 }

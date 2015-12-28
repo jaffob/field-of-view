@@ -35,6 +35,13 @@ public abstract class Square {
 		props >>= 2;
 	}
 	
+	public ClientSquare createClientSquare(boolean isKnown) {
+		ClientSquare cs = new ClientSquare(getClass(), position, side, isKnown);
+		cs.setStateVar("isTransparent", isTransparent() ? 1 : 0);
+		cs.setStateVar("isWalkable", isWalkable() ? 1 : 0);
+		cs.setStateVar("moveToll", getMoveToll());
+		return cs;
+	}
 	
 	// ---------------------------------- //
 	// -------- Abstract Methods -------- //
@@ -42,7 +49,6 @@ public abstract class Square {
 	
 	public abstract String getFriendlyName();
 	public abstract Transparency getTransparencyGuarantee();
-	
 	
 	// ---------------------------------- //
 	// ------- Getters and Setters ------ //

@@ -1,6 +1,14 @@
 import java.util.ArrayList;
 
-
+/**
+ * Player
+ * @author Jack Boffa
+ * The Player class is the server-side representation of a player. Every
+ * user participating the game is assigned a Player object. This is where
+ * all of the logic for taking a turn is handled. It is also the only
+ * class that is allowed to interact with Controllers once the game has
+ * begun.
+ */
 public class Player {
 
 	protected final FieldOfView game;
@@ -19,33 +27,59 @@ public class Player {
 	 * Starting point for this player's entire turn. This method takes
 	 * user input (i.e. what piece to move where, and what action to
 	 * perform) and doesn't return until the turn is over.
+	 * @param turnNum The number of this turn in the game
 	 */
-	public void takeTurn() {
+	public void takeTurn(int turnNum) {
 		Utils.log("Player " + number + " starts turn (turn #" + game.getTurnCount() + " of game)");
 		
-		// Use the controller to select a piece.
-		Piece selectedPiece = controller.selectPiece(pieces);
+		getController().notifyStartTurn(getNumber(), turnNum);
+		
+		// Create ClientPieces for each of our pieces.
+		ArrayList<ClientPiece> clientPieces = new ArrayList<ClientPiece>();
+		for (Piece p : pieces) {
+			clientPieces.add(p.createClientPiece(getNumber()));
+		}
+		
+		// Ask the controller to choose a piece.
+		int selectedPieceId = 0;
+		Piece selectedPiece = null;
+		do {
+			selectedPieceId = getController().selectPiece(clientPieces);
+		}
+		while ((selectedPiece = getPieceById(selectedPieceId)) == null);
+		
 		selectedPiece.setSelected(true);
 		
 		// Main turn loop.
-		ActionList availableActions;
 		while (true) {
 			
 			// Get available actions, ending the turn if there aren't any.
-			availableActions = selectedPiece.getActions();
+			ActionList availableActions = selectedPiece.getActions();
 			if (availableActions.size() == 0) {
 				break;
 			}
 			
-			Action selectedAction = controller.selectAction(availableActions);
-			selectedAction.doAction(game);
+			// Ask the controller to choose an action.
+			ClientActionList clientActions = availableActions.createClientActionList();
+			int selectedAction = 0;
+			do {
+				selectedAction = getController().selectAction(clientActions);
+			}
+			while (selectedAction < 0 || selectedAction >= availableActions.size());
 			
-			if (selectedAction.endsTurn()) {
+			// Perform the action, then flush the knowledge handler's data to us and the opponent.
+			availableActions.getAction(selectedAction).doAction(game);
+			game.getKnowledgeHandler().flushTurnComponents();
+			
+			// If this action is supposed to end the turn, do exactly that.
+			if (availableActions.getAction(selectedAction).endsTurn()) {
 				break;
 			}
 		}
 		
+		// The turn is over. De-select the piece and tell the controller.
 		selectedPiece.setSelected(false);
+		getController().notifyEndTurn(getNumber(), turnNum);
 	}
 	
 	/**
@@ -64,7 +98,7 @@ public class Player {
 		return number;
 	}
 
-	public Controller getController() {
+	protected Controller getController() {
 		return controller;
 	}
 
@@ -99,6 +133,19 @@ public class Player {
 	 */
 	public void notifyPieceMove(Piece piece, Direction dir,
 			Square originSquare, Square destSquare) {
+	}
+
+	public void receiveTurnComponent(KnowledgeTurnComponent component) {
+		getController().receiveTurnComponent(component);
+	}
+	
+	public Piece getPieceById(int pieceId) {
+		for (Piece p : getPieces()) {
+			if (p.getId() == pieceId) {
+				return p;
+			}
+		}
+		return null;
 	}
 
 }
