@@ -83,6 +83,7 @@ public abstract class Square {
 
 	public void setWalkable(boolean isWalkable) {
 		this.isWalkable = isWalkable;
+		game.getKnowledgeHandler().notifySquareStateVarChange(this, "isWalkable");
 		
 		// If this square is set to non-playable, kill any piece that occupies it.
 		if (!isWalkable && isOccupied()) {
@@ -97,6 +98,7 @@ public abstract class Square {
 
 	public void setTransparent(boolean isTransparent) {
 		this.isTransparent = isTransparent;
+		game.getKnowledgeHandler().notifySquareStateVarChange(this, "isTransparent");
 	}
 
 
@@ -117,6 +119,7 @@ public abstract class Square {
 
 	public void setMoveToll(int moveToll) {
 		this.moveToll = moveToll;
+		game.getKnowledgeHandler().notifySquareStateVarChange(this, "moveToll");
 	}
 	
 	

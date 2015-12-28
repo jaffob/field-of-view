@@ -1,6 +1,7 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.FileReader;
+import java.util.ArrayList;
 
 
 public final class Map {
@@ -178,6 +179,12 @@ public final class Map {
 		return getSquares()[pos.x][pos.y];
 	}
 	
+	public Square getSquare(int x, int y) {
+		if (!positionIsInBounds(x, y))
+			return null;
+		return getSquares()[x][y];
+	}
+	
 	public Vector2D getSize() {
 		return size;
 	}
@@ -194,10 +201,39 @@ public final class Map {
 	public boolean positionIsInBounds(Vector2D pos) {
 		return pos.x >= 0 && pos.y >= 0 && pos.x < size.x && pos.y < size.y;
 	}
+	
+	public boolean positionIsInBounds(int x, int y) {
+		return x >= 0 && y >= 0 && x < size.x && y < size.y;
+	}
+	
+	public ArrayList<Square> getSquaresOfType(Class<? extends Square> type) {
+		ArrayList<Square> s = new ArrayList<Square>();
+		for (int i = 0; i < squares.length; i++) {
+			for (int j = 0; j < squares[0].length; j++) {
+				if (squares[i][j].getClass().equals(type)) {
+					s.add(squares[i][j]);
+				}
+			}
+		}
+		return s;
+	}
 
+	public ArrayList<Vector2D> getVisibleSquares(Piece piece) {
+		// A very dumb version of this method that calls all squares along
+		// the piece's axes visible, and none others.
+		ArrayList<Vector2D> out = new ArrayList<Vector2D>();
+		for (int i = 0; i < getSize().x; i++) {
+			out.add(new Vector2D(i, piece.getPosition().y));
+		}
+		for (int i = 0; i < getSize().y; i++) {
+			if (i != piece.getPosition().y)
+				out.add(new Vector2D(piece.getPosition().x, i));
+		}
+		return out;
+	}
+	
 	@Override
 	public String toString() {
 		return getMapName() + " (Version " + getMapVersion() + ") by " + getMapAuthor() + " [" + getSize().x + "x" + getSize().y + "]";
 	}
-
 }

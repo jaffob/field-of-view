@@ -19,5 +19,4 @@ public abstract class ClientAction {
 
 	public abstract String getFriendlyName();
 	
-	// something to get controller response
 }

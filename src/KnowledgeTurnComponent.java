@@ -18,16 +18,14 @@ public class KnowledgeTurnComponent {
 	private ClientAction action;
 	private final ArrayList<ClientSquare> squareUpdates;
 	private final ArrayList<ClientPiece> pieceUpdates;
-	private final ArrayList<Integer> createdPieceIds;
-	private final ArrayList<Integer> destroyedPieceIds;
+	private final ArrayList<KnowledgePieceEvent> pieceEvents;
 	private final HashMap<String, Integer> gameStateVarUpdates;
 	
 	public KnowledgeTurnComponent() {
 		action = null;
 		squareUpdates = new ArrayList<ClientSquare>();
 		pieceUpdates = new ArrayList<ClientPiece>();
-		createdPieceIds = new ArrayList<Integer>();
-		destroyedPieceIds = new ArrayList<Integer>();
+		pieceEvents = new ArrayList<KnowledgePieceEvent>();
 		gameStateVarUpdates = new HashMap<String, Integer>();
 	}
 
@@ -47,12 +45,8 @@ public class KnowledgeTurnComponent {
 		return pieceUpdates;
 	}
 
-	public ArrayList<Integer> getCreatedPieceIds() {
-		return createdPieceIds;
-	}
-
-	public ArrayList<Integer> getDestroyedPieceIds() {
-		return destroyedPieceIds;
+	public ArrayList<KnowledgePieceEvent> getPieceEvents() {
+		return pieceEvents;
 	}
 
 	public HashMap<String, Integer> getGameStateVarUpdates() {

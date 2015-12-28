@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 
 public class KnowledgeHandler {
 
@@ -6,10 +8,36 @@ public class KnowledgeHandler {
 	private final KnowledgeTurnComponent[] turnComponents;
 	
 	public KnowledgeHandler(FieldOfView fovGame) {
+		
+		// Initialize variables.
 		game = fovGame;
-		knowledge = new boolean[game.getMap().getSize().x][game.getMap().getSize().y][game.getNumberOfPlayers()];
+		knowledge = new boolean[game.getNumberOfPlayers()][game.getMap().getSize().x][game.getMap().getSize().y];
 		turnComponents = new KnowledgeTurnComponent[game.getNumberOfPlayers()];
 		resetTurnComponents();
+		
+		// For each player...
+		for (int i = 1; i <= game.getNumberOfPlayers(); i++) {
+			
+			// Calculate knowledge for the first time.
+			recalculateKnowledge(i);
+		
+			// TODO: make this part less of a hack
+			// Tell this player to initialize its controller.
+			// Re-calculating knowledge will have pushed some piece and
+			// square updates to the turn components. Initial squares is
+			// easy, but for initial enemy pieces that we know about, we
+			// need to read the turn component.
+			ArrayList<ClientPiece> initialPieces = game.getPlayer(i).createClientPieces();
+			for (ClientPiece cp : getTurnComponent(i).getPieceUpdates()) {
+				if (cp.getOwner() != i) {
+					initialPieces.add(cp);
+				}
+			}
+			game.getPlayer(i).initializeController(createClientSquares(i), initialPieces);
+		}
+		
+		resetTurnComponents();
+		
 	}
 	
 	
@@ -18,11 +46,11 @@ public class KnowledgeHandler {
 	// ---------------------------------- //
 	
 	public boolean isSquareKnown(int playerNum, Vector2D squarePos) {
-		return knowledge[squarePos.x][squarePos.y][playerNum - 1];
+		return knowledge[playerNum - 1][squarePos.x][squarePos.y];
 	}
 	
 	protected void setSquareKnown(int playerNum, Vector2D squarePos, boolean isKnown) {
-		knowledge[squarePos.x][squarePos.y][playerNum - 1] = isKnown;
+		knowledge[playerNum - 1][squarePos.x][squarePos.y] = isKnown;
 	}
 	
 	public KnowledgeTurnComponent getTurnComponent(int playerNum) {
@@ -40,27 +68,57 @@ public class KnowledgeHandler {
 	// ---------------------------------- //
 	
 	public boolean isPieceKnown(int playerNum, Piece piece) {
-		// Owners must know about all of their pieces.
-		if (piece.getOwner() == playerNum) {
-			return true;
-		}
-		
-		// This piece is invisible to other players.
-		if (piece.getKnowledgeMethod() == 0) {
-			return false;
-		}
-		
-		// This piece is always visible to other players.
-		if (piece.getKnowledgeMethod() == 2) {
-			return true;
-		}
-		
-		// This piece is dependent on whether its square is known.
 		return isSquareKnown(playerNum, piece.getPosition());
 	}
 	
 	protected void recalculateKnowledge(int playerNum) {
 		
+		// Create a 2D array (all squares unknown) to represent the new knowledge for this player.
+		boolean[][] newKnowledge = new boolean[game.getMap().getSize().x][game.getMap().getSize().y];
+		
+		// For each of this player's pieces...
+		for (Piece piece : game.getPlayer(playerNum).getPieces()) {
+			
+			// Get a list of all the squares this piece can see, and mark them as known in newKnowledge.
+			ArrayList<Vector2D> visibleSquares = game.getMap().getVisibleSquares(piece);
+			for (Vector2D squarePos : visibleSquares) {
+				newKnowledge[squarePos.x][squarePos.y] = true;
+			}
+		}
+		
+		// We now have an array of all the spaces this player can currently see. The main knowledge
+		// array holds what they used to be able to see. Find all differences and push updates about
+		// those squares to this player.
+		for (int i = 0; i < game.getMap().getSize().x; i++) {
+			for (int j = 0; i < game.getMap().getSize().y; i++) {
+				if (knowledge[playerNum][i][j] != newKnowledge[i][j]) {
+					Square sq = game.getMap().getSquare(i, j);
+					
+					// Push updated knowledge about this square to the player.
+					ClientSquare cs = sq.createClientSquare(newKnowledge[i][j]);
+					getTurnComponent(playerNum).getSquareUpdates().add(cs);
+					
+					// If this square contains an enemy piece, push updates about that piece.
+					Piece occupant = sq.getOccupant();
+					if (sq.isOccupied() && sq.getOccupant().getOwner() != playerNum) {
+						
+						// The square was revealed. Note the piece was revealed and send a ClientPiece.
+						if (newKnowledge[i][j]) {
+							getTurnComponent(playerNum).getPieceEvents().add(new KnowledgePieceEvent(occupant.getId(), KnowledgePieceEventType.REVEALED));
+							getTurnComponent(playerNum).getPieceUpdates().add(occupant.createClientPiece(playerNum));
+						}
+						
+						// The square and piece were concealed. Simply note that fact, but we don't need to send a ClientPiece.
+						else {
+							getTurnComponent(playerNum).getPieceEvents().add(new KnowledgePieceEvent(occupant.getId(), KnowledgePieceEventType.CONCEALED));
+						}
+						
+					}
+					
+					knowledge[playerNum][i][j] = newKnowledge[i][j];
+				}
+			}
+		}
 	}
 
 	public void notifyStartTurn(int turnPlayer, int turnNum) {
@@ -73,11 +131,11 @@ public class KnowledgeHandler {
 	
 	/**
 	 * Notifies the KnowledgeHandler that a state var of a square has
-	 * changed. This 
-	 * @param squarePos
+	 * changed.
+	 * @param square
 	 * @param varName
 	 */
-	public void notifySquareStateVarChange(Vector2D squarePos, String varName) {
+	public void notifySquareStateVarChange(Square square, String varName) {
 		/* notify this handler that the state of a square has changed. This will make us look at
 		 * state vars again, and if anything changed that a player should know about, resend that
 		 * information.
@@ -87,8 +145,8 @@ public class KnowledgeHandler {
 		for (int i = 1; i <= game.getNumberOfPlayers(); i++) {
 			
 			// Re-create a client square for the square that changed.
-			boolean knowsThisSquare = isSquareKnown(i, squarePos);
-			ClientSquare csq = game.getMap().getSquare(squarePos).createClientSquare(knowsThisSquare);
+			boolean knowsThisSquare = isSquareKnown(i, square.getPosition());
+			ClientSquare csq = square.createClientSquare(knowsThisSquare);
 			Integer var = csq.getStateVar(varName);
 			
 			// If the state var that changed is known by this player, push a square update.
@@ -110,7 +168,7 @@ public class KnowledgeHandler {
 
 		for (int i = 1; i <= game.getNumberOfPlayers(); i++) {
 			if (isPieceKnown(i, piece)) {
-				getTurnComponent(i).getCreatedPieceIds().add(piece.getId());
+				getTurnComponent(i).getPieceEvents().add(new KnowledgePieceEvent(piece.getId(), KnowledgePieceEventType.CREATED));
 				getTurnComponent(i).getPieceUpdates().add(piece.createClientPiece(i));
 			}
 		}
@@ -148,7 +206,7 @@ public class KnowledgeHandler {
 			if (isPieceKnown(i, piece)) {
 				// Record that this piece was destroyed. We don't add a ClientPiece
 				// to pieceUpdates because the piece's properties are no longer relevant.
-				getTurnComponent(i).getDestroyedPieceIds().add(piece.getId());
+				getTurnComponent(i).getPieceEvents().add(new KnowledgePieceEvent(piece.getId(), KnowledgePieceEventType.DESTROYED));
 			}
 		}
 	}
@@ -188,5 +246,23 @@ public class KnowledgeHandler {
 			game.getPlayer(i).receiveTurnComponent(getTurnComponent(i));
 		}
 		resetTurnComponents();
+	}
+	
+	/**
+	 * Create an array of ClientSquares for a certain player.
+	 * @param playerNum The number of the player
+	 * @return A 2D array of ClientSquares
+	 */
+	public ClientSquare[][] createClientSquares(int playerNum) {
+		Vector2D mapSize = game.getMap().getSize();
+		ClientSquare[][] css = new ClientSquare[mapSize.x][mapSize.y];
+		
+		for (int i = 0; i < mapSize.x; i++) {
+			for (int j = 0; j < mapSize.y; j++) {
+				Vector2D squarePos = new Vector2D(i, j);
+				css[i][j] = game.getMap().getSquare(squarePos).createClientSquare(isSquareKnown(playerNum, squarePos));
+			}
+		}
+		return css;
 	}
 }

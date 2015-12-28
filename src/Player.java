@@ -19,8 +19,20 @@ public class Player {
 	public Player(FieldOfView fovGame, int playerNum, Controller controller) {
 		game = fovGame;
 		number = playerNum;
-		this.controller = controller;
 		pieces = new ArrayList<Piece>();
+		this.controller = controller;
+		initializePieces();
+	}
+	
+	/**
+	 * Helper function that spawns our king(s).
+	 */
+	private void initializePieces() {
+		// TODO: this
+	}
+	
+	public void initializeController(ClientSquare[][] initialSquares, ArrayList<ClientPiece> initialPieces) {
+		getController().initialize(initialSquares, initialPieces);
 	}
 
 	/**
@@ -35,10 +47,7 @@ public class Player {
 		getController().notifyStartTurn(getNumber(), turnNum);
 		
 		// Create ClientPieces for each of our pieces.
-		ArrayList<ClientPiece> clientPieces = new ArrayList<ClientPiece>();
-		for (Piece p : pieces) {
-			clientPieces.add(p.createClientPiece(getNumber()));
-		}
+		ArrayList<ClientPiece> clientPieces = createClientPieces();
 		
 		// Ask the controller to choose a piece.
 		int selectedPieceId = 0;
@@ -112,15 +121,11 @@ public class Player {
 	}
 	
 	/**
-	 * Called by a piece this player owns when it is killed, right before
-	 * the piece itself handles it. This will be called even if the piece is a
-	 * goal piece (and therefore will respawn), so use wasDestroyed to tell
-	 * whether it should be removed from the piece list.
+	 * Called by a piece this player owns when it is destroyed.
 	 * @param piece The piece that got killed
-	 * @param wasDestroyed True if killed; false if respawned
 	 */
-	public void notifyPieceKilled(Piece piece, boolean wasDestroyed) {
-		if (wasDestroyed) getPieces().remove(piece);
+	public void notifyPieceKilled(Piece piece) {
+		getPieces().remove(piece);
 	}
 
 	/**
@@ -146,6 +151,14 @@ public class Player {
 			}
 		}
 		return null;
+	}
+	
+	public ArrayList<ClientPiece> createClientPieces() {
+		ArrayList<ClientPiece> cps = new ArrayList<ClientPiece>();
+		for (Piece p : pieces) {
+			cps.add(p.createClientPiece(getNumber()));
+		}
+		return cps;
 	}
 
 }

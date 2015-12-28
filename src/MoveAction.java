@@ -32,10 +32,4 @@ public class MoveAction extends Action {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
-	@Override
-	public boolean absorbClientAction(ClientAction ca) {
-		// TODO Auto-generated method stub
-		return false;
-	}
 }

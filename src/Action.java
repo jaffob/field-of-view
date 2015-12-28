@@ -64,16 +64,5 @@ public abstract class Action {
 	 */
 	public abstract ClientAction createClientAction();
 	
-	/**
-	 * Handle a ClientAction that a Controller has chosen to perform.
-	 * This should first verify that the ClientAction has been properly
-	 * configured with any response needed (and that this response is
-	 * valid). It should then internalize the response so that when
-	 * doAction() is called, it knows what to do.
-	 * @param ca The ClientAction returned by the Controller
-	 * @return False if the ClientAction and/or response was invalid in
-	 * any way. True otherwise.
-	 */
-	public abstract boolean absorbClientAction(ClientAction ca);
 
 }

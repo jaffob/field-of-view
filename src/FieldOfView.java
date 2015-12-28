@@ -30,11 +30,11 @@ public class FieldOfView {
 	public FieldOfView(String mapFileName, Controller[] controllers, Drawer drawer) throws IOException, InvalidMapException {
 		map = new Map(this, mapFileName);
 		gameStateVars = new HashMap<String, Integer>();
-		knowledgeHandler = new KnowledgeHandler(this);
 		this.drawer = drawer;
 		players = new Player[2];
 		players[0] = new Player(this, 1, controllers[0]);
 		players[1] = new Player(this, 2, controllers[1]);
+		knowledgeHandler = new KnowledgeHandler(this);
 		setSquareFactory(new SquareFactory(this));
 		turn = 1;
 	}

@@ -3,7 +3,7 @@ public class Piece {
 
 	// Basic stuff.
 	protected final FieldOfView game;
-	private int owner;
+	private final int owner;
 	private String friendlyName;
 	
 	// Handle giving IDs to pieces.
@@ -19,7 +19,6 @@ public class Piece {
 	private boolean canSuicide;
 	private boolean allowEndTurn;
 	private int powerReq;
-	private int knowledgeMethod;
 	
 	// State of this piece.
 	private Vector2D position;
@@ -47,7 +46,6 @@ public class Piece {
 		setAllowEndTurn(true);
 		setPowerReq(0);
 		setShieldLevel(0);
-		setKnowledgeMethod(1);
 	}
 	
 	/**
@@ -94,14 +92,6 @@ public class Piece {
 	public int getOwner() {
 		return this.owner;
 	}
-
-	/**
-	 * Sets who owns this piece.
-	 * @param ownerNumber New owner
-	 */
-	public void setOwner(int ownerNumber) {
-		this.owner = ownerNumber;
-	}
 	
 	/**
 	 * Gets the actual Player object that owns this piece.
@@ -131,6 +121,7 @@ public class Piece {
 
 	public void setPosition(Vector2D position) {
 		this.position = position;
+		game.getKnowledgeHandler().notifyPieceMoved(this);
 	}
 
 	public int getMovesThisTurn() {
@@ -184,6 +175,7 @@ public class Piece {
 	 */
 	public void setMaxMoves(int maxMoves) {
 		this.maxMoves = maxMoves;
+		game.getKnowledgeHandler().notifyPieceStateVarChange(this, "maxMoves");
 	}
 
 	public Class<Square> getSpawnSquareClass() {
@@ -200,6 +192,7 @@ public class Piece {
 
 	public void setGoalPiece(boolean isGoalPiece) {
 		this.isGoalPiece = isGoalPiece;
+		game.getKnowledgeHandler().notifyPieceStateVarChange(this, "isGoalPiece");
 	}
 
 	public boolean isInvulnerable() {
@@ -208,6 +201,7 @@ public class Piece {
 
 	public void setInvulnerable(boolean isInvulnerable) {
 		this.isInvulnerable = isInvulnerable;
+		game.getKnowledgeHandler().notifyPieceStateVarChange(this, "isInvulnerable");
 	}
 
 	public int getPowerReq() {
@@ -216,6 +210,7 @@ public class Piece {
 
 	public void setPowerReq(int powerReq) {
 		this.powerReq = powerReq;
+		game.getKnowledgeHandler().notifyPieceStateVarChange(this, "powerReq");
 	}
 
 	public boolean canUseSpecialSquares() {
@@ -224,6 +219,7 @@ public class Piece {
 
 	public void setCanUseSpecialSquares(boolean canUseSpecialSquares) {
 		this.canUseSpecialSquares = canUseSpecialSquares;
+		game.getKnowledgeHandler().notifyPieceStateVarChange(this, "canUseSpecialSquares");
 	}
 	
 	public boolean canSuicide() {
@@ -232,6 +228,7 @@ public class Piece {
 
 	public void setCanSuicide(boolean canSuicide) {
 		this.canSuicide = canSuicide;
+		game.getKnowledgeHandler().notifyPieceStateVarChange(this, "canSuicide");
 	}
 
 	public boolean allowEndTurn() {
@@ -248,28 +245,15 @@ public class Piece {
 
 	public void setShieldLevel(int shieldLevel) {
 		this.shieldLevel = shieldLevel;
+		game.getKnowledgeHandler().notifyPieceStateVarChange(this, "shieldLevel");
 	}
 	
 	public void addShieldLevel() {
-		shieldLevel++;
+		setShieldLevel(shieldLevel + 1);
 	}
 	
 	public void removeShieldLevel() {
-		if (shieldLevel > 0) shieldLevel--;
-	}
-	
-	/**
-	 * How this piece gets revealed to the opponent. Returns 0 if the
-	 * opponent can never see this piece, 1 if knowledge is linked to
-	 * the current square (the norm), or 2 if always known.
-	 * @return The knowledge method
-	 */
-	public int getKnowledgeMethod() {
-		return knowledgeMethod;
-	}
-
-	public void setKnowledgeMethod(int knowledgeMethod) {
-		this.knowledgeMethod = knowledgeMethod;
+		if (shieldLevel > 0) setShieldLevel(shieldLevel - 1);
 	}
 	
 	
@@ -385,12 +369,16 @@ public class Piece {
 		// The piece is killed.
 		if (forceKill || shieldLevel == 0) {
 			getCurrentSquare().setOccupant(null);
-			getOwnerPlayer().notifyPieceKilled(this, !isInvulnerable());
 			
 			// If invulnerable, respawn this piece.
 			if (isInvulnerable()) {
 				// TODO: Respawn. Do this by having a spawn queue that gets flushed to the controller at the beginning of its turn, so if you have two king spawns you can choose one.
 			}
+			else {
+				game.getKnowledgeHandler().notifyPieceDestroyed(this);
+				getOwnerPlayer().notifyPieceKilled(this);
+			}
+			
 		}
 		
 		// The piece was shielded; simply remove one shield level.
