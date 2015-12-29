@@ -1,8 +1,8 @@
 
 public class Square_Window extends Square {
 
-	public Square_Window(FieldOfView fovGame, Vector2D position, int properties) {
-		super(fovGame, position, properties);
+	public Square_Window(Vector2D position, int properties) {
+		super(position, properties);
 		setWalkable(false);
 	}
 

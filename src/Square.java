@@ -1,7 +1,6 @@
 
 public abstract class Square {
-	
-	protected final FieldOfView game;
+
 	private final Vector2D position;
 	
 	private Piece occupant;
@@ -13,13 +12,12 @@ public abstract class Square {
 	// --------- Initialization --------- //
 	// ---------------------------------- //
 	
-	public Square(FieldOfView fovGame, Vector2D position, Integer properties) {	// Public square. Ha ha.
-		game = fovGame;
+	public Square(Vector2D position, Integer properties) {	// Public square. Ha ha.
 		this.position = position;
-		setOccupant(null);
-		setWalkable(true);
-		setTransparent(true);
-		setMoveToll(1);
+		occupant = null;
+		isWalkable = true;
+		isTransparent = true;
+		moveToll = 0;
 		
 		absorbPropertyVal(properties);
 	}
@@ -85,7 +83,6 @@ public abstract class Square {
 
 	public void setWalkable(boolean isWalkable) {
 		this.isWalkable = isWalkable;
-		game.getKnowledgeHandler().notifySquareStateVarChange(this, "isWalkable");
 		
 		// If this square is set to non-playable, kill any piece that occupies it.
 		if (!isWalkable && isOccupied()) {
@@ -100,7 +97,6 @@ public abstract class Square {
 
 	public void setTransparent(boolean isTransparent) {
 		this.isTransparent = isTransparent;
-		game.getKnowledgeHandler().notifySquareStateVarChange(this, "isTransparent");
 	}
 
 
@@ -121,7 +117,6 @@ public abstract class Square {
 
 	public void setMoveToll(int moveToll) {
 		this.moveToll = moveToll;
-		game.getKnowledgeHandler().notifySquareStateVarChange(this, "moveToll");
 	}
 	
 	

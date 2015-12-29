@@ -15,6 +15,7 @@ public class Player {
 	private final int number;
 	private final Controller controller;
 	private final ArrayList<Piece> pieces;
+	private int victoryFlag;
 	
 	public Player(FieldOfView fovGame, int playerNum, Controller controller) {
 		game = fovGame;
@@ -43,6 +44,12 @@ public class Player {
 	 */
 	public void takeTurn(int turnNum) {
 		Utils.log("Player " + number + " starts turn (turn #" + game.getTurnCount() + " of game)");
+		
+		// If we don't have any pieces, we lose. :(
+		if (getPieces().size() == 0) {
+			setVictoryFlag(-1);
+			return;
+		}
 		
 		getController().notifyStartTurn(getNumber(), turnNum);
 		
@@ -91,12 +98,16 @@ public class Player {
 		getController().notifyEndTurn(getNumber(), turnNum);
 	}
 	
+	public int getVictoryFlag() {
+		return victoryFlag;
+	}
+
 	/**
-	 * Determine if this player has won the game.
-	 * @return True if the player won; false otherwise.
+	 * Set whether this player has won or lost the game.
+	 * @param victoryFlag -1 = lose, 0 = normal, 1 = win
 	 */
-	public boolean hasWon() {
-		return game.getTurnCount() == 20;
+	public void setVictoryFlag(int victoryFlag) {
+		this.victoryFlag = victoryFlag;
 	}
 	
 	/**

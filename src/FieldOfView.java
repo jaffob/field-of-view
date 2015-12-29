@@ -1,5 +1,4 @@
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
@@ -18,7 +17,6 @@ public class FieldOfView {
 	private final Drawer drawer;			// Drawing interface.
 	private final HashMap<String, Integer> gameStateVars;
 	private final KnowledgeHandler knowledgeHandler;
-	private ArrayList<Class<? extends Square>> squareTypes;
 	
 	private int turn;						// Whose turn it is.
 	private int turnCount;					// Total number of turns taken this game.
@@ -29,7 +27,6 @@ public class FieldOfView {
 	 * @throws InvalidMapException if the map was deemed invalid.
 	 */
 	public FieldOfView(String mapFileName, Controller[] controllers, Drawer drawer) throws IOException, InvalidMapException {
-		initializeSquareTypes();
 		map = new Map(this, mapFileName);
 		gameStateVars = new HashMap<String, Integer>();
 		this.drawer = drawer;
@@ -60,8 +57,9 @@ public class FieldOfView {
 	}
 
 	public int checkWin() {
-		if (getPlayer(1).hasWon()) return 1;
-		if (getPlayer(2).hasWon()) return 2;
+		// TODO: update for >2 players; add controller updates
+		if (getPlayer(1).getVictoryFlag() == 1 || getPlayer(2).getVictoryFlag() == -1) return 1;
+		if (getPlayer(2).getVictoryFlag() == 1 || getPlayer(1).getVictoryFlag() == -1) return 2;
 		return 0;
 	}
 
@@ -168,28 +166,4 @@ public class FieldOfView {
 		return null;
 	}
 	
-	private void initializeSquareTypes() {
-		squareTypes = new ArrayList<Class<? extends Square>>();
-		squareTypes.add(Square_Wall.class);
-		squareTypes.add(Square_Open.class);
-		squareTypes.add(Square_Window.class);
-	}
-	
-	public Class<? extends Square> getSquareClass(int squareType) {
-		return squareTypes.get(squareType);
-	}
-	
-	public int getSquareType(Class<? extends Square> squareClass) {
-		return squareTypes.indexOf(squareClass);
-	}
-	
-	public Square createSquare(int squareType, Vector2D position, int squareProperties) {
-		Square sq;
-		try {
-			sq = getSquareClass(squareType).getConstructor(FieldOfView.class, Vector2D.class, Integer.class).newInstance(this, position, squareProperties);
-		} catch (Exception e) {
-			return null;
-		}
-		return sq;
-	}
 }

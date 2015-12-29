@@ -1,8 +1,8 @@
 
 public class Square_Wall extends Square {
 
-	public Square_Wall(FieldOfView fovGame, Vector2D position, int properties) {
-		super(fovGame, position, properties);
+	public Square_Wall(Vector2D position, Integer properties) {
+		super(position, properties);
 		setWalkable(false);
 		setTransparent(false);
 	}

@@ -12,6 +12,8 @@ public final class Map {
 	public static final String MAP_FILE_FORMAT = "1";
 	public static final Vector2D DEFAULT_MAP_SIZE = new Vector2D(16, 16);
 	
+	private ArrayList<Class<? extends Square>> squareTypes;
+	
 	// Map metadata.
 	private String mapName, mapAuthor, mapVersion, mapRequiredMod;
 	
@@ -26,6 +28,7 @@ public final class Map {
 	 * @throws InvalidMapException if the map couldn't load.
 	 */
 	public Map(FieldOfView fovGame, String mapFilePath) throws IOException, InvalidMapException {
+		initializeSquareTypes();
 		game = fovGame;
 		
 		// If no map file was specified, initialize the square array to its default blank state.
@@ -88,6 +91,8 @@ public final class Map {
 		
 		// The rest of the file stores all of the squares. Load that into the squares array.
 		squares = loadMapFileSquares(file);
+		
+		file.close();
 	}
 
 	/**
@@ -140,7 +145,7 @@ public final class Map {
 			pos.x = (i/2) % getSize().x;
 			pos.y = (i/2) / getSize().x;
 			
-			squareObjects[pos.x][pos.y] = game.createSquare(squareData[i], pos, squareData[i + 1]);
+			squareObjects[pos.x][pos.y] = createSquare(squareData[i], pos, squareData[i + 1]);
 			if (squareObjects[pos.x][pos.y] == null) {
 				throw new InvalidMapException("The square at " + pos + " is invalid.");
 			}
@@ -152,10 +157,14 @@ public final class Map {
 	private void loadBlankMap() {
 		size = DEFAULT_MAP_SIZE;
 		squares = new Square[size.x][size.y];
+		setMapName("");
+		setMapAuthor("");
+		setMapVersion("");
+		setMapRequiredMod("");
 		
 		for (int i = 0; i < getSize().x; i++) {
 			for (int j = 0; j < getSize().y; j++) {
-				squares[i][j] = game.createSquare(0, new Vector2D(i, j), 0);
+				squares[i][j] = createSquare(0, new Vector2D(i, j), 0);
 			}
 		}
 	}
@@ -192,10 +201,11 @@ public final class Map {
 		
 		// The rest of the file stores all of the squares. Dump the squares array.
 		saveMapFileSquares(file);
+		file.close();
 	}
 
 	private void saveMapFileLine(BufferedWriter file, String fieldName, String line) throws IOException {
-		file.write((fieldName.isEmpty() ? "" : fieldName + " ") + line);
+		file.write((fieldName.isEmpty() ? "" : fieldName + " ") + line + '\n');
 	}
 	
 	private void saveMapFileSquares(BufferedWriter file) throws IOException {
@@ -204,7 +214,7 @@ public final class Map {
 		// For every Square, put 2 chars into the array.
 		for (int i = 0; i < squareData.length; i += 2) {
 			Square sq = getSquare((i/2) % getSize().x, (i/2) / getSize().x);
-			squareData[i] = (char)game.getSquareType(sq.getClass());
+			squareData[i] = (char)getSquareType(sq.getClass());
 			squareData[i+1] = (char)sq.createPropertyVal();
 		}
 		
@@ -318,6 +328,31 @@ public final class Map {
 				out.add(new Vector2D(piece.getPosition().x, i));
 		}
 		return out;
+	}
+	
+	private void initializeSquareTypes() {
+		squareTypes = new ArrayList<Class<? extends Square>>();
+		squareTypes.add(Square_Wall.class);
+		squareTypes.add(Square_Open.class);
+		squareTypes.add(Square_Window.class);
+	}
+	
+	public Class<? extends Square> getSquareClass(int squareType) {
+		return squareTypes.get(squareType);
+	}
+	
+	public int getSquareType(Class<? extends Square> squareClass) {
+		return squareTypes.indexOf(squareClass);
+	}
+	
+	public Square createSquare(int squareType, Vector2D position, int squareProperties) {
+		Square sq;
+		try {
+			sq = getSquareClass(squareType).getConstructor(Vector2D.class, Integer.class).newInstance(position, squareProperties);
+		} catch (Exception e) {
+			return null;
+		}
+		return sq;
 	}
 	
 	@Override

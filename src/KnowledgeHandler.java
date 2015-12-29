@@ -91,7 +91,7 @@ public class KnowledgeHandler {
 		// those squares to this player.
 		for (int i = 0; i < game.getMap().getSize().x; i++) {
 			for (int j = 0; i < game.getMap().getSize().y; i++) {
-				if (knowledge[playerNum][i][j] != newKnowledge[i][j]) {
+				if (knowledge[playerNum - 1][i][j] != newKnowledge[i][j]) {
 					Square sq = game.getMap().getSquare(i, j);
 					
 					// Push updated knowledge about this square to the player.
@@ -115,7 +115,7 @@ public class KnowledgeHandler {
 						
 					}
 					
-					knowledge[playerNum][i][j] = newKnowledge[i][j];
+					knowledge[playerNum - 1][i][j] = newKnowledge[i][j];
 				}
 			}
 		}
