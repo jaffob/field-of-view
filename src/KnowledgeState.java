@@ -10,7 +10,7 @@ public class KnowledgeState {
 	
 	// Track pieces and changes to pieces.
 	private final ArrayList<ClientPiece> initialPieces;
-	private final ArrayList<ClientPiece> currentPieces;
+	private final HashMap<Integer, ClientPiece> currentPieces;
 	
 	// Track game state vars.
 	private final HashMap<String, Integer> initialGameStateVars;
@@ -41,8 +41,12 @@ public class KnowledgeState {
 			}
 		}
 		
-		// Copy initial pieces and vars.
-		this.currentPieces = new ArrayList<ClientPiece>(this.initialPieces);
+		// Copy initial pieces into a map.
+		this.currentPieces = new HashMap<Integer, ClientPiece>();
+		for (ClientPiece cp : initialPieces) {
+			this.currentPieces.put(cp.getId(), cp);
+		}
+		
 		this.currentGameStateVars = new HashMap<String, Integer>(initialGameStateVars);
 		
 		// Initialize everything else.
@@ -68,9 +72,13 @@ public class KnowledgeState {
 	}
 
 	public ArrayList<ClientPiece> getCurrentPieces() {
-		return currentPieces;
+		return new ArrayList<ClientPiece>(currentPieces.values());
 	}
 
+	public HashMap<Integer, ClientPiece> getCurrentPiecesMap() {
+		return currentPieces;
+	}
+	
 	public HashMap<String, Integer> getInitialGameStateVars() {
 		return initialGameStateVars;
 	}
@@ -130,31 +138,22 @@ public class KnowledgeState {
 		addComponentToCurrentTurn(component);
 		
 		// Update currentSquares with every new square we've received.
-		for (ClientSquare newSq : component.getSquareUpdates()) {
-			currentSquares[newSq.getPosition().x][newSq.getPosition().y] = newSq;
+		for (ClientSquare newCS : component.getSquareUpdates()) {
+			currentSquares[newCS.getPosition().x][newCS.getPosition().y] = newCS;
 		}
 		
-		// Loop through current pieces.
-		for (int i = 0; i < getCurrentPieces().size(); i++) {
-			int id = getCurrentPieces().get(i).getId();
-			
-			// Loop through the latest piece updates and replace this piece if necessary.
-			for (int j = 0; j < component.getPieceUpdates().size(); j++) {
-				
-				if (component.getPieceUpdates().get(j).getId() == id) {
-					getCurrentPieces().set(i, component.getPieceUpdates().get(j));
-				}
-			}
-			
-			// Loop through the piece events to remove pieces that were concealed, destroyed, or moved away.
-			for (int j = 0; j < component.getPieceEvents().size(); j++) {
-				KnowledgePieceEventType evType = component.getPieceEvents().get(j).getType();
-				if (evType == KnowledgePieceEventType.CONCEALED ||
-						evType == KnowledgePieceEventType.DESTROYED ||
-						evType == KnowledgePieceEventType.MOVED_AWAY) {
-					getCurrentPieces().remove(i);
-					i--;
-				}
+		// Add or replace updated pieces.
+		for (ClientPiece newCP : component.getPieceUpdates()) {
+			getCurrentPiecesMap().put(newCP.getId(), newCP);
+		}
+		
+		// Loop through the piece events to remove pieces that were concealed, destroyed, or moved away.
+		for (int i = 0; i < component.getPieceEvents().size(); i++) {
+			KnowledgePieceEventType evType = component.getPieceEvents().get(i).getType();
+			if (evType == KnowledgePieceEventType.CONCEALED ||
+					evType == KnowledgePieceEventType.DESTROYED ||
+					evType == KnowledgePieceEventType.MOVED_AWAY) {
+				getCurrentPiecesMap().remove(component.getPieceEvents().get(i).getPieceId());
 			}
 		}
 		

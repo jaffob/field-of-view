@@ -23,7 +23,7 @@ public class TestMain1 extends JComponent {
 	
 	private final int SQSIZE = 32;
 	public FieldOfView game;
-	private Controller[] conts;
+	private TestController1[] conts;
 	private Map map;
 	public boolean isEditor;
 	private Scanner console;
@@ -64,7 +64,7 @@ public class TestMain1 extends JComponent {
 		else {
 			System.out.print("Enter map name to load: ");
 			mappath = console.nextLine();
-			conts = new Controller[2];
+			conts = new TestController1[2];
 			conts[0] = new TestController1(this, 1);
 			conts[1] = new TestController1(this, 2);
 			
@@ -80,38 +80,68 @@ public class TestMain1 extends JComponent {
 	
 	protected void paintComponent(Graphics g) {
 	    super.paintComponent(g);
+	    g.setColor(Color.BLACK);
 	    g.fillRect(0, 0, 1024, 512);
-	    Square[][] sq = isEditor ? map.getSquares() : game.getMap().getSquares();
-	    for (int i = 0; i < sq.length; i++) {
-			for (int j = 0; j < sq[0].length; j++) {
-				Square s = sq[i][j];
-				
-				if (s.getClass().equals(Square_Open.class))
-					g.setColor(Color.WHITE);
-				else if (s.getClass().equals(Square_Wall.class))
-					g.setColor(Color.DARK_GRAY);
-				else if (s.getClass().equals(Square_Window.class))
-					g.setColor(Color.CYAN);
-				else if (s.getClass().equals(Square_Start.class))
-					g.setColor(Color.YELLOW);
-				
-				g.fillRect(s.getPosition().x * SQSIZE, s.getPosition().y * SQSIZE, SQSIZE, SQSIZE);
-				g.setColor(Color.BLACK);
-				g.drawRect(s.getPosition().x * SQSIZE, s.getPosition().y * SQSIZE, SQSIZE, SQSIZE);
+	    
+	    if (isEditor) {
+		    
+		    Square[][] sq = isEditor ? map.getSquares() : game.getMap().getSquares();
+		    for (int i = 0; i < sq.length; i++) {
+				for (int j = 0; j < sq[0].length; j++) {
+					Square s = sq[i][j];
+					
+					if (s.getClass().equals(Square_Open.class))
+						g.setColor(Color.WHITE);
+					else if (s.getClass().equals(Square_Wall.class))
+						g.setColor(Color.DARK_GRAY);
+					else if (s.getClass().equals(Square_Window.class))
+						g.setColor(Color.CYAN);
+					else if (s.getClass().equals(Square_Start.class))
+						g.setColor(Color.YELLOW);
+					
+					g.fillRect(s.getPosition().x * SQSIZE, s.getPosition().y * SQSIZE, SQSIZE, SQSIZE);
+					g.setColor(Color.BLACK);
+					g.drawRect(s.getPosition().x * SQSIZE, s.getPosition().y * SQSIZE, SQSIZE, SQSIZE);
+				}
 			}
-		}
-	    
-	    if (isEditor)
-	    	return;
-	    
-	    // Draw pieces for the game.
-	    for (Piece p : game.getPlayer(1).getPieces()) {
-	    	g.setColor(Color.RED);
-	    	g.fillOval(p.getPosition().x * SQSIZE + 8, p.getPosition().y * SQSIZE + 8, 16, 16);
 	    }
-	    for (Piece p : game.getPlayer(2).getPieces()) {
-	    	g.setColor(Color.BLUE);
-	    	g.fillOval(p.getPosition().x * SQSIZE + 8, p.getPosition().y * SQSIZE + 8, 16, 16);
+	    
+	    else {
+	    
+	    	for (int player = 0; player < 2; player++) {
+	    		KnowledgeState ks = conts[player].knowledge;
+	    		ClientSquare[][] sq = ks.getCurrentSquares();
+	    		for (int i = 0; i < sq.length; i++) {
+					for (int j = 0; j < sq[0].length; j++) {
+						ClientSquare s = sq[i][j];
+						
+						if (s.getGameClass().equals(Square_Open.class))
+							g.setColor(Color.WHITE);
+						else if (s.getGameClass().equals(Square_Wall.class))
+							g.setColor(Color.DARK_GRAY);
+						else if (s.getGameClass().equals(Square_Window.class))
+							g.setColor(Color.CYAN);
+						else if (s.getGameClass().equals(Square_Start.class))
+							g.setColor(Color.YELLOW);
+						
+						int sqx = (544 * player) + s.getPosition().x * SQSIZE;
+						int sqy = s.getPosition().y * SQSIZE;
+						g.fillRect(sqx, sqy, SQSIZE, SQSIZE);
+						g.setColor(Color.BLACK);
+						g.drawRect(sqx, sqy, SQSIZE, SQSIZE);
+						
+						if (!s.isKnown()) {
+							g.fillRect(sqx + 6, sqy + 6, SQSIZE - 12, SQSIZE - 12);
+						}
+					}
+				}
+	    		
+	    		for (ClientPiece p : ks.getCurrentPieces()) {
+			    	g.setColor(p.getOwner() == 1 ? Color.RED : Color.BLUE);
+			    	g.fillOval((544 * player) + p.getPosition().x * SQSIZE + 8, p.getPosition().y * SQSIZE + 8, 16, 16);
+			    }
+	    	}
+		    
 	    }
 	}
 
