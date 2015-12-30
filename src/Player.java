@@ -35,10 +35,11 @@ public class Player {
 			getPieces().add(king);
 			sq.setOccupant(king.getId());
 		}*/
-		Square sq = game.getMap().getSquaresOfType(Square_Start.class).get(getNumber() - 1);
-		Piece_King king = new Piece_King(getNumber(), new Vector2D(sq.getPosition()));
-		getPieces().add(king);
-		sq.setOccupant(king.getId());
+		for (Square sq : game.getMap().getSquaresOfType(Square_Start.class, getNumber())) {
+			Piece_King king = new Piece_King(getNumber(), new Vector2D(sq.getPosition()));
+			getPieces().add(king);
+			sq.setOccupant(king.getId());
+		}
 	}
 	
 	public void initializeController(ClientSquare[][] initialSquares, ArrayList<ClientPiece> initialPieces, HashMap<String, Integer> initialGameStateVars) {

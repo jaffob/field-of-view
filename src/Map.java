@@ -302,11 +302,19 @@ public final class Map {
 		return x >= 0 && y >= 0 && x < size.x && y < size.y;
 	}
 	
-	public ArrayList<Square> getSquaresOfType(Class<? extends Square> type) {
+	/**
+	 * Creates a list of squares of a certain type and side.
+	 * @param type Class of square to get. Use the Square superclass
+	 * to get all types.
+	 * @param side Side of the square. 0 gets neutral squares; 1 or 2
+	 * get squares on that player's side; -1 ignores sides altogether.
+	 * @return
+	 */
+	public ArrayList<Square> getSquaresOfType(Class<? extends Square> type, int side) {
 		ArrayList<Square> s = new ArrayList<Square>();
 		for (int i = 0; i < squares.length; i++) {
 			for (int j = 0; j < squares[0].length; j++) {
-				if (type.isInstance(squares[i][j])) {
+				if (type.isInstance(squares[i][j]) && (side == -1 || side == squares[i][j].getSide())) {
 					s.add(squares[i][j]);
 				}
 			}
@@ -315,16 +323,53 @@ public final class Map {
 	}
 
 	public ArrayList<Vector2D> getVisibleSquares(Piece piece) {
-		// A very dumb version of this method that calls all squares along
-		// the piece's axes visible, and none others.
 		ArrayList<Vector2D> out = new ArrayList<Vector2D>();
-		for (int i = 0; i < getSize().x; i++) {
+		/*for (int i = 0; i < getSize().x; i++) {
 			out.add(new Vector2D(i, piece.getPosition().y));
 		}
 		for (int i = 0; i < getSize().y; i++) {
 			if (i != piece.getPosition().y)
 				out.add(new Vector2D(piece.getPosition().x, i));
 		}
+		return out;*/
+		out.add(piece.getPosition());
+		
+		// shoot ray left
+		for (int x = piece.getPosition().x - 1; x >= 0; x--) {
+			Vector2D currPos = new Vector2D(x, piece.getPosition().y);
+			if (positionIsInBounds(currPos) && getSquare(currPos).isTransparent())
+				out.add(currPos);
+			else
+				break;
+		}
+		
+		// shoot ray right
+		for (int x = piece.getPosition().x + 1; x < getSize().x; x++) {
+			Vector2D currPos = new Vector2D(x, piece.getPosition().y);
+			if (positionIsInBounds(currPos) && getSquare(currPos).isTransparent())
+				out.add(currPos);
+			else
+				break;
+		}
+		
+		// shoot ray up
+		for (int y = piece.getPosition().y - 1; y >= 0; y--) {
+			Vector2D currPos = new Vector2D(piece.getPosition().x, y);
+			if (positionIsInBounds(currPos) && getSquare(currPos).isTransparent())
+				out.add(currPos);
+			else
+				break;
+		}
+		
+		// shoot ray down
+		for (int y = piece.getPosition().y + 1; y < getSize().y; y++) {
+			Vector2D currPos = new Vector2D(piece.getPosition().x, y);
+			if (positionIsInBounds(currPos) && getSquare(currPos).isTransparent())
+				out.add(currPos);
+			else
+				break;
+		}
+		
 		return out;
 	}
 	

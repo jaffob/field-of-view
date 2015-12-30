@@ -12,6 +12,7 @@ import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 
 
 public class TestMain1 extends JComponent {
@@ -50,12 +51,19 @@ public class TestMain1 extends JComponent {
 			addMouseListener(new MouseAdapter() {
 				 public void mousePressed(MouseEvent e) {
 					 Vector2D sqpos = new Vector2D(e.getX() / SQSIZE, e.getY() / SQSIZE);
-					 if (map.positionIsInBounds(sqpos)) {
+					 if (!map.positionIsInBounds(sqpos)) {
+						 return;
+					 }
+					 if (SwingUtilities.isLeftMouseButton(e)) {
 						 int sqtype = map.getSquareType(map.getSquare(sqpos).getClass());
 						 Square newSquare = map.createSquare((sqtype + 1) % 4, sqpos, 0);
 						 map.getSquares()[sqpos.x][sqpos.y] = newSquare;
-						 repaint();
 					 }
+					 else {
+						 map.getSquares()[sqpos.x][sqpos.y].setSide( (map.getSquares()[sqpos.x][sqpos.y].getSide() + 1) % 3);
+					 }
+					 
+					 repaint();
 				 }
 		    });
 		}
@@ -102,6 +110,19 @@ public class TestMain1 extends JComponent {
 					g.fillRect(s.getPosition().x * SQSIZE, s.getPosition().y * SQSIZE, SQSIZE, SQSIZE);
 					g.setColor(Color.BLACK);
 					g.drawRect(s.getPosition().x * SQSIZE, s.getPosition().y * SQSIZE, SQSIZE, SQSIZE);
+					
+					switch (s.getSide()) {
+					case 1:
+						g.setColor(Color.RED);
+						break;
+					case 2:
+						g.setColor(Color.BLUE);
+						break;
+					default:
+						g.setColor(Color.WHITE);
+					}
+					
+					g.fillRect(s.getPosition().x * SQSIZE + 1, s.getPosition().y * SQSIZE + 1, 8, 8);
 				}
 			}
 	    }
@@ -131,7 +152,7 @@ public class TestMain1 extends JComponent {
 						g.drawRect(sqx, sqy, SQSIZE, SQSIZE);
 						
 						if (!s.isKnown()) {
-							g.fillRect(sqx + 6, sqy + 6, SQSIZE - 12, SQSIZE - 12);
+							g.fillRect(sqx + 3, sqy + 3, SQSIZE - 6, SQSIZE - 6);
 						}
 					}
 				}
