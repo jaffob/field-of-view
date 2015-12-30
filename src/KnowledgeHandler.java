@@ -136,11 +136,7 @@ public class KnowledgeHandler {
 	 * @param varName
 	 */
 	public void notifySquareStateVarChange(Square square, String varName) {
-		/* notify this handler that the state of a square has changed. This will make us look at
-		 * state vars again, and if anything changed that a player should know about, resend that
-		 * information.
-		 */
-		
+
 		// For each player...
 		for (int i = 1; i <= game.getNumberOfPlayers(); i++) {
 			
@@ -194,9 +190,9 @@ public class KnowledgeHandler {
 				getTurnComponent(i).getPieceUpdates().add(piece.createClientPiece(i));
 			}
 			
-			// If they could only see where it used to be, tell them it moved (but not where to).
+			// If they could only see where it used to be, tell them it moved out of view.
 			else if (isSquareKnown(i, originalPos)) {
-				getTurnComponent(i).getPieceEvents().add(new KnowledgePieceEvent(piece.getId(), KnowledgePieceEventType.MOVED));
+				getTurnComponent(i).getPieceEvents().add(new KnowledgePieceEvent(piece.getId(), KnowledgePieceEventType.MOVED_AWAY));
 			}
 		}
 	}
