@@ -27,7 +27,7 @@ public class FieldOfView {
 	 * @throws InvalidMapException if the map was deemed invalid.
 	 */
 	public FieldOfView(String mapFileName, Controller[] controllers, Drawer drawer) throws IOException, InvalidMapException {
-		map = new Map(this, mapFileName);
+		map = new Map(mapFileName);
 		gameStateVars = new HashMap<String, Integer>();
 		this.drawer = drawer;
 		players = new Player[2];

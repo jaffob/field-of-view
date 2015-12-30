@@ -149,7 +149,7 @@ public class KnowledgeHandler {
 			if (var != null) {
 				getTurnComponent(i).getSquareUpdates().add(csq);
 				
-				// If the transparency changed (and we can see the square), recalculate knowledge.
+				// If the transparency changed, recalculate knowledge.
 				if (varName.equals("isTransparent")) {
 					recalculateKnowledge(i);
 				}

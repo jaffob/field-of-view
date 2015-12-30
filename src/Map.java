@@ -8,7 +8,6 @@ import java.util.ArrayList;
 
 public final class Map {
 
-	protected final FieldOfView game;
 	public static final String MAP_FILE_FORMAT = "1";
 	public static final Vector2D DEFAULT_MAP_SIZE = new Vector2D(16, 16);
 	
@@ -27,9 +26,8 @@ public final class Map {
 	 * @throws IOException if the map file itself is invalid.
 	 * @throws InvalidMapException if the map couldn't load.
 	 */
-	public Map(FieldOfView fovGame, String mapFilePath) throws IOException, InvalidMapException {
+	public Map(String mapFilePath) throws IOException, InvalidMapException {
 		initializeSquareTypes();
-		game = fovGame;
 		
 		// If no map file was specified, initialize the square array to its default blank state.
 		if (mapFilePath == null || mapFilePath.isEmpty()) {

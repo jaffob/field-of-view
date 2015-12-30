@@ -1,9 +1,9 @@
 import java.util.ArrayList;
 
 
-public class DumbController implements Controller {
+public class TestController1 implements Controller {
 
-	public DumbController() {
+	public TestController1() {
 		// TODO Auto-generated constructor stub
 	}
 
