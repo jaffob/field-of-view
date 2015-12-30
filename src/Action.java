@@ -9,26 +9,24 @@
  */
 public abstract class Action {
 
-	private final Player player;
-	private final Piece actor;
+	private final int player;
+	private final int actor;
 	private boolean endsTurn;
+	private boolean killsActor;
 	
-	public Action(Player player, Piece actor) {
+	public Action(int player, int actor) {
 		this.player = player;
 		this.actor = actor;
-		setEndsTurn(false);
+		setEndsTurn(true);
+		setKillsActor(false);
 	}
 	
-	public Action(Piece actor) {
-		this(actor.getOwnerPlayer(), actor);
-	}
-	
-	public Player getPlayer() {
+	public int getPlayer() {
 		return player;
 	}
 	
 	
-	public Piece getActor() {
+	public int getActor() {
 		return actor;
 	}
 
@@ -39,12 +37,19 @@ public abstract class Action {
 	protected void setEndsTurn(boolean endsTurn) {
 		this.endsTurn = endsTurn;
 	}
-
 	
+	public boolean killsActor() {
+		return killsActor;
+	}
+
+	public void setKillsActor(boolean killsActor) {
+		this.killsActor = killsActor;
+	}
+
 	// ---------------------------------- //
 	// -------- Abstract Methods -------- //
 	// ---------------------------------- //
-	
+
 	/**
 	 * Performs this action on the game. This is where basically everything
 	 * that actually happens in the game is done. Using the game object,
@@ -56,13 +61,13 @@ public abstract class Action {
 	 */
 	public abstract void doAction(FieldOfView game);
 	
+	public abstract String getFriendlyName();
 	/**
 	 * Generates and returns a ClientAction that represents this action.
 	 * This object returned should be whatever ClientAction subclass
 	 * corresponds to this Action subclass.
 	 * @return A new ClientAction
 	 */
-	public abstract ClientAction createClientAction();
-	
+	// public abstract ClientAction createClientAction();
 
 }

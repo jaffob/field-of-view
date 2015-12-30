@@ -11,14 +11,12 @@ import java.util.ArrayList;
  */
 public class Player {
 
-	protected final FieldOfView game;
 	private final int number;
 	private final Controller controller;
 	private final ArrayList<Piece> pieces;
 	private int victoryFlag;
 	
-	public Player(FieldOfView fovGame, int playerNum, Controller controller) {
-		game = fovGame;
+	public Player(int playerNum, Controller controller) {
 		number = playerNum;
 		pieces = new ArrayList<Piece>();
 		this.controller = controller;
@@ -42,7 +40,7 @@ public class Player {
 	 * perform) and doesn't return until the turn is over.
 	 * @param turnNum The number of this turn in the game
 	 */
-	public void takeTurn(int turnNum) {
+	public void takeTurn(FieldOfView game, int turnNum) {
 		Utils.log("Player " + number + " starts turn (turn #" + game.getTurnCount() + " of game)");
 		
 		// If we don't have any pieces, we lose. :(
@@ -64,22 +62,21 @@ public class Player {
 		}
 		while ((selectedPiece = getPieceById(selectedPieceId)) == null);
 		
-		selectedPiece.setSelected(true);
+		selectedPiece.select();
 		
 		// Main turn loop.
 		while (true) {
 			
 			// Get available actions, ending the turn if there aren't any.
-			ActionList availableActions = selectedPiece.getActions();
+			ActionList availableActions = selectedPiece.getActions(game);
 			if (availableActions.size() == 0) {
 				break;
 			}
 			
 			// Ask the controller to choose an action.
-			ClientActionList clientActions = availableActions.createClientActionList();
 			int selectedAction = 0;
 			do {
-				selectedAction = getController().selectAction(clientActions);
+				selectedAction = getController().selectAction(availableActions);
 			}
 			while (selectedAction < 0 || selectedAction >= availableActions.size());
 			
@@ -126,6 +123,10 @@ public class Player {
 		return pieces;
 	}
 
+	public int getNumPieces() {
+		return pieces.size();
+	}
+	
 	public boolean pieceCanMove(Piece piece, Direction dir,
 			Square currentSquare, Square destSquare) {
 		return true;
@@ -147,7 +148,7 @@ public class Player {
 	 * @param originSquare The square the piece is leaving
 	 * @param destSquare The square the piece is entering
 	 */
-	public void notifyPieceMove(Piece piece, Direction dir,
+	public void notifyPieceMove(int pieceId, Direction dir,
 			Square originSquare, Square destSquare) {
 	}
 
@@ -170,6 +171,18 @@ public class Player {
 			cps.add(p.createClientPiece(getNumber()));
 		}
 		return cps;
+	}
+
+	public void killPiece(FieldOfView game, int pieceId) {
+		for (int i = 0; i < getNumPieces(); i++) {
+			Piece p = getPieces().get(i);
+			if (p.getId() == pieceId) {
+				game.getKnowledgeHandler().notifyPieceDestroyed(p);
+				game.getMap().getSquare(p.getPosition()).setOccupant(0);
+				getPieces().remove(i);
+				return;
+			}
+		}
 	}
 
 }

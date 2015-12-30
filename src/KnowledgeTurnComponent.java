@@ -15,7 +15,7 @@ import java.util.HashMap;
  */
 public class KnowledgeTurnComponent {
 
-	private ClientAction action;
+	private Action action;
 	private final ArrayList<ClientSquare> squareUpdates;
 	private final ArrayList<ClientPiece> pieceUpdates;
 	private final ArrayList<KnowledgePieceEvent> pieceEvents;
@@ -29,11 +29,11 @@ public class KnowledgeTurnComponent {
 		gameStateVarUpdates = new HashMap<String, Integer>();
 	}
 
-	public ClientAction getAction() {
+	public Action getAction() {
 		return action;
 	}
 	
-	public void setAction(ClientAction action) {
+	public void setAction(Action action) {
 		this.action = action;
 	}
 

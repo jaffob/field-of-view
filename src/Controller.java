@@ -35,7 +35,7 @@ public interface Controller {
 	 * @param availableActions List of actions available to the player
 	 * @return The index of the selected action in the ClientActionList
 	 */
-	public int selectAction(ClientActionList availableActions);
+	public int selectAction(ActionList availableActions);
 	
 	/**
 	 * 

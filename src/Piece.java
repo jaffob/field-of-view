@@ -2,9 +2,7 @@
 public class Piece {
 
 	// Basic stuff.
-	protected final FieldOfView game;
 	private final int owner;
-	private String friendlyName;
 	
 	// Handle giving IDs to pieces.
 	private static int nextPieceId = 1;
@@ -26,10 +24,8 @@ public class Piece {
 	private int movesThisTurn;
 	private int shieldLevel;
 	
-	public Piece(FieldOfView fovGame, int ownerNumber, Vector2D startPosition) {
-		game = fovGame;
+	public Piece(int ownerNumber, Vector2D startPosition) {
 		owner = ownerNumber;
-		setFriendlyName("");
 		
 		id = Piece.generateNextId();
 		
@@ -46,8 +42,6 @@ public class Piece {
 		setAllowEndTurn(true);
 		setPowerReq(0);
 		setShieldLevel(0);
-		
-		game.getKnowledgeHandler().notifyPieceCreated(this);
 	}
 	
 	/**
@@ -99,19 +93,9 @@ public class Piece {
 	 * Gets the actual Player object that owns this piece.
 	 * @return The Player object of the owner
 	 */
-	public Player getOwnerPlayer() {
+	public Player getOwnerPlayer(FieldOfView game) {
 		return game.getPlayer(getOwner());
 	}
-
-	public String getFriendlyName() {
-		return friendlyName;
-	}
-
-
-	protected void setFriendlyName(String friendlyName) {
-		this.friendlyName = friendlyName;
-	}
-
 
 	public int getId() {
 		return id;
@@ -123,7 +107,6 @@ public class Piece {
 
 	public void setPosition(Vector2D position) {
 		this.position = position;
-		game.getKnowledgeHandler().notifyPieceMoved(this);
 	}
 
 	public int getMovesThisTurn() {
@@ -138,20 +121,16 @@ public class Piece {
 		return isSelected;
 	}
 
-	public void setSelected(boolean isSelected) {
+	protected void setSelected(boolean isSelected) {
 		this.isSelected = isSelected;
-	}
-
-	public boolean allowSelect() {
-		return true;
 	}
 	
 	/**
 	 * Gets the Square object that this piece currently occupies.
 	 * @return The Square this piece is standing on.
 	 */
-	public Square getCurrentSquare() {
-		return game.getMap().getSquare(getPosition());
+	public Square getCurrentSquare(Map map) {
+		return map.getSquare(getPosition());
 	}
 	
 	/**
@@ -177,7 +156,6 @@ public class Piece {
 	 */
 	public void setMaxMoves(int maxMoves) {
 		this.maxMoves = maxMoves;
-		game.getKnowledgeHandler().notifyPieceStateVarChange(this, "maxMoves");
 	}
 
 	public Class<Square> getSpawnSquareClass() {
@@ -194,7 +172,6 @@ public class Piece {
 
 	public void setGoalPiece(boolean isGoalPiece) {
 		this.isGoalPiece = isGoalPiece;
-		game.getKnowledgeHandler().notifyPieceStateVarChange(this, "isGoalPiece");
 	}
 
 	public boolean isInvulnerable() {
@@ -203,7 +180,6 @@ public class Piece {
 
 	public void setInvulnerable(boolean isInvulnerable) {
 		this.isInvulnerable = isInvulnerable;
-		game.getKnowledgeHandler().notifyPieceStateVarChange(this, "isInvulnerable");
 	}
 
 	public int getPowerReq() {
@@ -212,7 +188,6 @@ public class Piece {
 
 	public void setPowerReq(int powerReq) {
 		this.powerReq = powerReq;
-		game.getKnowledgeHandler().notifyPieceStateVarChange(this, "powerReq");
 	}
 
 	public boolean canUseSpecialSquares() {
@@ -221,7 +196,6 @@ public class Piece {
 
 	public void setCanUseSpecialSquares(boolean canUseSpecialSquares) {
 		this.canUseSpecialSquares = canUseSpecialSquares;
-		game.getKnowledgeHandler().notifyPieceStateVarChange(this, "canUseSpecialSquares");
 	}
 	
 	public boolean canSuicide() {
@@ -230,7 +204,6 @@ public class Piece {
 
 	public void setCanSuicide(boolean canSuicide) {
 		this.canSuicide = canSuicide;
-		game.getKnowledgeHandler().notifyPieceStateVarChange(this, "canSuicide");
 	}
 
 	public boolean allowEndTurn() {
@@ -247,7 +220,6 @@ public class Piece {
 
 	public void setShieldLevel(int shieldLevel) {
 		this.shieldLevel = shieldLevel;
-		game.getKnowledgeHandler().notifyPieceStateVarChange(this, "shieldLevel");
 	}
 	
 	public void addShieldLevel() {
@@ -263,6 +235,19 @@ public class Piece {
 	// ------------- Methods ------------ //
 	// ---------------------------------- //
 
+	public boolean allowSelect() {
+		return true;
+	}
+	
+	public void select() {
+		setSelected(true);
+		setMovesThisTurn(0);
+	}
+	
+	public void deselect() {
+		setSelected(false);
+	}
+	
 	/**
 	 * Attempt to move this piece one square in a given direction.
 	 * Call this whenever the piece wants to move; it will check that
@@ -271,7 +256,7 @@ public class Piece {
 	 * @param dir The direction to move in
 	 * @return Whether the move was successfully completed
 	 */
-	public void move(Direction dir) {
+	/*public void move(Direction dir) {
 		
 		// Get the squares we're exiting and entering.
 		Square originSquare = getCurrentSquare();
@@ -291,28 +276,27 @@ public class Piece {
 		destSquare.setOccupant(this);
 		setPosition(destPos);
 		setMovesThisTurn(getMovesThisTurn() + destSquare.getMoveToll());
-	}
+	}*/
 	
 	/**
 	 * Gets the set of actions available from the current square.
 	 * Doesn't check if it's actually this player's turn.
 	 * @return An ActionSet of all the possible actions.
 	 */
-	public ActionList getActions() {
+	public ActionList getActions(FieldOfView game) {
 		
 		ActionList actions = new ActionList();
 		
-		actions.addList(getMoveActions());
-		actions.addList(getCurrentSquare().getActions(this));
-		actions.addList(getUniqueActions());
-		actions.addList(getAdjacentUniqueActions());
+		actions.addList(getMoveActions(game));
+		actions.addList(getCurrentSquare(game.getMap()).getActions(game, this));
+		actions.addList(getUniqueActions(game));
 		
 		if (canSuicide()) {
-			actions.addAction(new PlayAction_Suicide(this));
+			actions.addAction(new Action_Suicide(getOwner(), getId()));
 		}
 		
 		if (allowEndTurn()) {
-			actions.addAction(new PlayAction_EndTurn(this));
+			actions.addAction(new Action_EndTurn(getOwner(), getId()));
 		}
 		
 		return actions;
@@ -322,7 +306,7 @@ public class Piece {
 	 * 
 	 * @return
 	 */
-	public ActionList getMoveActions() {
+	public ActionList getMoveActions(FieldOfView game) {
 		ActionList actions = new ActionList();
 		
 		// If this piece has no moves left, stop here.
@@ -330,14 +314,14 @@ public class Piece {
 			return actions;
 		}
 		
-		// Create a MoveAction for every direction.
+		// Create a MoveAction for every accessible direction.
 		for (Direction dir : Direction.values()) {
 			Square destSquare =  game.getMap().getSquare(getPosition().plus(dir.getUnitVector()));
-			if (getCurrentSquare().canExit(this, dir)
+			if (getCurrentSquare(game.getMap()).canExit(this, dir)
 					&& destSquare != null
 					&& destSquare.canEnter(this, dir)
-					&& getOwnerPlayer().pieceCanMove(this, dir, getCurrentSquare(), destSquare)) {
-				actions.addAction(new MoveAction(getOwnerPlayer(), this, dir));
+					&& getOwnerPlayer(game).pieceCanMove(this, dir, getCurrentSquare(game.getMap()), destSquare)) {
+				actions.addAction(new Action_Move(getOwner(), getId(), dir));
 			}
 		}
 		
@@ -346,27 +330,16 @@ public class Piece {
 	
 	/**
 	 * Gets the set of actions this particular piece can perform
-	 * in its current square. These are actions that are unique to
+	 * in its current environment. These are actions that are unique to
 	 * this type of piece (e.g. placing a camera), and it excludes
 	 * special and goal actions (those are handled by the Square).
 	 * @return ActionSet containing unique actions.
 	 */
-	public ActionList getUniqueActions() {
-		return new ActionList();
-	}
-	
-	/**
-	 * Gets the set of actions this particular piece can perform
-	 * in adjacent squares. These are actions that are unique to
-	 * this type of piece (e.g. opening a gate), and it excludes
-	 * special and goal actions (those are handled by the Square).
-	 * @return ActionSet containing unique actions.
-	 */
-	public ActionList getAdjacentUniqueActions() {
+	public ActionList getUniqueActions(FieldOfView game) {
 		return new ActionList();
 	}
 
-	public void kill(boolean forceKill) {
+	/*public void kill(boolean forceKill) {
 		
 		// The piece is killed.
 		if (forceKill || shieldLevel == 0) {
@@ -387,6 +360,10 @@ public class Piece {
 		else {
 			removeShieldLevel();
 		}
+	}*/
+	
+	public boolean inflictDamage() {
+		return shieldLevel-- == 0;
 	}
 	
 }

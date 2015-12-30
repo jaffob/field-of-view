@@ -37,7 +37,7 @@ public class DumbController implements Controller {
 	}
 
 	@Override
-	public int selectAction(ClientActionList availableActions) {
+	public int selectAction(ActionList availableActions) {
 		return 0;
 	}
 

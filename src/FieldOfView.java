@@ -31,8 +31,8 @@ public class FieldOfView {
 		gameStateVars = new HashMap<String, Integer>();
 		this.drawer = drawer;
 		players = new Player[2];
-		players[0] = new Player(this, 1, controllers[0]);
-		players[1] = new Player(this, 2, controllers[1]);
+		players[0] = new Player(1, controllers[0]);
+		players[1] = new Player(2, controllers[1]);
 		knowledgeHandler = new KnowledgeHandler(this);
 		turn = 1;
 	}
@@ -47,7 +47,7 @@ public class FieldOfView {
 		int winner = 0;
 		while ((winner = checkWin()) == 0) {
 			knowledgeHandler.notifyStartTurn(turn, turnCount);
-			getCurrentPlayer().takeTurn(turnCount);
+			getCurrentPlayer().takeTurn(this, turnCount);
 			knowledgeHandler.notifyEndTurn(turn, turnCount);
 			nextTurn();
 			incrementTurnCount();

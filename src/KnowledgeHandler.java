@@ -99,8 +99,8 @@ public class KnowledgeHandler {
 					getTurnComponent(playerNum).getSquareUpdates().add(cs);
 					
 					// If this square contains an enemy piece, push updates about that piece.
-					Piece occupant = sq.getOccupant();
-					if (sq.isOccupied() && sq.getOccupant().getOwner() != playerNum) {
+					Piece occupant = game.getPieceById(sq.getOccupant());
+					if (sq.isOccupied() && occupant.getOwner() != playerNum) {
 						
 						// The square was revealed. Note the piece was revealed and send a ClientPiece.
 						if (newKnowledge[i][j]) {
@@ -167,7 +167,7 @@ public class KnowledgeHandler {
 		recalculateKnowledge(piece.getOwner());
 
 		for (int i = 1; i <= game.getNumberOfPlayers(); i++) {
-			if (isPieceKnown(i, piece)) {
+			if (i == piece.getOwner() || isPieceKnown(i, piece)) {
 				getTurnComponent(i).getPieceEvents().add(new KnowledgePieceEvent(piece.getId(), KnowledgePieceEventType.CREATED));
 				getTurnComponent(i).getPieceUpdates().add(piece.createClientPiece(i));
 			}
@@ -186,7 +186,8 @@ public class KnowledgeHandler {
 		recalculateKnowledge(piece.getOwner());
 		
 		for (int i = 1; i <= game.getNumberOfPlayers(); i++) {
-			if (isPieceKnown(i, piece)) {
+			if (i == piece.getOwner() || isPieceKnown(i, piece)) {
+				getTurnComponent(i).getPieceEvents().add(new KnowledgePieceEvent(piece.getId(), KnowledgePieceEventType.MOVED));
 				getTurnComponent(i).getPieceUpdates().add(piece.createClientPiece(i));
 			}
 		}
@@ -203,7 +204,7 @@ public class KnowledgeHandler {
 		recalculateKnowledge(piece.getOwner());
 		
 		for (int i = 1; i <= game.getNumberOfPlayers(); i++) {
-			if (isPieceKnown(i, piece)) {
+			if (i == piece.getOwner() || isPieceKnown(i, piece)) {
 				// Record that this piece was destroyed. We don't add a ClientPiece
 				// to pieceUpdates because the piece's properties are no longer relevant.
 				getTurnComponent(i).getPieceEvents().add(new KnowledgePieceEvent(piece.getId(), KnowledgePieceEventType.DESTROYED));
@@ -237,7 +238,7 @@ public class KnowledgeHandler {
 	 * @param playerNum The number of the player to push this action to
 	 * @param action The ClientAction
 	 */
-	public void setTurnComponentAction(int playerNum, ClientAction action) {
+	public void setTurnComponentAction(int playerNum, Action action) {
 		getTurnComponent(playerNum).setAction(action);
 	}
 	

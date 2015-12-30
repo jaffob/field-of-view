@@ -3,7 +3,7 @@ public abstract class Square {
 
 	private final Vector2D position;
 	
-	private Piece occupant;
+	private int occupant;
 	private boolean isWalkable, isTransparent;
 	private int side, moveToll;
 	
@@ -14,7 +14,7 @@ public abstract class Square {
 	
 	public Square(Vector2D position, Integer properties) {	// Public square. Ha ha.
 		this.position = position;
-		occupant = null;
+		occupant = 0;
 		isWalkable = true;
 		isTransparent = true;
 		moveToll = 0;
@@ -58,16 +58,16 @@ public abstract class Square {
 		return position;
 	}
 
-	public Piece getOccupant() {
+	public int getOccupant() {
 		return occupant;
 	}
 
-	public void setOccupant(Piece occupant) {
+	public void setOccupant(int occupant) {
 		this.occupant = occupant;
 	}
 	
 	public boolean isOccupied() {
-		return getOccupant() != null;
+		return getOccupant() > 0;
 	}
 
 	/**
@@ -81,13 +81,14 @@ public abstract class Square {
 		return isWalkable;
 	}
 
+	/**
+	 * Sets whether this square is walkable. If setting this to false,
+	 * first make sure to check if any pieces are occupying this square,
+	 * and if so, to destroy them.
+	 * @param isWalkable Whether this square should be walkable
+	 */
 	public void setWalkable(boolean isWalkable) {
 		this.isWalkable = isWalkable;
-		
-		// If this square is set to non-playable, kill any piece that occupies it.
-		if (!isWalkable && isOccupied()) {
-			getOccupant().kill(true);
-		}
 	}
 	
 	public boolean isTransparent() {
@@ -124,15 +125,15 @@ public abstract class Square {
 	// ------------- Methods ------------ //
 	// ---------------------------------- //
 
-	public ActionList getActions(Piece piece) {
+	public ActionList getActions(FieldOfView game, Piece piece) {
 		ActionList actions = new ActionList();
 		
 		if (piece.canUseSpecialSquares()) {
-			actions.addList(getSpecialActions());
+			actions.addList(getSpecialActions(game));
 		}
 		
 		if (piece.isGoalPiece()) {
-			actions.addList(getGoalActions());
+			actions.addList(getGoalActions(game));
 		}
 		
 		return actions;
@@ -142,7 +143,7 @@ public abstract class Square {
 	 * actions can generally only be performed by the king.
 	 * @return An ActionSet of special actions
 	 */
-	public ActionList getSpecialActions() {
+	public ActionList getSpecialActions(FieldOfView game) {
 		return new ActionList();
 	}
 	
@@ -151,7 +152,7 @@ public abstract class Square {
 	 * is the primary use case here.
 	 * @return An ActionSet of goal actions
 	 */
-	public ActionList getGoalActions() {
+	public ActionList getGoalActions(FieldOfView game) {
 		return new ActionList();
 	}
 

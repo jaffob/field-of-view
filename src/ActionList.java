@@ -30,14 +30,6 @@ public class ActionList {
 		return actions.size();
 	}
 	
-	public ClientActionList createClientActionList() {
-		ClientActionList cal = new ClientActionList();
-		for (Action a : actions) {
-			cal.addAction(a.createClientAction());
-		}
-		return cal;
-	}
-	
 	@Override
 	public String toString() {
 		String output = "";
