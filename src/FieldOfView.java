@@ -29,8 +29,8 @@ public class FieldOfView {
 		map = new Map(mapFileName);
 		gameStateVars = new HashMap<String, Integer>();
 		players = new Player[2];
-		players[0] = new Player(1, controllers[0]);
-		players[1] = new Player(2, controllers[1]);
+		players[0] = new Player(this, 1, controllers[0]);
+		players[1] = new Player(this, 2, controllers[1]);
 		knowledgeHandler = new KnowledgeHandler(this);
 		turn = 1;
 	}

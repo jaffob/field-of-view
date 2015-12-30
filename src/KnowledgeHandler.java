@@ -90,7 +90,7 @@ public class KnowledgeHandler {
 		// array holds what they used to be able to see. Find all differences and push updates about
 		// those squares to this player.
 		for (int i = 0; i < game.getMap().getSize().x; i++) {
-			for (int j = 0; i < game.getMap().getSize().y; i++) {
+			for (int j = 0; j < game.getMap().getSize().y; j++) {
 				if (knowledge[playerNum - 1][i][j] != newKnowledge[i][j]) {
 					Square sq = game.getMap().getSquare(i, j);
 					
@@ -122,11 +122,15 @@ public class KnowledgeHandler {
 	}
 
 	public void notifyStartTurn(int turnPlayer, int turnNum) {
-
+		for (int i = 1; i <= game.getNumberOfPlayers(); i++) {
+			game.getPlayer(i).notifyStartTurn(turnPlayer, turnNum);
+		}
 	}
 	
 	public void notifyEndTurn(int turnPlayer, int turnNum) {
-		
+		for (int i = 1; i <= game.getNumberOfPlayers(); i++) {
+			game.getPlayer(i).notifyEndTurn(turnPlayer, turnNum);
+		}
 	}
 	
 	/**

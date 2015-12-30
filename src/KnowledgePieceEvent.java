@@ -16,4 +16,9 @@ public class KnowledgePieceEvent {
 	public KnowledgePieceEventType getType() {
 		return type;
 	}
+	
+	@Override
+	public String toString() {
+		return "KnowledgePieceEvent: Piece " + pieceId + " " + type;
+	}
 }

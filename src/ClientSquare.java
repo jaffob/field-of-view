@@ -51,5 +51,10 @@ public class ClientSquare {
 	public Set<String> getStateVarNames() {
 		return stateVars.keySet();
 	}
+	
+	@Override
+	public String toString() {
+		return "Client" + getGameClass().getName() + " " + getPosition() + " (" + (isKnown() ? "Known)" : "Unknown)");
+	}
 
 }

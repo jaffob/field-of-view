@@ -14,9 +14,16 @@ public enum Direction {
 	
 	@Override
 	public String toString() {
-		if (this == RIGHT) return "Right";
-		if (this == DOWN) return "Down";
-		if (this == LEFT) return "Left";
-		return "Up";
+		switch (this) {
+		case DOWN:
+			return "Down";
+		case LEFT:
+			return "Left";
+		case RIGHT:
+			return "Right";
+		case UP:
+			return "Up";
+		}
+		return "";
 	}
 }

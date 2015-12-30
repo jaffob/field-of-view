@@ -16,18 +16,28 @@ public class Player {
 	private final ArrayList<Piece> pieces;
 	private int victoryFlag;
 	
-	public Player(int playerNum, Controller controller) {
+	public Player(FieldOfView game, int playerNum, Controller controller) {
 		number = playerNum;
 		pieces = new ArrayList<Piece>();
 		this.controller = controller;
-		initializePieces();
+		initializePieces(game);
 	}
 	
 	/**
 	 * Helper function that spawns our king(s).
 	 */
-	private void initializePieces() {
-		// TODO: this
+	private void initializePieces(FieldOfView game) {
+		// For each Start square, spawn a king there. Don't tell the KnowledgeHandler;
+		// it hasn't been initialized, and it will figure it out on it's own.
+		/*for (Square sq : game.getMap().getSquaresOfType(Square_Start.class)) {
+			Piece_King king = new Piece_King(getNumber(), new Vector2D(sq.getPosition()));
+			getPieces().add(king);
+			sq.setOccupant(king.getId());
+		}*/
+		Square sq = game.getMap().getSquaresOfType(Square_Start.class).get(getNumber() - 1);
+		Piece_King king = new Piece_King(getNumber(), new Vector2D(sq.getPosition()));
+		getPieces().add(king);
+		sq.setOccupant(king.getId());
 	}
 	
 	public void initializeController(ClientSquare[][] initialSquares, ArrayList<ClientPiece> initialPieces) {
@@ -48,8 +58,6 @@ public class Player {
 			setVictoryFlag(-1);
 			return;
 		}
-		
-		getController().notifyStartTurn(getNumber(), turnNum);
 		
 		// Create ClientPieces for each of our pieces.
 		ArrayList<ClientPiece> clientPieces = createClientPieces();
@@ -82,6 +90,7 @@ public class Player {
 			
 			// Perform the action, then flush the knowledge handler's data to us and the opponent.
 			availableActions.getAction(selectedAction).doAction(game);
+			availableActions.getAction(selectedAction).sendToKnowledgeHandler(game);
 			game.getKnowledgeHandler().flushTurnComponents();
 			
 			// If this action is supposed to end the turn, do exactly that.
@@ -92,7 +101,6 @@ public class Player {
 		
 		// The turn is over. De-select the piece and tell the controller.
 		selectedPiece.setSelected(false);
-		getController().notifyEndTurn(getNumber(), turnNum);
 	}
 	
 	public int getVictoryFlag() {
@@ -172,7 +180,7 @@ public class Player {
 		}
 		return cps;
 	}
-
+	
 	public void killPiece(FieldOfView game, int pieceId) {
 		for (int i = 0; i < getNumPieces(); i++) {
 			Piece p = getPieces().get(i);
@@ -184,5 +192,14 @@ public class Player {
 			}
 		}
 	}
+	
+	public void notifyStartTurn(int turnPlayer, int turnNum) {
+		getController().notifyStartTurn(turnPlayer, turnNum);
+	}
+	
+	public void notifyEndTurn(int turnPlayer, int turnNum) {
+		getController().notifyEndTurn(turnPlayer, turnNum);
+	}
+
 
 }

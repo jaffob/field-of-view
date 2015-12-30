@@ -22,11 +22,12 @@ public class TestMain1 extends JComponent {
 	private static final long serialVersionUID = 1L;
 	
 	private final int SQSIZE = 32;
-	private FieldOfView game;
+	public FieldOfView game;
 	private Controller[] conts;
 	private Map map;
-	private boolean isEditor;
+	public boolean isEditor;
 	private Scanner console;
+	String mappath;
 	
 	public TestMain1() {
 		
@@ -36,10 +37,10 @@ public class TestMain1 extends JComponent {
 		// EDITOR
 		if (console.nextLine().equals("e")) {
 			System.out.print("Enter map name to load, or blank for new map: ");
-			String mapname = console.nextLine();
+			mappath = console.nextLine();
 			isEditor = true;
 			try {
-				map = new Map(mapname);
+				map = new Map(mappath);
 			} catch (IOException | InvalidMapException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -51,7 +52,7 @@ public class TestMain1 extends JComponent {
 					 Vector2D sqpos = new Vector2D(e.getX() / SQSIZE, e.getY() / SQSIZE);
 					 if (map.positionIsInBounds(sqpos)) {
 						 int sqtype = map.getSquareType(map.getSquare(sqpos).getClass());
-						 Square newSquare = map.createSquare((sqtype + 1) % 3, sqpos, 0);
+						 Square newSquare = map.createSquare((sqtype + 1) % 4, sqpos, 0);
 						 map.getSquares()[sqpos.x][sqpos.y] = newSquare;
 						 repaint();
 					 }
@@ -62,20 +63,18 @@ public class TestMain1 extends JComponent {
 		// GAME
 		else {
 			System.out.print("Enter map name to load: ");
-			String mapname = console.nextLine();
+			mappath = console.nextLine();
 			conts = new Controller[2];
-			conts[0] = new TestController1();
-			conts[1] = new TestController1();
+			conts[0] = new TestController1(this, 1);
+			conts[1] = new TestController1(this, 2);
 			
 			try {
-				game = new FieldOfView(mapname, conts);
+				game = new FieldOfView(mappath, conts);
 			} catch (IOException | InvalidMapException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 				System.exit(0);
 			}
-			
-			System.out.println("player " + game.play() + " wins! woot");
 		}
 	}
 	
@@ -93,17 +92,31 @@ public class TestMain1 extends JComponent {
 					g.setColor(Color.DARK_GRAY);
 				else if (s.getClass().equals(Square_Window.class))
 					g.setColor(Color.CYAN);
+				else if (s.getClass().equals(Square_Start.class))
+					g.setColor(Color.YELLOW);
 				
 				g.fillRect(s.getPosition().x * SQSIZE, s.getPosition().y * SQSIZE, SQSIZE, SQSIZE);
 				g.setColor(Color.BLACK);
 				g.drawRect(s.getPosition().x * SQSIZE, s.getPosition().y * SQSIZE, SQSIZE, SQSIZE);
 			}
 		}
+	    
+	    if (isEditor)
+	    	return;
+	    
+	    // Draw pieces for the game.
+	    for (Piece p : game.getPlayer(1).getPieces()) {
+	    	g.setColor(Color.RED);
+	    	g.fillOval(p.getPosition().x * SQSIZE + 8, p.getPosition().y * SQSIZE + 8, 16, 16);
+	    }
+	    for (Piece p : game.getPlayer(2).getPieces()) {
+	    	g.setColor(Color.BLUE);
+	    	g.fillOval(p.getPosition().x * SQSIZE + 8, p.getPosition().y * SQSIZE + 8, 16, 16);
+	    }
 	}
 
 	public static void main(String[] args) {
 		JFrame window = new JFrame();
-
 		TestMain1 game = new TestMain1();
 		window.getContentPane().add(game, BorderLayout.CENTER);
 		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -123,6 +136,9 @@ public class TestMain1 extends JComponent {
 		
 		window.setSize(530, 600);
 		window.setVisible(true);
+		
+		if (!game.isEditor)
+			System.out.println("player " + game.game.play() + " wins! woot");
 	}
 
 	protected void saveMap() {
@@ -134,7 +150,7 @@ public class TestMain1 extends JComponent {
 		map.setMapVersion("1.0");
 		
 		try {
-			map.saveMapFile("output_map.fov");
+			map.saveMapFile(mappath.isEmpty() ? "out.fov" : mappath);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

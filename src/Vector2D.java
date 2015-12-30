@@ -36,6 +36,10 @@ public class Vector2D extends Point {
 		y += v.y;
 	}
 	
+	public boolean isZero() {
+		return x == 0 && y == 0;
+	}
+	
 	@Override
 	public String toString() {
 		return "(" + x + ", " + y + ")";

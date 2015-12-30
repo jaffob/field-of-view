@@ -47,7 +47,7 @@ public abstract class Action {
 	}
 
 	// ---------------------------------- //
-	// -------- Abstract Methods -------- //
+	// -------- Override Methods -------- //
 	// ---------------------------------- //
 
 	/**
@@ -61,13 +61,26 @@ public abstract class Action {
 	 */
 	public abstract void doAction(FieldOfView game);
 	
-	public abstract String getFriendlyName();
+	public void sendToKnowledgeHandler(FieldOfView game) {
+		for (int i = 1; i <= game.getNumberOfPlayers(); i++) {
+			if (playerWitnessedAction(game, i)) {
+				game.getKnowledgeHandler().setTurnComponentAction(i, this);
+			}
+		}
+	}
+	
+	protected boolean playerWitnessedAction(FieldOfView game, int playerNum) {
+		if (playerNum == player) {
+			return true;
+		}
+		
+		return game.getKnowledgeHandler().isPieceKnown(playerNum, game.getPieceById(actor));
+	}
+
 	/**
-	 * Generates and returns a ClientAction that represents this action.
-	 * This object returned should be whatever ClientAction subclass
-	 * corresponds to this Action subclass.
-	 * @return A new ClientAction
+	 * Gets the name that this action should display to the end user.
+	 * @return The name.
 	 */
-	// public abstract ClientAction createClientAction();
+	public abstract String getFriendlyName();
 
 }

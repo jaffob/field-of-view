@@ -17,7 +17,7 @@ public abstract class Square {
 		occupant = 0;
 		isWalkable = true;
 		isTransparent = true;
-		moveToll = 0;
+		moveToll = 1;
 		
 		absorbPropertyVal(properties);
 	}
