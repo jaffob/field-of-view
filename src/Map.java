@@ -333,6 +333,7 @@ public final class Map {
 		squareTypes.add(Square_Wall.class);
 		squareTypes.add(Square_Open.class);
 		squareTypes.add(Square_Window.class);
+		squareTypes.add(Square_Start.class);
 	}
 	
 	public Class<? extends Square> getSquareClass(int squareType) {

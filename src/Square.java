@@ -47,7 +47,6 @@ public abstract class Square {
 	// -------- Abstract Methods -------- //
 	// ---------------------------------- //
 	
-	public abstract String getFriendlyName();
 	public abstract Transparency getTransparencyGuarantee();
 	
 	// ---------------------------------- //

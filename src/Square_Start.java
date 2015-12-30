@@ -1,7 +1,7 @@
 
-public class Square_Open extends Square {
+public class Square_Start extends Square {
 
-	public Square_Open(Vector2D position, Integer properties) {
+	public Square_Start(Vector2D position, Integer properties) {
 		super(position, properties);
 	}
 
@@ -9,4 +9,5 @@ public class Square_Open extends Square {
 	public Transparency getTransparencyGuarantee() {
 		return Transparency.ALWAYS_TRANSPARENT;
 	}
+
 }
