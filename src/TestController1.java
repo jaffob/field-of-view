@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.HashMap;
 
 
 public class TestController1 implements Controller {
@@ -6,36 +7,36 @@ public class TestController1 implements Controller {
 	private TestMain1 tm1;
 	private Direction heading;
 	private int playerNum;
+	public KnowledgeState knowledge;
 	
 	public TestController1(TestMain1 testMain1, int playerNum) {
 		tm1 = testMain1;
 		this.playerNum = playerNum;
+		
 	}
 
 	@Override
-	public void initialize(ClientSquare[][] initialSquares,
-			ArrayList<ClientPiece> initialPieces) {
-		// TODO Auto-generated method stub
-		
+	public void initialize(ClientSquare[][] initialSquares, ArrayList<ClientPiece> initialPieces, HashMap<String, Integer> initialGameStateVars) {
+		knowledge = new KnowledgeState(initialSquares, initialPieces, initialGameStateVars, 2);
 	}
 
 	@Override
 	public void notifyStartTurn(int turnPlayer, int turnNum) {
 		Utils.log("Controller " + playerNum + ": Player " + turnPlayer + " starts turn (turn #" + turnNum + " of game)");
-		
+		knowledge.notifyStartTurn(turnPlayer, turnNum);
 	}
 
 	@Override
 	public void notifyEndTurn(int turnPlayer, int turnNum) {
 		Utils.log("Controller " + playerNum + ": Player " + turnPlayer + " ends turn");
-		
+		knowledge.notifyEndTurn(turnPlayer, turnNum);
 	}
 
 	@Override
 	public int selectPiece(ArrayList<ClientPiece> pieces) {
 		Utils.log("Controller " + playerNum + ": select piece");
 		try {
-			Thread.sleep(2000);
+			Thread.sleep(1000);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -52,7 +53,7 @@ public class TestController1 implements Controller {
 	public int selectAction(ActionList availableActions) {
 		
 		try {
-			Thread.sleep(20);
+			Thread.sleep(500);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -103,6 +104,7 @@ public class TestController1 implements Controller {
 	@Override
 	public void receiveTurnComponent(KnowledgeTurnComponent component) {
 		Utils.log("Controller " + playerNum + ": received turn component");
+		knowledge.absorbTurnComponent(component);
 		tm1.repaint();
 	}
 

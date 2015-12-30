@@ -1,9 +1,10 @@
 import java.util.ArrayList;
+import java.util.HashMap;
 
 
 public interface Controller {
 	
-	public void initialize(ClientSquare[][] initialSquares, ArrayList<ClientPiece> initialPieces);
+	public void initialize(ClientSquare[][] initialSquares, ArrayList<ClientPiece> initialPieces, HashMap<String, Integer> initialGameStateVars);
 	
 	public void notifyStartTurn(int turnPlayer, int turnNum);
 	public void notifyEndTurn(int turnPlayer, int turnNum);

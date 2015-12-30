@@ -80,7 +80,7 @@ public class TestMain1 extends JComponent {
 	
 	protected void paintComponent(Graphics g) {
 	    super.paintComponent(g);
-	    g.fillRect(0, 0, 512, 512);
+	    g.fillRect(0, 0, 1024, 512);
 	    Square[][] sq = isEditor ? map.getSquares() : game.getMap().getSquares();
 	    for (int i = 0; i < sq.length; i++) {
 			for (int j = 0; j < sq[0].length; j++) {
@@ -134,7 +134,7 @@ public class TestMain1 extends JComponent {
 	        }
 	    });
 		
-		window.setSize(530, 600);
+		window.setSize(1060, 600);
 		window.setVisible(true);
 		
 		if (!game.isEditor)

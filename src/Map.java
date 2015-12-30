@@ -306,7 +306,7 @@ public final class Map {
 		ArrayList<Square> s = new ArrayList<Square>();
 		for (int i = 0; i < squares.length; i++) {
 			for (int j = 0; j < squares[0].length; j++) {
-				if (squares[i][j].getClass().equals(type)) {
+				if (type.isInstance(squares[i][j])) {
 					s.add(squares[i][j]);
 				}
 			}

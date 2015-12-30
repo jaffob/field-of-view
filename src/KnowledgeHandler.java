@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.HashMap;
 
 
 public class KnowledgeHandler {
@@ -33,7 +34,7 @@ public class KnowledgeHandler {
 					initialPieces.add(cp);
 				}
 			}
-			game.getPlayer(i).initializeController(createClientSquares(i), initialPieces);
+			game.getPlayer(i).initializeController(createClientSquares(i), initialPieces, new HashMap<String, Integer>(game.getGameStateVars()));
 		}
 		
 		resetTurnComponents();

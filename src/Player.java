@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Player
@@ -40,8 +41,8 @@ public class Player {
 		sq.setOccupant(king.getId());
 	}
 	
-	public void initializeController(ClientSquare[][] initialSquares, ArrayList<ClientPiece> initialPieces) {
-		getController().initialize(initialSquares, initialPieces);
+	public void initializeController(ClientSquare[][] initialSquares, ArrayList<ClientPiece> initialPieces, HashMap<String, Integer> initialGameStateVars) {
+		getController().initialize(initialSquares, initialPieces, initialGameStateVars);
 	}
 
 	/**

@@ -150,6 +150,10 @@ public class FieldOfView {
 		knowledgeHandler.notifyGameStateVarChange(varName);
 	}
 	
+	public HashMap<String, Integer> getGameStateVars() {
+		return gameStateVars;
+	}
+
 	public Piece getPieceById(int pieceId) {
 		for (int i = 1; i <= getNumberOfPlayers(); i++) {
 			Piece p = getPlayer(i).getPieceById(pieceId);
