@@ -21,8 +21,9 @@ public class Action_Move extends Action {
 		}
 		
 		// Get the squares we're exiting and entering.
-		Square originSquare = actorPiece.getCurrentSquare(game.getMap());
-		Vector2D destPos = actorPiece.getPosition().plus(getDirection().getUnitVector());
+		Vector2D originPos = actorPiece.getPosition();
+		Vector2D destPos = originPos.plus(getDirection().getUnitVector());
+		Square originSquare = game.getMap().getSquare(originPos);
 		Square destSquare = game.getMap().getSquare(destPos);
 		
 		// Return false if we're trying to move off the map. Should never happen because
@@ -38,7 +39,7 @@ public class Action_Move extends Action {
 		destSquare.setOccupant(getActor());
 		actorPiece.setPosition(destPos);
 		actorPiece.setMovesThisTurn(actorPiece.getMovesThisTurn() + destSquare.getMoveToll());
-		game.getKnowledgeHandler().notifyPieceMoved(actorPiece);
+		game.getKnowledgeHandler().notifyPieceMoved(actorPiece, originPos);
 	}
 
 	@Override

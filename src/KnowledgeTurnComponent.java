@@ -53,4 +53,12 @@ public class KnowledgeTurnComponent {
 		return gameStateVarUpdates;
 	}
 
+	public boolean isEmpty() {
+		return getAction() == null &&
+				getSquareUpdates().isEmpty() &&
+				getPieceUpdates().isEmpty() &&
+				getPieceEvents().isEmpty() &&
+				getGameStateVarUpdates().isEmpty();
+	}
+
 }

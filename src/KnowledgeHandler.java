@@ -180,15 +180,23 @@ public class KnowledgeHandler {
 	 * the piece, so that the piece's position variable reflects
 	 * the new position of the piece.
 	 * @param piece The Piece that moved
+	 * @param originalPos The position of this piece before moving
 	 */
-	public void notifyPieceMoved(Piece piece) {
+	public void notifyPieceMoved(Piece piece, Vector2D originalPos) {
 		
 		recalculateKnowledge(piece.getOwner());
 		
 		for (int i = 1; i <= game.getNumberOfPlayers(); i++) {
+			
+			// If this player owns the piece or can see where it ended up, tell them everything.
 			if (i == piece.getOwner() || isPieceKnown(i, piece)) {
 				getTurnComponent(i).getPieceEvents().add(new KnowledgePieceEvent(piece.getId(), KnowledgePieceEventType.MOVED));
 				getTurnComponent(i).getPieceUpdates().add(piece.createClientPiece(i));
+			}
+			
+			// If they could only see where it used to be, tell them it moved (but not where to).
+			else if (isSquareKnown(i, originalPos)) {
+				getTurnComponent(i).getPieceEvents().add(new KnowledgePieceEvent(piece.getId(), KnowledgePieceEventType.MOVED));
 			}
 		}
 	}
@@ -244,7 +252,9 @@ public class KnowledgeHandler {
 	
 	public void flushTurnComponents() {
 		for (int i = 1; i <= game.getNumberOfPlayers(); i++) {
-			game.getPlayer(i).receiveTurnComponent(getTurnComponent(i));
+			if (!getTurnComponent(i).isEmpty()) {
+				game.getPlayer(i).receiveTurnComponent(getTurnComponent(i));
+			}
 		}
 		resetTurnComponents();
 	}
