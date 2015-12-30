@@ -26,20 +26,24 @@ public class TestMain1 extends JComponent {
 	private Controller[] conts;
 	private Map map;
 	private boolean isEditor;
-
+	private Scanner console;
+	
 	public TestMain1() {
 		
-		Scanner console = new Scanner(System.in);
+		console = new Scanner(System.in);
 		System.out.print("e for editor, anything else for game: ");
 		
 		// EDITOR
 		if (console.nextLine().equals("e")) {
+			System.out.print("Enter map name to load, or blank for new map: ");
+			String mapname = console.nextLine();
 			isEditor = true;
 			try {
-				map = new Map("");
+				map = new Map(mapname);
 			} catch (IOException | InvalidMapException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
+				System.exit(0);
 			}
 			
 			addMouseListener(new MouseAdapter() {
@@ -55,25 +59,30 @@ public class TestMain1 extends JComponent {
 		    });
 		}
 		
-		/*FieldOfView game;
-		try {
-			TestController1[] dc = new TestController1[2];
-			dc[0] = new TestController1();
-			dc[1] = new TestController1();
-			game = new FieldOfView("testmap2.txt", dc, null);
-			System.out.println("Player " + game.play() + " has won!");
-		} catch (IOException e) {
-			System.out.println("Oh no! The map file doesn't exist. " + e.getMessage());
-			//e.printStackTrace();
-		} catch (InvalidMapException e) {
-			System.out.println("Invalid map file: " + e.getMessage());
-		}*/
+		// GAME
+		else {
+			System.out.print("Enter map name to load: ");
+			String mapname = console.nextLine();
+			conts = new Controller[2];
+			conts[0] = new TestController1();
+			conts[1] = new TestController1();
+			
+			try {
+				game = new FieldOfView(mapname, conts);
+			} catch (IOException | InvalidMapException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				System.exit(0);
+			}
+			
+			System.out.println("player " + game.play() + " wins! woot");
+		}
 	}
 	
 	protected void paintComponent(Graphics g) {
 	    super.paintComponent(g);
 	    g.fillRect(0, 0, 512, 512);
-	    Square[][] sq = map.getSquares();
+	    Square[][] sq = isEditor ? map.getSquares() : game.getMap().getSquares();
 	    for (int i = 0; i < sq.length; i++) {
 			for (int j = 0; j < sq[0].length; j++) {
 				Square s = sq[i][j];
@@ -112,11 +121,18 @@ public class TestMain1 extends JComponent {
 	        }
 	    });
 		
-		window.setSize(800, 800);
+		window.setSize(530, 600);
 		window.setVisible(true);
 	}
 
 	protected void saveMap() {
+		if (!isEditor)
+			return;
+		map.setMapName("Test of Mapping");
+		map.setMapAuthor("Jack");
+		map.setMapRequiredMod("none");
+		map.setMapVersion("1.0");
+		
 		try {
 			map.saveMapFile("output_map.fov");
 		} catch (IOException e) {

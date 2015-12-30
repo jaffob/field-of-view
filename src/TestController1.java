@@ -28,6 +28,12 @@ public class TestController1 implements Controller {
 
 	@Override
 	public int selectPiece(ArrayList<ClientPiece> pieces) {
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		return pieces.get(0).getId();
 	}
 
@@ -38,6 +44,12 @@ public class TestController1 implements Controller {
 
 	@Override
 	public int selectAction(ActionList availableActions) {
+		try {
+			Thread.sleep(300);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		return 0;
 	}
 

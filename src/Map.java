@@ -227,7 +227,7 @@ public final class Map {
 		return mapName;
 	}
 
-	private void setMapName(String mapName) {
+	public void setMapName(String mapName) {
 		this.mapName = mapName;
 	}
 
@@ -235,7 +235,7 @@ public final class Map {
 		return mapAuthor;
 	}
 
-	private void setMapAuthor(String mapAuthor) {
+	public void setMapAuthor(String mapAuthor) {
 		this.mapAuthor = mapAuthor;
 	}
 
@@ -243,7 +243,7 @@ public final class Map {
 		return mapVersion;
 	}
 
-	private void setMapVersion(String mapVersion) {
+	public void setMapVersion(String mapVersion) {
 		this.mapVersion = mapVersion;
 	}
 
@@ -251,7 +251,7 @@ public final class Map {
 		return mapRequiredMod;
 	}
 
-	private void setMapRequiredMod(String mapRequiredMod) {
+	public void setMapRequiredMod(String mapRequiredMod) {
 		this.mapRequiredMod = mapRequiredMod;
 	}
 
