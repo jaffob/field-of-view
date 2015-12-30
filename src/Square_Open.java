@@ -1,7 +1,7 @@
 
 public class Square_Open extends Square {
 
-	public Square_Open(Vector2D position, int properties) {
+	public Square_Open(Vector2D position, Integer properties) {
 		super(position, properties);
 	}
 

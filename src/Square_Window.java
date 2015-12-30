@@ -1,7 +1,7 @@
 
 public class Square_Window extends Square {
 
-	public Square_Window(Vector2D position, int properties) {
+	public Square_Window(Vector2D position, Integer properties) {
 		super(position, properties);
 		setWalkable(false);
 	}
