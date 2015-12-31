@@ -380,6 +380,7 @@ public final class Map {
 		squareTypes.add(Square_Window.class);
 		squareTypes.add(Square_Start.class);
 		squareTypes.add(Square_Victory.class);
+		squareTypes.add(Square_Gate.class);
 	}
 	
 	public Class<? extends Square> getSquareClass(int squareType) {
@@ -388,6 +389,10 @@ public final class Map {
 	
 	public int getSquareType(Class<? extends Square> squareClass) {
 		return squareTypes.indexOf(squareClass);
+	}
+	
+	public int getNumSquareTypes() {
+		return squareTypes.size();
 	}
 	
 	public Square createSquare(int squareType, Vector2D position, int squareProperties) {

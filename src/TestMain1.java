@@ -56,11 +56,15 @@ public class TestMain1 extends JComponent {
 					 }
 					 if (SwingUtilities.isLeftMouseButton(e)) {
 						 int sqtype = map.getSquareType(map.getSquare(sqpos).getClass());
-						 Square newSquare = map.createSquare((sqtype + 1) % 5, sqpos, 0);
+						 Square newSquare = map.createSquare((sqtype + 1) % map.getNumSquareTypes(), sqpos, 0);
 						 map.getSquares()[sqpos.x][sqpos.y] = newSquare;
 					 }
-					 else {
+					 else if (SwingUtilities.isRightMouseButton(e)) {
 						 map.getSquares()[sqpos.x][sqpos.y].setSide( (map.getSquares()[sqpos.x][sqpos.y].getSide() + 1) % 3);
+					 }
+					 else if (map.getSquare(sqpos) instanceof Square_Gate) {
+						 Square_Gate gate = (Square_Gate)map.getSquare(sqpos);
+						 gate.setOpen(!gate.isOpen());
 					 }
 					 
 					 repaint();
@@ -108,7 +112,7 @@ public class TestMain1 extends JComponent {
 				for (int j = 0; j < sq[0].length; j++) {
 					Square s = sq[i][j];
 					
-					g.setColor(getSquareColor(s.getClass()));
+					g.setColor(getSquareColor(s.createClientSquare(true)));
 					
 					g.fillRect(s.getPosition().x * SQSIZE, s.getPosition().y * SQSIZE, SQSIZE, SQSIZE);
 					g.setColor(Color.BLACK);
@@ -139,7 +143,7 @@ public class TestMain1 extends JComponent {
 					for (int j = 0; j < sq[0].length; j++) {
 						ClientSquare s = sq[i][j];
 						
-						g.setColor(getSquareColor(s.getGameClass()));
+						g.setColor(getSquareColor(s));
 						
 						int sqx = (544 * player) + s.getPosition().x * SQSIZE;
 						int sqy = s.getPosition().y * SQSIZE;
@@ -194,15 +198,23 @@ public class TestMain1 extends JComponent {
 		}
 	}
 	
-	public Color getSquareColor(Class<? extends Square> cl) {
-		if (cl.equals(Square_Open.class))
+	public Color getSquareColor(ClientSquare cs) {
+		if (cs.getGameClass().equals(Square_Open.class))
 			return Color.WHITE;
-		else if (cl.equals(Square_Window.class))
+		else if (cs.getGameClass().equals(Square_Window.class))
 			return Color.CYAN;
-		else if (cl.equals(Square_Start.class))
+		else if (cs.getGameClass().equals(Square_Start.class))
 			return Color.YELLOW;
-		else if (cl.equals(Square_Victory.class))
+		else if (cs.getGameClass().equals(Square_Victory.class))
 			return Color.GREEN;
+		else if (cs.getGameClass().equals(Square_Gate.class)) {
+			if (cs.getStateVar("isOpen") > 0) {
+				return new Color(255, 150, 150);
+			}
+			else {
+				return new Color(150, 0, 0);
+			}
+		}
 		return Color.DARK_GRAY;
 	}
 
