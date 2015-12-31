@@ -7,6 +7,7 @@ public class Action_Suicide extends Action {
 	}
 	
 	public void doAction(FieldOfView game) {
+		addActionPosition(game.getPlayer(getPlayer()).getPieceById(getActor()).getPosition());
 		game.getPlayer(getPlayer()).killPiece(game, getActor());
 	}
 

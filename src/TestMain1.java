@@ -21,10 +21,10 @@ public class TestMain1 extends JComponent {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	
+	public static final JPanel buttons = new JPanel();
 	private final int SQSIZE = 32;
 	public FieldOfView game;
-	private TestController1[] conts;
+	private TestController2[] conts;
 	private Map map;
 	public boolean isEditor;
 	private Scanner console;
@@ -56,7 +56,7 @@ public class TestMain1 extends JComponent {
 					 }
 					 if (SwingUtilities.isLeftMouseButton(e)) {
 						 int sqtype = map.getSquareType(map.getSquare(sqpos).getClass());
-						 Square newSquare = map.createSquare((sqtype + 1) % 4, sqpos, 0);
+						 Square newSquare = map.createSquare((sqtype + 1) % 5, sqpos, 0);
 						 map.getSquares()[sqpos.x][sqpos.y] = newSquare;
 					 }
 					 else {
@@ -66,15 +66,25 @@ public class TestMain1 extends JComponent {
 					 repaint();
 				 }
 		    });
+			
+			JButton save = new JButton("Save");
+			buttons.add(save);
+			save.addActionListener(new ActionListener() {
+
+		        @Override
+		        public void actionPerformed(ActionEvent e) {
+		            saveMap();
+		        }
+		    });
 		}
 		
 		// GAME
 		else {
 			System.out.print("Enter map name to load: ");
 			mappath = console.nextLine();
-			conts = new TestController1[2];
-			conts[0] = new TestController1(this, 1);
-			conts[1] = new TestController1(this, 2);
+			conts = new TestController2[2];
+			conts[0] = new TestController2(this, 1);
+			conts[1] = new TestController2(this, 2);
 			
 			try {
 				game = new FieldOfView(mappath, conts);
@@ -98,14 +108,7 @@ public class TestMain1 extends JComponent {
 				for (int j = 0; j < sq[0].length; j++) {
 					Square s = sq[i][j];
 					
-					if (s.getClass().equals(Square_Open.class))
-						g.setColor(Color.WHITE);
-					else if (s.getClass().equals(Square_Wall.class))
-						g.setColor(Color.DARK_GRAY);
-					else if (s.getClass().equals(Square_Window.class))
-						g.setColor(Color.CYAN);
-					else if (s.getClass().equals(Square_Start.class))
-						g.setColor(Color.YELLOW);
+					g.setColor(getSquareColor(s.getClass()));
 					
 					g.fillRect(s.getPosition().x * SQSIZE, s.getPosition().y * SQSIZE, SQSIZE, SQSIZE);
 					g.setColor(Color.BLACK);
@@ -136,14 +139,7 @@ public class TestMain1 extends JComponent {
 					for (int j = 0; j < sq[0].length; j++) {
 						ClientSquare s = sq[i][j];
 						
-						if (s.getGameClass().equals(Square_Open.class))
-							g.setColor(Color.WHITE);
-						else if (s.getGameClass().equals(Square_Wall.class))
-							g.setColor(Color.DARK_GRAY);
-						else if (s.getGameClass().equals(Square_Window.class))
-							g.setColor(Color.CYAN);
-						else if (s.getGameClass().equals(Square_Start.class))
-							g.setColor(Color.YELLOW);
+						g.setColor(getSquareColor(s.getGameClass()));
 						
 						int sqx = (544 * player) + s.getPosition().x * SQSIZE;
 						int sqy = s.getPosition().y * SQSIZE;
@@ -172,18 +168,8 @@ public class TestMain1 extends JComponent {
 		window.getContentPane().add(game, BorderLayout.CENTER);
 		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
-		JPanel buttonsPanel = new JPanel();
-		JButton save = new JButton("Save");
-		buttonsPanel.add(save);
-		window.getContentPane().add(buttonsPanel, BorderLayout.SOUTH);
 		
-		save.addActionListener(new ActionListener() {
-
-	        @Override
-	        public void actionPerformed(ActionEvent e) {
-	            game.saveMap();
-	        }
-	    });
+		window.getContentPane().add(buttons, BorderLayout.SOUTH);
 		
 		window.setSize(1060, 600);
 		window.setVisible(true);
@@ -207,4 +193,40 @@ public class TestMain1 extends JComponent {
 			e.printStackTrace();
 		}
 	}
+	
+	public Color getSquareColor(Class<? extends Square> cl) {
+		if (cl.equals(Square_Open.class))
+			return Color.WHITE;
+		else if (cl.equals(Square_Window.class))
+			return Color.CYAN;
+		else if (cl.equals(Square_Start.class))
+			return Color.YELLOW;
+		else if (cl.equals(Square_Victory.class))
+			return Color.GREEN;
+		return Color.DARK_GRAY;
+	}
+
+	/*@Override
+	public void keyPressed(KeyEvent e) {
+		System.out.println("AISDHOSD");
+		Direction d;
+		switch (e.getKeyChar()) {
+		case 'a':
+			d = Direction.LEFT;
+			break;
+		case 'w':
+			d = Direction.UP;
+			break;
+		case 'd':
+			d = Direction.RIGHT;
+			break;
+		case 's':
+			d = Direction.DOWN;
+			break;
+		default:
+			return;
+		}
+		conts[0].inputMove = d;
+		conts[1].inputMove = d;
+	}*/
 }

@@ -40,6 +40,10 @@ public class Action_Move extends Action {
 		actorPiece.setPosition(destPos);
 		actorPiece.setMovesThisTurn(actorPiece.getMovesThisTurn() + destSquare.getMoveToll());
 		game.getKnowledgeHandler().notifyPieceMoved(actorPiece, originPos);
+		
+		// Add action positions for both origin and destination.
+		addActionPosition(originPos);
+		addActionPosition(destPos);
 	}
 
 	@Override

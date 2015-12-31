@@ -28,13 +28,6 @@ public class Player {
 	 * Helper function that spawns our king(s).
 	 */
 	private void initializePieces(FieldOfView game) {
-		// For each Start square, spawn a king there. Don't tell the KnowledgeHandler;
-		// it hasn't been initialized, and it will figure it out on it's own.
-		/*for (Square sq : game.getMap().getSquaresOfType(Square_Start.class)) {
-			Piece_King king = new Piece_King(getNumber(), new Vector2D(sq.getPosition()));
-			getPieces().add(king);
-			sq.setOccupant(king.getId());
-		}*/
 		for (Square sq : game.getMap().getSquaresOfType(Square_Start.class, getNumber())) {
 			Piece_King king = new Piece_King(getNumber(), new Vector2D(sq.getPosition()));
 			getPieces().add(king);
@@ -187,9 +180,9 @@ public class Player {
 		for (int i = 0; i < getNumPieces(); i++) {
 			Piece p = getPieces().get(i);
 			if (p.getId() == pieceId) {
-				game.getKnowledgeHandler().notifyPieceDestroyed(p);
 				game.getMap().getSquare(p.getPosition()).setOccupant(0);
 				getPieces().remove(i);
+				game.getKnowledgeHandler().notifyPieceDestroyed(p);
 				return;
 			}
 		}

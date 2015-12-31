@@ -27,8 +27,8 @@ public abstract class Square {
 	 * @param properties Byte of property data
 	 */
 	protected void absorbPropertyVal(int properties) {
-		// First 2 bits represent the side.
-		setSide(properties & 0b11);
+		// First 3 bits represent the side.
+		setSide(properties & 0b111);
 	}
 	
 	public int createPropertyVal() {
@@ -128,11 +128,11 @@ public abstract class Square {
 		ActionList actions = new ActionList();
 		
 		if (piece.canUseSpecialSquares()) {
-			actions.addList(getSpecialActions(game));
+			actions.addList(getSpecialActions(game, piece));
 		}
 		
 		if (piece.isGoalPiece()) {
-			actions.addList(getGoalActions(game));
+			actions.addList(getGoalActions(game, piece));
 		}
 		
 		return actions;
@@ -140,18 +140,20 @@ public abstract class Square {
 	/**
 	 * Gets the set of special actions this square can perform. These
 	 * actions can generally only be performed by the king.
+	 * @param piece 
 	 * @return An ActionSet of special actions
 	 */
-	public ActionList getSpecialActions(FieldOfView game) {
+	public ActionList getSpecialActions(FieldOfView game, Piece piece) {
 		return new ActionList();
 	}
 	
 	/**
 	 * Gets the set of actions a goal piece can perform here. Winning
 	 * is the primary use case here.
+	 * @param piece 
 	 * @return An ActionSet of goal actions
 	 */
-	public ActionList getGoalActions(FieldOfView game) {
+	public ActionList getGoalActions(FieldOfView game, Piece piece) {
 		return new ActionList();
 	}
 

@@ -379,6 +379,7 @@ public final class Map {
 		squareTypes.add(Square_Open.class);
 		squareTypes.add(Square_Window.class);
 		squareTypes.add(Square_Start.class);
+		squareTypes.add(Square_Victory.class);
 	}
 	
 	public Class<? extends Square> getSquareClass(int squareType) {
