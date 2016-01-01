@@ -30,7 +30,7 @@ public class Player {
 	private void initializePieces(FieldOfView game) {
 		for (Square sq : game.getMap().getSquaresOfType(Square_Start.class, getNumber())) {
 			Piece_King king = new Piece_King(getNumber(), new Vector2D(sq.getPosition()));
-			getPieces().add(king);
+			addPiece(king);
 			sq.setOccupant(king.getId());
 		}
 	}
@@ -54,14 +54,11 @@ public class Player {
 			return;
 		}
 		
-		// Create ClientPieces for each of our pieces.
-		ArrayList<ClientPiece> clientPieces = createClientPieces();
-		
 		// Ask the controller to choose a piece.
 		int selectedPieceId = 0;
 		Piece selectedPiece = null;
 		do {
-			selectedPieceId = getController().selectPiece(clientPieces);
+			selectedPieceId = getController().selectPiece(getPieceIds());
 		}
 		while ((selectedPiece = getPieceById(selectedPieceId)) == null);
 		
@@ -125,6 +122,10 @@ public class Player {
 	public ArrayList<Piece> getPieces() {
 		return pieces;
 	}
+	
+	public void addPiece(Piece piece) {
+		pieces.add(piece);
+	}
 
 	public int getNumPieces() {
 		return pieces.size();
@@ -166,6 +167,14 @@ public class Player {
 			}
 		}
 		return null;
+	}
+	
+	public ArrayList<Integer> getPieceIds() {
+		ArrayList<Integer> ids = new ArrayList<Integer>();
+		for (Piece p : pieces) {
+			ids.add(p.getId());
+		}
+		return ids;
 	}
 	
 	public ArrayList<ClientPiece> createClientPieces() {

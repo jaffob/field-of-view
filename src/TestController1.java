@@ -33,7 +33,7 @@ public class TestController1 implements Controller {
 	}
 
 	@Override
-	public int selectPiece(ArrayList<ClientPiece> pieces) {
+	public int selectPiece(ArrayList<Integer> pieceIds) {
 		Utils.log("Controller " + playerNum + ": select piece");
 		try {
 			Thread.sleep(1000);
@@ -41,12 +41,12 @@ public class TestController1 implements Controller {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return pieces.get(0).getId();
+		return pieceIds.get(0);
 	}
 
 	@Override
-	public Vector2D selectSquare(ArrayList<ClientSquare> squares) {
-		return squares.get(0).getPosition();
+	public Vector2D selectSquare(ArrayList<Vector2D> squarePositions) {
+		return squarePositions.get(0);
 	}
 
 	@Override

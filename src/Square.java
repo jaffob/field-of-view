@@ -127,7 +127,8 @@ public abstract class Square {
 	public ActionList getActions(FieldOfView game, Piece piece) {
 		ActionList actions = new ActionList();
 		
-		if (piece.canUseSpecialSquares()) {
+		// Special squares require that the piece is on the same side or the square is neutral.
+		if (piece.canUseSpecialSquares() && (getSide() == 0 || piece.getOwner() == getSide())) {
 			actions.addList(getSpecialActions(game, piece));
 		}
 		

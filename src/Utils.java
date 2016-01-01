@@ -29,4 +29,8 @@ public final class Utils {
 			System.out.println(s);
 		}
 	}
+	
+	public static void error(String s) {
+		log(s);
+	}
 }

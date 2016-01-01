@@ -31,10 +31,15 @@ public class FieldOfView {
 		players = new Player[2];
 		players[0] = new Player(this, 1, controllers[0]);
 		players[1] = new Player(this, 2, controllers[1]);
-		knowledgeHandler = new KnowledgeHandler(this);
+		initializeGameStateVars();
+		knowledgeHandler = new KnowledgeHandler(this);	
 		turn = 1;
 	}
 	
+	protected void initializeGameStateVars() {
+		setGameStateVar("generator", 0);
+	}
+
 	/**
 	 * Starts the gameplay loop. This functions as a loop that makes
 	 * each player alternate turns until someone wins.
@@ -147,7 +152,6 @@ public class FieldOfView {
 	
 	public void setGameStateVar(String varName, int newValue) {
 		gameStateVars.put(varName, newValue);
-		knowledgeHandler.notifyGameStateVarChange(varName);
 	}
 	
 	public HashMap<String, Integer> getGameStateVars() {

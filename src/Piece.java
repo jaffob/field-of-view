@@ -24,7 +24,7 @@ public class Piece {
 	private int movesThisTurn;
 	private int shieldLevel;
 	
-	public Piece(int ownerNumber, Vector2D startPosition) {
+	public Piece(Integer ownerNumber, Vector2D startPosition) {
 		owner = ownerNumber;
 		
 		id = Piece.generateNextId();

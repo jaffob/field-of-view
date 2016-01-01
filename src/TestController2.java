@@ -38,14 +38,14 @@ public class TestController2 implements Controller {
 	}
 
 	@Override
-	public int selectPiece(ArrayList<ClientPiece> pieces) {
+	public int selectPiece(ArrayList<Integer> pieceIds) {
 		Utils.log("Controller " + playerNum + ": select piece");
-		return pieces.get(0).getId();
+		return pieceIds.get(0);
 	}
 
 	@Override
-	public Vector2D selectSquare(ArrayList<ClientSquare> squares) {
-		return squares.get(0).getPosition();
+	public Vector2D selectSquare(ArrayList<Vector2D> squarePositions) {
+		return squarePositions.get(0);
 	}
 
 	@Override

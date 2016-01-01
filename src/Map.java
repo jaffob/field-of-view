@@ -321,17 +321,22 @@ public final class Map {
 		}
 		return s;
 	}
+	
+	public ArrayList<Vector2D> getSquarePositionsOfType(Class<? extends Square> type, int side) {
+		ArrayList<Vector2D> s = new ArrayList<Vector2D>();
+		for (int i = 0; i < squares.length; i++) {
+			for (int j = 0; j < squares[0].length; j++) {
+				if (type.isInstance(squares[i][j]) && (side == -1 || side == squares[i][j].getSide())) {
+					s.add(squares[i][j].getPosition());
+				}
+			}
+		}
+		return s;
+	}
 
 	public ArrayList<Vector2D> getVisibleSquares(Piece piece) {
 		ArrayList<Vector2D> out = new ArrayList<Vector2D>();
-		/*for (int i = 0; i < getSize().x; i++) {
-			out.add(new Vector2D(i, piece.getPosition().y));
-		}
-		for (int i = 0; i < getSize().y; i++) {
-			if (i != piece.getPosition().y)
-				out.add(new Vector2D(piece.getPosition().x, i));
-		}
-		return out;*/
+
 		out.add(piece.getPosition());
 		
 		// shoot ray left
@@ -381,6 +386,8 @@ public final class Map {
 		squareTypes.add(Square_Start.class);
 		squareTypes.add(Square_Victory.class);
 		squareTypes.add(Square_Gate.class);
+		squareTypes.add(Square_Deploy.class);
+		squareTypes.add(Square_Spawn.class);
 	}
 	
 	public Class<? extends Square> getSquareClass(int squareType) {

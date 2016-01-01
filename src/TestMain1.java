@@ -215,6 +215,12 @@ public class TestMain1 extends JComponent {
 				return new Color(150, 0, 0);
 			}
 		}
+		else if (cs.getGameClass().equals(Square_Deploy.class)) {
+			return Color.BLUE;
+		}
+		else if (cs.getGameClass().equals(Square_Spawn.class)) {
+			return new Color(255, 255, 128);
+		}
 		return Color.DARK_GRAY;
 	}
 

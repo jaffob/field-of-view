@@ -15,10 +15,10 @@ public interface Controller {
 	 * This function is used for any purpose where selection of a piece
 	 * is required, ranging from choosing which piece to move at turn
 	 * start, to choosing an enemy piece to kill.
-	 * @param pieces List of pieces to choose from
+	 * @param pieceIds List of piece IDs to choose from
 	 * @return ID of the chosen piece
 	 */
-	public int selectPiece(ArrayList<ClientPiece> pieces);
+	public int selectPiece(ArrayList<Integer> pieceIds);
 	
 	/**
 	 * Chooses a square from a list of possible choices. Generally, this
@@ -26,10 +26,10 @@ public interface Controller {
 	 * This function is used for any purpose where selection of a square
 	 * is required, ranging from choosing where to spawn a new piece, to
 	 * choosing which adjacent gate to toggle.
-	 * @param squares List of squares to choose from
+	 * @param squarePositions List of squares to choose from
 	 * @return Position of the chosen square
 	 */
-	public Vector2D selectSquare(ArrayList<ClientSquare> squares);
+	public Vector2D selectSquare(ArrayList<Vector2D> squarePositions);
 	
 	/**
 	 * From the list of available ClientActions, choose one.

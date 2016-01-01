@@ -1,7 +1,7 @@
 
 public class Piece_King extends Piece {
 
-	public Piece_King(int ownerNumber, Vector2D startPosition) {
+	public Piece_King(Integer ownerNumber, Vector2D startPosition) {
 		super(ownerNumber, startPosition);
 		
 		setMaxMoves(10);

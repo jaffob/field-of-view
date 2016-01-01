@@ -58,6 +58,10 @@ public abstract class Action {
 		actionPositions.add(pos);
 	}
 	
+	protected void addActionPositionAtActor(FieldOfView game) {
+		addActionPosition(game.getPlayer(getPlayer()).getPieceById(getActor()).getPosition());
+	}
+	
 	// ---------------------------------- //
 	// -------- Override Methods -------- //
 	// ---------------------------------- //
