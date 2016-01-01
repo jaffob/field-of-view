@@ -124,6 +124,26 @@ public abstract class Square {
 	// ------------- Methods ------------ //
 	// ---------------------------------- //
 
+	public boolean allowPieceMoveActions(FieldOfView game, Piece piece) {
+		return true;
+	}
+	
+	public boolean allowPieceUniqueActions(FieldOfView game, Piece piece) {
+		return true;
+	}
+	
+	public boolean allowPieceSelect(FieldOfView game, Piece piece) {
+		return true;
+	}
+	
+	public boolean allowPieceSuicide(FieldOfView game, Piece piece) {
+		return true;
+	}
+	
+	public boolean allowPieceEndTurn(FieldOfView game, Piece piece) {
+		return true;
+	}
+	
 	public ActionList getActions(FieldOfView game, Piece piece) {
 		ActionList actions = new ActionList();
 		

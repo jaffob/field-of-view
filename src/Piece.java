@@ -14,9 +14,6 @@ public class Piece {
 	private boolean isGoalPiece;
 	private boolean isInvulnerable;
 	private boolean canUseSpecialSquares;
-	private boolean canSuicide;
-	private boolean allowEndTurn;
-	private int powerReq;
 	
 	// State of this piece.
 	private Vector2D position;
@@ -38,9 +35,6 @@ public class Piece {
 		setGoalPiece(false);
 		setInvulnerable(false);
 		setCanUseSpecialSquares(false);
-		setCanSuicide(true);
-		setAllowEndTurn(true);
-		setPowerReq(0);
 		setShieldLevel(0);
 	}
 	
@@ -71,8 +65,6 @@ public class Piece {
 		cp.setStateVar("isGoalPiece", isGoalPiece() ? 1 : 0);
 		cp.setStateVar("isInvulnerable", isInvulnerable() ? 1 : 0);
 		cp.setStateVar("canUseSpecialSquares", canUseSpecialSquares() ? 1 : 0);
-		cp.setStateVar("canSuicide", canSuicide() ? 1 : 0);
-		cp.setStateVar("powerReq", getPowerReq());
 		cp.setStateVar("shieldLevel", getShieldLevel());
 		return cp;
 	}
@@ -182,36 +174,12 @@ public class Piece {
 		this.isInvulnerable = isInvulnerable;
 	}
 
-	public int getPowerReq() {
-		return powerReq;
-	}
-
-	public void setPowerReq(int powerReq) {
-		this.powerReq = powerReq;
-	}
-
 	public boolean canUseSpecialSquares() {
 		return canUseSpecialSquares;
 	}
 
 	public void setCanUseSpecialSquares(boolean canUseSpecialSquares) {
 		this.canUseSpecialSquares = canUseSpecialSquares;
-	}
-	
-	public boolean canSuicide() {
-		return canSuicide;
-	}
-
-	public void setCanSuicide(boolean canSuicide) {
-		this.canSuicide = canSuicide;
-	}
-
-	public boolean allowEndTurn() {
-		return allowEndTurn;
-	}
-
-	public void setAllowEndTurn(boolean allowEndTurn) {
-		this.allowEndTurn = allowEndTurn;
 	}
 
 	public int getShieldLevel() {
@@ -235,8 +203,16 @@ public class Piece {
 	// ------------- Methods ------------ //
 	// ---------------------------------- //
 
-	public boolean allowSelect() {
-		return true;
+	public boolean allowSelect(FieldOfView game) {
+		return getCurrentSquare(game.getMap()).allowPieceSelect(game, this);
+	}
+	
+	public boolean allowSuicide(FieldOfView game) {
+		return getCurrentSquare(game.getMap()).allowPieceSuicide(game, this);
+	}
+	
+	public boolean allowEndTurn(FieldOfView game) {
+		return getCurrentSquare(game.getMap()).allowPieceEndTurn(game, this);
 	}
 	
 	public void select() {
@@ -287,15 +263,26 @@ public class Piece {
 		
 		ActionList actions = new ActionList();
 		
-		actions.addList(getMoveActions(game));
-		actions.addList(getCurrentSquare(game.getMap()).getActions(game, this));
-		actions.addList(getUniqueActions(game));
+		// Add move actions.
+		if (getCurrentSquare(game.getMap()).allowPieceMoveActions(game, this)) {
+			actions.addList(getMoveActions(game));
+		}
 		
-		if (canSuicide()) {
+		// Add actions that are unique to this piece.
+		if (getCurrentSquare(game.getMap()).allowPieceUniqueActions(game, this)) {
+			actions.addList(getUniqueActions(game));
+		}
+		
+		// Add actions specific to the square we're standing in.
+		actions.addList(getCurrentSquare(game.getMap()).getActions(game, this));
+		
+		// Add suicide action.
+		if (allowSuicide(game)) {
 			actions.addAction(new Action_Suicide(getOwner(), getId()));
 		}
 		
-		if (allowEndTurn()) {
+		// Add end turn action.
+		if (allowEndTurn(game)) {
 			actions.addAction(new Action_EndTurn(getOwner(), getId()));
 		}
 		
@@ -339,29 +326,6 @@ public class Piece {
 		return new ActionList();
 	}
 
-	/*public void kill(boolean forceKill) {
-		
-		// The piece is killed.
-		if (forceKill || shieldLevel == 0) {
-			getCurrentSquare().setOccupant(null);
-			
-			// If invulnerable, respawn this piece.
-			if (isInvulnerable()) {
-				// TODO: Respawn. Do this by having a spawn queue that gets flushed to the controller at the beginning of its turn, so if you have two king spawns you can choose one.
-			}
-			else {
-				game.getKnowledgeHandler().notifyPieceDestroyed(this);
-				getOwnerPlayer().notifyPieceKilled(this);
-			}
-			
-		}
-		
-		// The piece was shielded; simply remove one shield level.
-		else {
-			removeShieldLevel();
-		}
-	}*/
-	
 	public boolean inflictDamage() {
 		return shieldLevel-- == 0;
 	}
