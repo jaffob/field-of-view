@@ -64,5 +64,15 @@ public class Vector2D extends Point {
 	public boolean isAdjacentTo(Vector2D v) {
 		return gridDistance(v) == 1;
 	}
+	
+	/**
+	 * Returns whether this Vector2D (being treated as a position) is
+	 * within the bounds of an area whose size is specified by areaSize.
+	 * @param areaSize The size of the area
+	 * @return Whether this point is in bounds
+	 */
+	public boolean isInBounds(Vector2D areaSize) {
+		return x >= 0 && y >= 0 && x < areaSize.x && y < areaSize.y;
+	}
 
 }

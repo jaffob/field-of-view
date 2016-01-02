@@ -295,7 +295,7 @@ public final class Map {
 	 * @return Whether it's in bounds
 	 */
 	public boolean positionIsInBounds(Vector2D pos) {
-		return pos.x >= 0 && pos.y >= 0 && pos.x < size.x && pos.y < size.y;
+		return pos.isInBounds(getSize());
 	}
 	
 	public boolean positionIsInBounds(int x, int y) {
@@ -339,6 +339,20 @@ public final class Map {
 
 		out.add(piece.getPosition());
 		
+		Raycast rays = new Raycast() {
+			@Override
+			public boolean onPosition(Vector2D position) {
+				if (getSquare(position).isTransparent()) {
+					out.add(position);
+					return true;
+				}
+				return false;
+			}
+		};
+		
+		rays.cast(piece.getPosition(), getSize());
+		return out;
+		/*
 		// shoot ray left
 		for (int x = piece.getPosition().x - 1; x >= 0; x--) {
 			Vector2D currPos = new Vector2D(x, piece.getPosition().y);
@@ -375,7 +389,7 @@ public final class Map {
 				break;
 		}
 		
-		return out;
+		return out;*/
 	}
 	
 	private void initializeSquareTypes() {
