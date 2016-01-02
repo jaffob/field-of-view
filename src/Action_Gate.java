@@ -8,7 +8,7 @@ public class Action_Gate extends Action {
 	}
 
 	@Override
-	public void doAction(FieldOfView game) {
+	public boolean doAction(FieldOfView game) {
 		addActionPositionAtActor(game);
 		
 		Piece actorPiece = getActorPiece(game);
@@ -20,9 +20,13 @@ public class Action_Gate extends Action {
 			}
 		}
 		
+		if (gatePositions.isEmpty()) {
+			return false;
+		}
 		Vector2D selectedPosition = gatePositions.get(getPlayer(game).selectSquare(gatePositions));
 		Square_Gate gate = (Square_Gate)game.getMap().getSquare(selectedPosition);
 		gate.openCloseGate(game, !gate.isOpen());
+		return true;
 	}
 
 	@Override

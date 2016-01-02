@@ -71,8 +71,9 @@ public abstract class Action {
 	 * action affects knowledge directly (e.g. surveillance), it can do
 	 * that by accessing the KnowledgeHandler through the game object.
 	 * @param game Reference to the game object
+	 * @return Whether the action succeeded
 	 */
-	public abstract void doAction(FieldOfView game);
+	public abstract boolean doAction(FieldOfView game);
 	
 	public void sendToKnowledgeHandler(FieldOfView game) {
 		for (int i = 1; i <= game.getNumberOfPlayers(); i++) {

@@ -14,10 +14,10 @@ public class Action_Move extends Action {
 	}
 
 	@Override
-	public void doAction(FieldOfView game) {
+	public boolean doAction(FieldOfView game) {
 		Piece actorPiece = getActorPiece(game);
 		if (actorPiece == null) {
-			return;
+			return false;
 		}
 		
 		// Get the squares we're exiting and entering.
@@ -29,7 +29,7 @@ public class Action_Move extends Action {
 		// Return false if we're trying to move off the map. Should never happen because
 		// we assume MoveActions are only created for valid moves.
 		if (destSquare == null || originSquare == null)
-			return;
+			return false;
 		
 		// Tell the player we are moving.
 		getPlayer(game).notifyPieceMove(getActor(), getDirection(), originSquare, destSquare);
@@ -44,6 +44,8 @@ public class Action_Move extends Action {
 		// Add action positions for both origin and destination.
 		addActionPosition(originPos);
 		addActionPosition(destPos);
+		
+		return true;
 	}
 
 	@Override

@@ -13,9 +13,10 @@ public class Action_Victory extends Action {
 	}
 
 	@Override
-	public void doAction(FieldOfView game) {
+	public boolean doAction(FieldOfView game) {
 		game.getPlayer(getLosingPlayer()).setVictoryFlag(-1);
 		addActionPositionAtActor(game);
+		return true;
 	}
 
 	@Override

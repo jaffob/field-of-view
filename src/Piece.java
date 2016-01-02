@@ -246,36 +246,6 @@ public class Piece {
 	}
 	
 	/**
-	 * Attempt to move this piece one square in a given direction.
-	 * Call this whenever the piece wants to move; it will check that
-	 * the move is valid (although it won't check if it's the correct
-	 * player's turn).
-	 * @param dir The direction to move in
-	 * @return Whether the move was successfully completed
-	 */
-	/*public void move(Direction dir) {
-		
-		// Get the squares we're exiting and entering.
-		Square originSquare = getCurrentSquare();
-		Vector2D destPos = getPosition().plus(dir.getUnitVector());
-		Square destSquare = game.getMap().getSquare(destPos);
-		
-		// Return false if we're trying to move off the map. Should never happen because
-		// we assume MoveActions are only created for valid moves.
-		if (destSquare == null || originSquare == null)
-			return;
-		
-		// Tell the player we are moving.
-		getOwnerPlayer().notifyPieceMove(this, dir, originSquare, destSquare);
-		
-		// Do the move.
-		originSquare.setOccupant(null);
-		destSquare.setOccupant(this);
-		setPosition(destPos);
-		setMovesThisTurn(getMovesThisTurn() + destSquare.getMoveToll());
-	}*/
-	
-	/**
 	 * Gets the set of actions available from the current square.
 	 * Doesn't check if it's actually this player's turn.
 	 * @return An ActionSet of all the possible actions.

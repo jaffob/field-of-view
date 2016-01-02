@@ -388,6 +388,7 @@ public final class Map {
 		squareTypes.add(Square_Gate.class);
 		squareTypes.add(Square_Deploy.class);
 		squareTypes.add(Square_Spawn.class);
+		squareTypes.add(Square_Generator.class);
 	}
 	
 	public Class<? extends Square> getSquareClass(int squareType) {

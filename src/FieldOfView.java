@@ -170,26 +170,30 @@ public class FieldOfView {
 	}
 	
 	/**
-	 * Spawns a piece for a certain player at the specified position. This
-	 * method does very little error checking, so make sure spawnPos specifies
-	 * a valid and empty square before calling.
+	 * Spawns a piece for a certain player at the specified position.
 	 * @param type The class of piece to spawn
 	 * @param playerNum The number of the player who will own this piece
 	 * @param spawnPos The position to spawn the piece at
+	 * @return Whether the piece spawned successfully.
 	 */
-	public void spawnPiece(Class<? extends Piece> type, int playerNum, Vector2D spawnPos) {
+	public boolean spawnPiece(Class<? extends Piece> type, int playerNum, Vector2D spawnPos) {
 		Piece newPiece;
+		
+		if (!getMap().positionIsInBounds(spawnPos) || getMap().getSquare(spawnPos).isOccupied()) {
+			return false;
+		}
 		
 		try {
 			newPiece = type.getConstructor(Integer.class, Vector2D.class).newInstance(playerNum, spawnPos);
 		} catch (Exception e) {
-			return;
+			return false;
 		}
 		
 		// Do everything needed to spawn the piece.
 		getPlayer(playerNum).addPiece(newPiece);
 		getMap().getSquare(spawnPos).setOccupant(newPiece.getId());
 		getKnowledgeHandler().notifyPieceCreated(newPiece);
+		return true;
 	}
 	
 	/**

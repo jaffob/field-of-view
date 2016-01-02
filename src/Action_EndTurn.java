@@ -6,8 +6,9 @@ public class Action_EndTurn extends Action {
 	}
 
 	@Override
-	public void doAction(FieldOfView game) {
+	public boolean doAction(FieldOfView game) {
 		addActionPositionAtActor(game);
+		return true;
 	}
 
 	@Override

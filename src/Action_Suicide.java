@@ -5,9 +5,10 @@ public class Action_Suicide extends Action {
 		super(player, actor);
 	}
 	
-	public void doAction(FieldOfView game) {
+	public boolean doAction(FieldOfView game) {
 		addActionPositionAtActor(game);
 		game.killPiece(getPlayerNum(), getActor(), true);
+		return true;
 	}
 
 	@Override

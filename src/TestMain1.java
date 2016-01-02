@@ -3,21 +3,15 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.beans.PropertyChangeListener;
 import java.io.IOException;
 import java.util.Scanner;
 
-import javax.swing.Action;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 
 
@@ -39,10 +33,10 @@ public class TestMain1 extends JComponent {
 	public TestMain1() {
 		
 		console = new Scanner(System.in);
-		System.out.print("e for editor, anything else for game: ");
-		
+		System.out.print("e for editor, q to quit, anything else for game: ");
+		String choice = console.nextLine();
 		// EDITOR
-		if (console.nextLine().equals("e")) {
+		if (choice.equals("e")) {
 			System.out.print("Enter map name to load, or blank for new map: ");
 			mappath = console.nextLine();
 			isEditor = true;
@@ -86,6 +80,10 @@ public class TestMain1 extends JComponent {
 		            saveMap();
 		        }
 		    });
+		}
+		
+		else if (choice.equals("q")) {
+			System.exit(0);
 		}
 		
 		// GAME
@@ -156,11 +154,23 @@ public class TestMain1 extends JComponent {
 						int sqx = (544 * player) + s.getPosition().x * SQSIZE;
 						int sqy = s.getPosition().y * SQSIZE;
 						g.fillRect(sqx, sqy, SQSIZE, SQSIZE);
+						
+						Color genColor;
+						if (ks.getCurrentGameStateVars().get("generator") == 2)
+							genColor = new Color(0, 128, 0);
+						else if (ks.getCurrentGameStateVars().get("generator") == 1) {
+							genColor = new Color(0, 64, 0);
+						}
+						else
+						{
+							genColor = Color.BLACK;
+						}
 						g.setColor(Color.BLACK);
 						g.drawRect(sqx, sqy, SQSIZE, SQSIZE);
 						
 						if (!s.isKnown()) {
-							g.fillRect(sqx + 3, sqy + 3, SQSIZE - 6, SQSIZE - 6);
+							g.setColor(genColor);
+							g.fillRect(sqx + 5, sqy + 5, SQSIZE - 10, SQSIZE - 10);
 						}
 					}
 				}
@@ -211,7 +221,7 @@ public class TestMain1 extends JComponent {
 		if (cs.getGameClass().equals(Square_Open.class))
 			return Color.WHITE;
 		else if (cs.getGameClass().equals(Square_Window.class))
-			return Color.CYAN;
+			return Color.GRAY;
 		else if (cs.getGameClass().equals(Square_Start.class))
 			return Color.YELLOW;
 		else if (cs.getGameClass().equals(Square_Victory.class))
@@ -229,6 +239,9 @@ public class TestMain1 extends JComponent {
 		}
 		else if (cs.getGameClass().equals(Square_Spawn.class)) {
 			return new Color(255, 255, 128);
+		}
+		else if (cs.getGameClass().equals(Square_Generator.class)) {
+			return Color.CYAN;
 		}
 		return Color.DARK_GRAY;
 	}

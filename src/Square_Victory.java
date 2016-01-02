@@ -20,7 +20,7 @@ public class Square_Victory extends Square {
 	@Override
 	public ActionList getGoalActions(FieldOfView game, Piece piece) {
 		ActionList actions = super.getGoalActions(game, piece);
-		if (piece.getOwner() != getSide()) {
+		if (piece.getOwner() != getSide() && game.getGameStateVar("generator") == 2) {
 			actions.addAction(new Action_Victory(piece.getOwner(), piece.getId(), getSide()));
 		}
 		return actions;

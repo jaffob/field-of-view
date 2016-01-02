@@ -21,7 +21,9 @@ public class Action_Deploy extends Action {
 	}
 
 	@Override
-	public void doAction(FieldOfView game) {
+	public boolean doAction(FieldOfView game) {
+		addActionPositionAtActor(game);
+		
 		ArrayList<Vector2D> spawns = new ArrayList<Vector2D>();
 		
 		// Populate spawns with positions of all available spawn squares.
@@ -36,11 +38,11 @@ public class Action_Deploy extends Action {
 			}
 		}
 		
-		Vector2D spawnPos = spawns.get(getPlayer(game).selectSquare(spawns));
-		game.spawnPiece(getDeployClass(), getPlayerNum(), spawnPos);
+		if (spawns.isEmpty())
+			return false;
 		
-		// Add the actor as the only action position.
-		addActionPositionAtActor(game);
+		Vector2D spawnPos = spawns.get(getPlayer(game).selectSquare(spawns));
+		return game.spawnPiece(getDeployClass(), getPlayerNum(), spawnPos);
 	}
 
 	@Override
