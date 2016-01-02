@@ -337,6 +337,7 @@ public final class Map {
 	public ArrayList<Vector2D> getVisibleSquares(Piece piece) {
 		ArrayList<Vector2D> out = new ArrayList<Vector2D>();
 
+		// This piece knows the square it's standing on.
 		out.add(piece.getPosition());
 		
 		Raycast rays = new Raycast() {
@@ -352,44 +353,6 @@ public final class Map {
 		
 		rays.cast(piece.getPosition(), getSize());
 		return out;
-		/*
-		// shoot ray left
-		for (int x = piece.getPosition().x - 1; x >= 0; x--) {
-			Vector2D currPos = new Vector2D(x, piece.getPosition().y);
-			if (positionIsInBounds(currPos) && getSquare(currPos).isTransparent())
-				out.add(currPos);
-			else
-				break;
-		}
-		
-		// shoot ray right
-		for (int x = piece.getPosition().x + 1; x < getSize().x; x++) {
-			Vector2D currPos = new Vector2D(x, piece.getPosition().y);
-			if (positionIsInBounds(currPos) && getSquare(currPos).isTransparent())
-				out.add(currPos);
-			else
-				break;
-		}
-		
-		// shoot ray up
-		for (int y = piece.getPosition().y - 1; y >= 0; y--) {
-			Vector2D currPos = new Vector2D(piece.getPosition().x, y);
-			if (positionIsInBounds(currPos) && getSquare(currPos).isTransparent())
-				out.add(currPos);
-			else
-				break;
-		}
-		
-		// shoot ray down
-		for (int y = piece.getPosition().y + 1; y < getSize().y; y++) {
-			Vector2D currPos = new Vector2D(piece.getPosition().x, y);
-			if (positionIsInBounds(currPos) && getSquare(currPos).isTransparent())
-				out.add(currPos);
-			else
-				break;
-		}
-		
-		return out;*/
 	}
 	
 	private void initializeSquareTypes() {

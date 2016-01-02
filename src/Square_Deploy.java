@@ -34,6 +34,7 @@ public class Square_Deploy extends Square {
 			// Create deploy actions for each type of piece.
 			if (squareAvailable) {
 				actions.addAction(new Action_Deploy(piece.getOwner(), piece.getId(), Piece_Swordsman.class, "Swordsman"));
+				actions.addAction(new Action_Deploy(piece.getOwner(), piece.getId(), Piece_Guardian.class, "Guardian"));
 				actions.addAction(new Action_Deploy(piece.getOwner(), piece.getId(), Piece_Gatekeeper.class, "Gatekeeper"));
 			}
 		}

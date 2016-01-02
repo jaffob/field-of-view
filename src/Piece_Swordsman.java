@@ -14,11 +14,6 @@ public class Piece_Swordsman extends Piece {
 		// For each player...
 		for (int i = 1; i <= game.getNumberOfPlayers(); i++) {
 			
-			// Don't let us kill our own pieces.
-			if (i == getOwner()) {
-				continue;
-			}
-			
 			// If this player has a piece adjacent to us, add a target.
 			for (Piece p : game.getPlayer(i).getPieces()) {
 				if (p.getPosition().isAdjacentTo(getPosition())) {

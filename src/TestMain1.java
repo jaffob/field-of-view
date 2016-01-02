@@ -179,7 +179,7 @@ public class TestMain1 extends JComponent {
 			    	g.setColor(p.getOwner() == 1 ? Color.RED : Color.BLUE);
 			    	g.fillOval((544 * player) + p.getPosition().x * SQSIZE + 8, p.getPosition().y * SQSIZE + 8, 16, 16);
 			    	g.setColor(Color.WHITE);
-			    	g.drawString(p.getGameClass().getName().substring(6, 7), (544 * player) + p.getPosition().x * SQSIZE + 12, p.getPosition().y * SQSIZE + 21);
+			    	g.drawString(p.getGameClass().getName().substring(6, 8), (544 * player) + p.getPosition().x * SQSIZE + 10, p.getPosition().y * SQSIZE + 21);
 			    }
 	    	}
 		    
