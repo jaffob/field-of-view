@@ -210,11 +210,11 @@ public class Player {
 	}
 
 	/**
-	 * Ask the controller to select a square from a list of positions. This
+	 * Ask the controller to select a piece from a list of piece IDs. This
 	 * method is guaranteed to return an index that is in bounds, because it
 	 * will keep polling the controller until the response is valid. 
-	 * @param squarePositions ArrayList of square positions
-	 * @return The array index of the selected square
+	 * @param pieceIds ArrayList of piece IDs
+	 * @return The array index of the selected piece
 	 */
 	public int selectPiece(ArrayList<Integer> pieceIds) {
 		if (pieceIds.isEmpty()) {

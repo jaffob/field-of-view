@@ -45,4 +45,24 @@ public class Vector2D extends Point {
 		return "(" + x + ", " + y + ")";
 	}
 
+	/**
+	 * Gets the Manhattan distance between this and another point.
+	 * @param v The other Vector2D
+	 * @return The total x+y distance between the points.
+	 */
+	public int gridDistance(Vector2D v) {
+		return Math.abs(x - v.x) + Math.abs(y - v.y);
+	}
+	
+	/**
+	 * Returns whether this position is adjacent to another. Points
+	 * are adjacent if they are one apart either horizontally or
+	 * vertically (diagonals don't count).
+	 * @param v The other Vector2D
+	 * @return Whether the positions are adjacent.
+	 */
+	public boolean isAdjacentTo(Vector2D v) {
+		return gridDistance(v) == 1;
+	}
+
 }

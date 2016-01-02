@@ -12,7 +12,6 @@ public class Piece {
 	
 	// Attributes applicable to all pieces.
 	private int maxMoves;
-	private Class<Square> spawnSquareClass;
 	private boolean isGoalPiece;
 	private boolean isInvulnerable;
 	private boolean canUseSpecialSquares;
@@ -31,8 +30,7 @@ public class Piece {
 		setPosition(startPosition);
 		setMovesThisTurn(0);
 		setSelected(false);
-		
-		setSpawnSquareClass(null);
+
 		setMaxMoves(0);
 		setGoalPiece(false);
 		setInvulnerable(false);
@@ -169,14 +167,6 @@ public class Piece {
 	 */
 	public void setMaxMoves(int maxMoves) {
 		this.maxMoves = maxMoves;
-	}
-
-	public Class<Square> getSpawnSquareClass() {
-		return spawnSquareClass;
-	}
-
-	public void setSpawnSquareClass(Class<Square> spawnSquareClass) {
-		this.spawnSquareClass = spawnSquareClass;
 	}
 
 	public boolean isGoalPiece() {
