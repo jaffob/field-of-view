@@ -1,4 +1,5 @@
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
@@ -168,4 +169,62 @@ public class FieldOfView {
 		return null;
 	}
 	
+	/**
+	 * Spawns a piece for a certain player at the specified position. This
+	 * method does very little error checking, so make sure spawnPos specifies
+	 * a valid and empty square before calling.
+	 * @param type The class of piece to spawn
+	 * @param playerNum The number of the player who will own this piece
+	 * @param spawnPos The position to spawn the piece at
+	 */
+	public void spawnPiece(Class<? extends Piece> type, int playerNum, Vector2D spawnPos) {
+		Piece newPiece;
+		
+		try {
+			newPiece = type.getConstructor(Integer.class, Vector2D.class).newInstance(playerNum, spawnPos);
+		} catch (Exception e) {
+			return;
+		}
+		
+		// Do everything needed to spawn the piece.
+		getPlayer(playerNum).addPiece(newPiece);
+		getMap().getSquare(spawnPos).setOccupant(newPiece.getId());
+		getKnowledgeHandler().notifyPieceCreated(newPiece);
+	}
+	
+	/**
+	 * Kill a piece. If the piece is shielded, this will remove a shield level.
+	 * If the piece is supposed to respawn, this method will respawn it. This
+	 * removes the piece by setting the piece's square as vacant, removing the
+	 * piece from its owner's piece list, and telling the knowledge handler that
+	 * the piece was destroyed.
+	 * @param pieceId The ID of the piece to kill
+	 * @param forceKill True if this piece must be killed
+	 * @return Whether the piece was fully destroyed
+	 */
+	public boolean killPiece(int playerNum, int pieceId, boolean forceKill) {
+		
+		// Loop through all of playerNum's pieces.
+		ArrayList<Piece> playerPieces = getPlayer(playerNum).getPieces();
+		for (int i = 0; i < getPlayer(playerNum).getNumPieces(); i++) {
+			Piece p = playerPieces.get(i);
+			
+			// This is the piece. Possibly destroy it.
+			if (p.getId() == pieceId) {
+				if (forceKill || p.inflictDamage()) {
+					getMap().getSquare(p.getPosition()).setOccupant(0);
+					playerPieces.remove(i);
+					getKnowledgeHandler().notifyPieceDestroyed(p);
+					return true;
+				}
+				return false;
+			}
+		}
+		
+		return false;
+	}
+	
+	public boolean killPiece(int pieceId, boolean forceKill) {
+		return killPiece(getPieceById(pieceId).getOwner(), pieceId, forceKill);
+	}
 }

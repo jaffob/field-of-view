@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 
 public class Piece {
 
@@ -97,6 +99,25 @@ public class Piece {
 		return position;
 	}
 
+	public ArrayList<Vector2D> getAdjacentPositions() {
+		ArrayList<Vector2D> coords = new ArrayList<Vector2D>();
+		for (Direction dir : Direction.values()) {
+			coords.add(getPosition().plus(dir.getUnitVector()));
+		}
+		return coords;
+	}
+	
+	public ArrayList<Vector2D> getAdjacentPositions(boolean includeCurrentPos) {
+		ArrayList<Vector2D> coords = new ArrayList<Vector2D>();
+		if (includeCurrentPos) {
+			coords.add(getPosition());
+		}
+		for (Direction dir : Direction.values()) {
+			coords.add(getPosition().plus(dir.getUnitVector()));
+		}
+		return coords;
+	}
+	
 	public void setPosition(Vector2D position) {
 		this.position = position;
 	}
@@ -326,6 +347,14 @@ public class Piece {
 		return new ActionList();
 	}
 
+	/**
+	 * Inflicts a point of damage upon this piece. If the piece was shielded,
+	 * this method will remove a shield level. Returns whether the player
+	 * should be destroyed or not (so it will return false if the player was
+	 * shielded). This can also be used to provide invulnerability by always
+	 * returning false.
+	 * @return Whether the player is destroyed from the damage
+	 */
 	public boolean inflictDamage() {
 		return shieldLevel-- == 0;
 	}

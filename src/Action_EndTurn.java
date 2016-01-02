@@ -7,7 +7,7 @@ public class Action_EndTurn extends Action {
 
 	@Override
 	public void doAction(FieldOfView game) {
-		addActionPosition(game.getPlayer(getPlayer()).getPieceById(getActor()).getPosition());
+		addActionPositionAtActor(game);
 	}
 
 	@Override

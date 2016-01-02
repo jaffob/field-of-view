@@ -39,13 +39,72 @@ public class TestController2 implements Controller {
 
 	@Override
 	public int selectPiece(ArrayList<Integer> pieceIds) {
-		Utils.log("Controller " + playerNum + ": select piece");
-		return pieceIds.get(0);
+		inputResponse = -1;
+		
+		for (int i = 0; i < pieceIds.size(); i++) {
+			JButton button = new JButton("Piece " + pieceIds.get(i));
+			final int aaa = i;
+			button.addActionListener(new ActionListener() {
+
+		        @Override
+		        public void actionPerformed(ActionEvent e) {
+		            inputResponse = aaa;
+		        }
+		    });
+			TestMain1.buttons.add(button);
+		}
+		
+		TestMain1.buttons.revalidate();
+		TestMain1.buttons.repaint();
+		
+		while (inputResponse < 0) {
+			try {
+				Thread.sleep(200);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+		TestMain1.buttons.removeAll();
+		TestMain1.buttons.revalidate();
+		TestMain1.buttons.repaint();
+		return inputResponse;
 	}
 
 	@Override
-	public Vector2D selectSquare(ArrayList<Vector2D> squarePositions) {
-		return squarePositions.get(0);
+	public int selectSquare(ArrayList<Vector2D> squarePositions) {
+		inputResponse = -1;
+		
+		for (int i = 0; i < squarePositions.size(); i++) {
+			JButton button = new JButton("" + squarePositions.get(i));
+			final int aaa = i;
+			button.addActionListener(new ActionListener() {
+
+		        @Override
+		        public void actionPerformed(ActionEvent e) {
+		            inputResponse = aaa;
+		        }
+		    });
+			TestMain1.buttons.add(button);
+		}
+		
+		TestMain1.buttons.revalidate();
+		TestMain1.buttons.repaint();
+		
+		while (inputResponse < 0) {
+			try {
+				Thread.sleep(200);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+		TestMain1.buttons.removeAll();
+		TestMain1.buttons.revalidate();
+		TestMain1.buttons.repaint();
+		return inputResponse;
 	}
 
 	@Override
@@ -101,6 +160,11 @@ public class TestController2 implements Controller {
 		Utils.log("Controller " + playerNum + ": received turn component");
 		knowledge.absorbTurnComponent(component);
 		tm1.repaint();
+	}
+
+	@Override
+	public boolean getConfirmation(String message) {
+		return true;
 	}
 
 }

@@ -15,7 +15,7 @@ public class Action_Move extends Action {
 
 	@Override
 	public void doAction(FieldOfView game) {
-		Piece actorPiece = game.getPlayer(getPlayer()).getPieceById(getActor());
+		Piece actorPiece = getActorPiece(game);
 		if (actorPiece == null) {
 			return;
 		}
@@ -32,7 +32,7 @@ public class Action_Move extends Action {
 			return;
 		
 		// Tell the player we are moving.
-		game.getPlayer(getPlayer()).notifyPieceMove(getActor(), getDirection(), originSquare, destSquare);
+		getPlayer(game).notifyPieceMove(getActor(), getDirection(), originSquare, destSquare);
 		
 		// Do the move.
 		originSquare.setOccupant(0);

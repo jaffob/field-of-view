@@ -29,26 +29,15 @@ public class Action_Deploy extends Action {
 			for (int j = 0; j < game.getMap().getSquares()[0].length; j++) {
 				Square sq = game.getMap().getSquare(i, j);
 				if (sq instanceof Square_Spawn
-						&& (sq.getSide() == 0 || sq.getSide() == getPlayer())
+						&& (sq.getSide() == 0 || sq.getSide() == getPlayerNum())
 						&& sq.isWalkable() && !sq.isOccupied()) {
 					spawns.add(sq.getPosition());
 				}
 			}
 		}
 		
-		Vector2D spawnPos = spawns.size() == 1 ? spawns.get(0) : game.getPlayer(getPlayer()).getController().selectSquare(spawns);
-		Piece newPiece;
-		try {
-			newPiece = getDeployClass().getConstructor(Integer.class, Vector2D.class).newInstance(getPlayer(), spawnPos);
-		} catch (Exception e) {
-			Utils.error("Could not spawn piece: " + e.getMessage());
-			return;
-		}
-		
-		// Do everything needed to spawn the piece.
-		game.getPlayer(getPlayer()).addPiece(newPiece);
-		game.getMap().getSquare(spawnPos).setOccupant(newPiece.getId());
-		game.getKnowledgeHandler().notifyPieceCreated(newPiece);
+		Vector2D spawnPos = spawns.get(getPlayer(game).selectSquare(spawns));
+		game.spawnPiece(getDeployClass(), getPlayerNum(), spawnPos);
 		
 		// Add the actor as the only action position.
 		addActionPositionAtActor(game);

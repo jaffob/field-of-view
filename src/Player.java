@@ -55,13 +55,8 @@ public class Player {
 		}
 		
 		// Ask the controller to choose a piece.
-		int selectedPieceId = 0;
-		Piece selectedPiece = null;
-		do {
-			selectedPieceId = getController().selectPiece(getPieceIds());
-		}
-		while ((selectedPiece = getPieceById(selectedPieceId)) == null);
-		
+		ArrayList<Integer> pieceIds = getPieceIds();
+		Piece selectedPiece = getPieceById(pieceIds.get(selectPiece(pieceIds)));
 		selectedPiece.select();
 		
 		// Main turn loop.
@@ -185,18 +180,6 @@ public class Player {
 		return cps;
 	}
 	
-	public void killPiece(FieldOfView game, int pieceId) {
-		for (int i = 0; i < getNumPieces(); i++) {
-			Piece p = getPieces().get(i);
-			if (p.getId() == pieceId) {
-				game.getMap().getSquare(p.getPosition()).setOccupant(0);
-				getPieces().remove(i);
-				game.getKnowledgeHandler().notifyPieceDestroyed(p);
-				return;
-			}
-		}
-	}
-	
 	public void notifyStartTurn(int turnPlayer, int turnNum) {
 		getController().notifyStartTurn(turnPlayer, turnNum);
 	}
@@ -204,6 +187,50 @@ public class Player {
 	public void notifyEndTurn(int turnPlayer, int turnNum) {
 		getController().notifyEndTurn(turnPlayer, turnNum);
 	}
+	
+	/**
+	 * Ask the controller to select a square from a list of positions. This
+	 * method is guaranteed to return an index that is in bounds, because it
+	 * will keep polling the controller until the response is valid. 
+	 * @param squarePositions ArrayList of square positions
+	 * @return The array index of the selected square
+	 */
+	public int selectSquare(ArrayList<Vector2D> squarePositions) {
+		if (squarePositions.isEmpty()) {
+			return -1;
+		}
+		
+		int selection = -1;
+		do {
+			selection = getController().selectSquare(squarePositions);
+		}
+		while (selection < 0 || selection >= squarePositions.size());
+		
+		return selection;
+	}
 
-
+	/**
+	 * Ask the controller to select a square from a list of positions. This
+	 * method is guaranteed to return an index that is in bounds, because it
+	 * will keep polling the controller until the response is valid. 
+	 * @param squarePositions ArrayList of square positions
+	 * @return The array index of the selected square
+	 */
+	public int selectPiece(ArrayList<Integer> pieceIds) {
+		if (pieceIds.isEmpty()) {
+			return -1;
+		}
+		
+		int selection = -1;
+		do {
+			selection = getController().selectPiece(pieceIds);
+		}
+		while (selection < 0 || selection >= pieceIds.size());
+		
+		return selection;
+	}
+	
+	public boolean getConfirmation(String message) {
+		return getController().getConfirmation(message);
+	}
 }

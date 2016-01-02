@@ -36,10 +36,39 @@ public class Square_Gate extends Square {
 		return isOpen;
 	}
 
-	public void setOpen(boolean isOpen) {
+	/**
+	 * Set whether this gate is open. This does nothing other than
+	 * changing the isOpen property; actions should call openCloseGate()
+	 * to ensure that everything is handled properly.
+	 * @param isOpen
+	 */
+	protected void setOpen(boolean isOpen) {
 		this.isOpen = isOpen;
-		setTransparent(isOpen);
-		setWalkable(isOpen);
 	}
 
+	/**
+	 * This method should be called from actions that open and close
+	 * this gate. 
+	 * @param game
+	 * @param open
+	 */
+	public void openCloseGate(FieldOfView game, boolean open) {
+		
+		if (open == isOpen()) {
+			return;
+		}
+		
+		setOpen(open);
+		setTransparent(open);
+		setWalkable(open);
+		
+		// If closing, kill any pieces occupying this square.
+		if (!open && isOccupied()) {
+			game.killPiece(getOccupant(), true);
+		}
+		
+		// Only tell the knowledge handler the transparency changed; it will
+		// push an entirely new ClientPiece anyway.
+		game.getKnowledgeHandler().notifySquareStateVarChange(this, "isTransparent");
+	}
 }

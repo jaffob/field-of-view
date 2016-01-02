@@ -16,7 +16,7 @@ public interface Controller {
 	 * is required, ranging from choosing which piece to move at turn
 	 * start, to choosing an enemy piece to kill.
 	 * @param pieceIds List of piece IDs to choose from
-	 * @return ID of the chosen piece
+	 * @return Array index of the chosen piece (NOT the ID)
 	 */
 	public int selectPiece(ArrayList<Integer> pieceIds);
 	
@@ -26,10 +26,10 @@ public interface Controller {
 	 * This function is used for any purpose where selection of a square
 	 * is required, ranging from choosing where to spawn a new piece, to
 	 * choosing which adjacent gate to toggle.
-	 * @param squarePositions List of squares to choose from
-	 * @return Position of the chosen square
+	 * @param squarePositions List of square positions to choose from
+	 * @return Array index of the chosen square position
 	 */
-	public Vector2D selectSquare(ArrayList<Vector2D> squarePositions);
+	public int selectSquare(ArrayList<Vector2D> squarePositions);
 	
 	/**
 	 * From the list of available ClientActions, choose one.
@@ -39,8 +39,18 @@ public interface Controller {
 	public int selectAction(ActionList availableActions);
 	
 	/**
-	 * 
-	 * @param component
+	 * Gets confirmation about something.
+	 * @param message The message to display to the end user
+	 * @return True for "yes", false for "no"
+	 */
+	public boolean getConfirmation(String message);
+	
+	/**
+	 * This is called from the knowledge handler (well, ultimately the
+	 * player) when flushing completed turn components. Generally, the
+	 * implementation of this method will pass the turn component on to
+	 * a KnowledgeState.
+	 * @param component The turn component
 	 */
 	public void receiveTurnComponent(KnowledgeTurnComponent component);
 }

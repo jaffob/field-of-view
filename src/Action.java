@@ -14,40 +14,37 @@ public abstract class Action {
 	private final int player;
 	private final int actor;
 	private boolean endsTurn;
-	private boolean killsActor;
 	private final ArrayList<Vector2D> actionPositions;
 	
 	public Action(int player, int actor) {
 		this.player = player;
 		this.actor = actor;
 		setEndsTurn(true);
-		setKillsActor(false);
 		actionPositions = new ArrayList<Vector2D>();
 	}
 	
-	public int getPlayer() {
+	public int getPlayerNum() {
 		return player;
 	}
 	
+	public Player getPlayer(FieldOfView game) {
+		return game.getPlayer(getPlayerNum());
+	}
 	
 	public int getActor() {
 		return actor;
 	}
 
+	public Piece getActorPiece(FieldOfView game) {
+		return game.getPlayer(getPlayerNum()).getPieceById(getActor());
+	}
+	
 	public boolean endsTurn() {
 		return endsTurn;
 	}
 
 	protected void setEndsTurn(boolean endsTurn) {
 		this.endsTurn = endsTurn;
-	}
-	
-	public boolean killsActor() {
-		return killsActor;
-	}
-
-	public void setKillsActor(boolean killsActor) {
-		this.killsActor = killsActor;
 	}
 
 	public ArrayList<Vector2D> getActionPositions() {
@@ -59,7 +56,7 @@ public abstract class Action {
 	}
 	
 	protected void addActionPositionAtActor(FieldOfView game) {
-		addActionPosition(game.getPlayer(getPlayer()).getPieceById(getActor()).getPosition());
+		addActionPosition(game.getPlayer(getPlayerNum()).getPieceById(getActor()).getPosition());
 	}
 	
 	// ---------------------------------- //

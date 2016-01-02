@@ -41,12 +41,12 @@ public class TestController1 implements Controller {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return pieceIds.get(0);
+		return 0;
 	}
 
 	@Override
-	public Vector2D selectSquare(ArrayList<Vector2D> squarePositions) {
-		return squarePositions.get(0);
+	public int selectSquare(ArrayList<Vector2D> squarePositions) {
+		return 0;
 	}
 
 	@Override
@@ -106,6 +106,11 @@ public class TestController1 implements Controller {
 		Utils.log("Controller " + playerNum + ": received turn component");
 		knowledge.absorbTurnComponent(component);
 		tm1.repaint();
+	}
+
+	@Override
+	public boolean getConfirmation(String message) {
+		return true;
 	}
 
 }
