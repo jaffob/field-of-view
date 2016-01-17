@@ -12,7 +12,10 @@ public class Square_Gate extends Square {
 		super.absorbPropertyVal(properties);
 		
 		// Use the 4th bit to determine if this gate starts open.
-		setOpen((properties & 0b1000) != 0);
+		boolean startOpen = (properties & 0b1000) != 0;
+		setOpen(startOpen);
+		setTransparent(startOpen);
+		setWalkable(startOpen);
 	}
 	
 	@Override
