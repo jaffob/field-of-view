@@ -5,4 +5,9 @@ public class Piece_Camera extends Piece {
 		super(ownerNumber, startPosition);
 		setMaxMoves(0);
 	}
+	
+	@Override
+	public boolean allowSelect(FieldOfView game) {
+		return false;
+	}
 }
