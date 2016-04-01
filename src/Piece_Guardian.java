@@ -37,7 +37,7 @@ public class Piece_Guardian extends Piece {
 				}
 			};
 			
-			rays.cast(getPosition(), game.getMap().getSize());
+			rays.castAllDirs(getPosition(), game.getMap().getSize());
 			
 			// Add the kill action to the list if we found any targets.
 			if (action.hasTargets()) {

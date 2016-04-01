@@ -336,6 +336,7 @@ public final class Map {
 
 	public ArrayList<Vector2D> getVisibleSquares(Piece piece) {
 		ArrayList<Vector2D> out = new ArrayList<Vector2D>();
+		boolean[][] vis = new boolean[getSize().x][getSize().y];
 
 		// This piece knows the square it's standing on.
 		out.add(piece.getPosition());
@@ -344,14 +345,34 @@ public final class Map {
 			@Override
 			public boolean onPosition(Vector2D position) {
 				if (getSquare(position).isTransparent()) {
-					out.add(position);
+					vis[position.x][position.y] = true;
 					return true;
 				}
 				return false;
 			}
 		};
 		
-		rays.cast(piece.getPosition(), getSize());
+		// Cast lines from the player to every top and bottom edge square.
+		for (int i = 0; i < getSize().x; i++) {
+			rays.castLine(piece.getPosition(), new Vector2D(i, 0));
+			rays.castLine(piece.getPosition(), new Vector2D(i, getSize().y - 1));
+		}
+		
+		// Cast lines from the player to every left and right edge square.
+		for (int i = 1; i < getSize().y - 1; i++) {
+			rays.castLine(piece.getPosition(), new Vector2D(0, i));
+			rays.castLine(piece.getPosition(), new Vector2D(getSize().x - 1, i));
+		}
+		
+		
+		
+		for (int i = 0; i < vis.length; i++) {
+			for (int j = 0; j < vis[0].length; j++) {
+				if (vis[i][j]) {
+					out.add(new Vector2D(i, j));
+				}
+			}
+		}
 		return out;
 	}
 	

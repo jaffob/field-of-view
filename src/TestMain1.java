@@ -22,6 +22,13 @@ public class TestMain1 extends JComponent {
 	 */
 	private static final long serialVersionUID = 1L;
 	public static final JPanel buttons = new JPanel();
+	public static final JPanel dbuttons = new JPanel();
+	
+	public static final JButton button_up = new JButton("^");
+	public static final JButton button_down = new JButton("v");
+	public static final JButton button_left = new JButton("<");
+	public static final JButton button_right = new JButton(">");
+	
 	private final int SQSIZE = 32;
 	public FieldOfView game;
 	private TestController2[] conts;
@@ -194,6 +201,16 @@ public class TestMain1 extends JComponent {
 		
 		
 		window.getContentPane().add(buttons, BorderLayout.SOUTH);
+		window.getContentPane().add(dbuttons, BorderLayout.NORTH);
+		
+		dbuttons.add(button_left);
+		dbuttons.add(button_up);
+		dbuttons.add(button_down);
+		dbuttons.add(button_right);
+		button_left.setEnabled(false);
+		button_up.setEnabled(false);
+		button_down.setEnabled(false);
+		button_right.setEnabled(false);
 		
 		window.setSize(1060, 600);
 		window.setVisible(true);

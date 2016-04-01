@@ -14,10 +14,46 @@ public class TestController2 implements Controller {
 	public int inputResponse; 
 	public Direction inputMove;
 	
+	public int button_up_i = -1;
+	public int button_down_i = -1;
+	public int button_left_i = -1;
+	public int button_right_i = -1;
+	
 	public TestController2(TestMain1 testMain1, int playerNum) {
 		tm1 = testMain1;
 		this.playerNum = playerNum;
 		
+		TestMain1.button_down.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				inputResponse = button_down_i;
+			}
+		});
+		
+		TestMain1.button_up.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				inputResponse = button_up_i;
+			}
+		});
+		
+		TestMain1.button_right.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				inputResponse = button_right_i;
+			}
+		});
+		
+		TestMain1.button_left.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				inputResponse = button_left_i;
+			}
+		});
 	}
 
 	@Override
@@ -110,21 +146,57 @@ public class TestController2 implements Controller {
 	@Override
 	public int selectAction(ActionList availableActions) {
 		
+		button_up_i = -1;
+		button_down_i = -1;
+		button_left_i = -1;
+		button_right_i = -1;
+		TestMain1.button_left.setEnabled(false);
+		TestMain1.button_up.setEnabled(false);
+		TestMain1.button_down.setEnabled(false);
+		TestMain1.button_right.setEnabled(false);
 		
 		inputResponse = -1;
 		inputMove = null;
 		
 		for (int i = 0; i < availableActions.size(); i++) {
-			JButton button = new JButton(availableActions.getAction(i).getFriendlyName());
-			final int aaa = i;
-			button.addActionListener(new ActionListener() {
-
-		        @Override
-		        public void actionPerformed(ActionEvent e) {
-		            inputResponse = aaa;
-		        }
-		    });
-			TestMain1.buttons.add(button);
+			
+			if (availableActions.getAction(i) instanceof Action_Move) {
+				switch (((Action_Move)availableActions.getAction(i)).getDirection()) {
+				case DOWN:
+					button_down_i = i;
+					TestMain1.button_down.setEnabled(true);
+					break;
+				case LEFT:
+					button_left_i = i;
+					TestMain1.button_left.setEnabled(true);
+					break;
+				case RIGHT:
+					button_right_i = i;
+					TestMain1.button_right.setEnabled(true);
+					break;
+				case UP:
+					button_up_i = i;
+					TestMain1.button_up.setEnabled(true);
+					break;
+				default:
+					break;
+				
+				}
+			}
+			else {
+				
+				final int aaa = i;
+				JButton button = new JButton(availableActions.getAction(i).getFriendlyName());
+				
+				button.addActionListener(new ActionListener() {
+	
+			        @Override
+			        public void actionPerformed(ActionEvent e) {
+			            inputResponse = aaa;
+			        }
+			    });
+				TestMain1.buttons.add(button);
+			}
 		}
 		
 		TestMain1.buttons.revalidate();
@@ -149,6 +221,15 @@ public class TestController2 implements Controller {
 			}
 		}
 		
+		button_up_i = -1;
+		button_down_i = -1;
+		button_left_i = -1;
+		button_right_i = -1;
+		TestMain1.button_left.setEnabled(false);
+		TestMain1.button_up.setEnabled(false);
+		TestMain1.button_down.setEnabled(false);
+		TestMain1.button_right.setEnabled(false);
+		
 		TestMain1.buttons.removeAll();
 		TestMain1.buttons.revalidate();
 		TestMain1.buttons.repaint();
@@ -166,5 +247,6 @@ public class TestController2 implements Controller {
 	public boolean getConfirmation(String message) {
 		return true;
 	}
+	
 
 }
