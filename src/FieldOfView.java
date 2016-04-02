@@ -170,19 +170,30 @@ public class FieldOfView {
 	}
 	
 	/**
-	 * Spawns a piece for a certain player at the specified position.
+	 * Spawns a piece for a certain player at the specified position. Note
+	 * that this function will destroy any piece that occupies the spawn
+	 * square before spawning the new piece.
 	 * @param type The class of piece to spawn
 	 * @param playerNum The number of the player who will own this piece
 	 * @param spawnPos The position to spawn the piece at
 	 * @return Whether the piece spawned successfully.
 	 */
 	public boolean spawnPiece(Class<? extends Piece> type, int playerNum, Vector2D spawnPos) {
-		Piece newPiece;
 		
-		if (!getMap().positionIsInBounds(spawnPos) || getMap().getSquare(spawnPos).isOccupied()) {
+		Piece newPiece;
+		Square sq = getMap().getSquare(spawnPos);
+		
+		// If this square is off the grid or isn't walkable, no way to do the spawn.
+		if (!getMap().positionIsInBounds(spawnPos) || !sq.isWalkable()) {
 			return false;
 		}
 		
+		// Destroy any occupying pieces.
+		if (sq.isOccupied()) {
+			killPiece(sq.getOccupant(), true);
+		}
+		
+		// Try to create the new Piece object.
 		try {
 			newPiece = type.getConstructor(Integer.class, Vector2D.class).newInstance(playerNum, spawnPos);
 		} catch (Exception e) {
@@ -216,9 +227,17 @@ public class FieldOfView {
 			// This is the piece. Possibly destroy it.
 			if (p.getId() == pieceId) {
 				if (forceKill || p.inflictDamage()) {
+					
+					// The piece was killed, so remove it from play.
 					getMap().getSquare(p.getPosition()).setOccupant(0);
 					playerPieces.remove(i);
 					getKnowledgeHandler().notifyPieceDestroyed(p);
+					
+					// If the piece is invulnerable (i.e. a King) then respawn it.
+					if (p.isInvulnerable()) {
+						getPlayer(playerNum).respawn(this, p.getClass());
+					}
+					
 					return true;
 				}
 				return false;

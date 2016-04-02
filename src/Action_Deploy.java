@@ -32,7 +32,7 @@ public class Action_Deploy extends Action {
 				Square sq = game.getMap().getSquare(i, j);
 				if (sq instanceof Square_Spawn
 						&& (sq.getSide() == 0 || sq.getSide() == getPlayerNum())
-						&& sq.isWalkable() && !sq.isOccupied()) {
+						&& sq.isWalkable()) {
 					spawns.add(sq.getPosition());
 				}
 			}

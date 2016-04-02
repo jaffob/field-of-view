@@ -24,7 +24,7 @@ public class Square_Deploy extends Square {
 					Square sq = game.getMap().getSquare(i, j);
 					if (sq instanceof Square_Spawn 
 							&& (sq.getSide() == 0 || sq.getSide() == piece.getOwner())
-							&& sq.isWalkable() && !sq.isOccupied()) {
+							&& sq.isWalkable()) {
 						squareAvailable = true;
 						break;
 					}

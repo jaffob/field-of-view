@@ -137,16 +137,6 @@ public class KnowledgeState {
 		// First, push this turn component to the current turn.
 		addComponentToCurrentTurn(component);
 		
-		// Update currentSquares with every new square we've received.
-		for (ClientSquare newCS : component.getSquareUpdates()) {
-			currentSquares[newCS.getPosition().x][newCS.getPosition().y] = newCS;
-		}
-		
-		// Add or replace updated pieces.
-		for (ClientPiece newCP : component.getPieceUpdates()) {
-			getCurrentPiecesMap().put(newCP.getId(), newCP);
-		}
-		
 		// Loop through the piece events to remove pieces that were concealed, destroyed, or moved away.
 		for (int i = 0; i < component.getPieceEvents().size(); i++) {
 			KnowledgePieceEventType evType = component.getPieceEvents().get(i).getType();
@@ -155,6 +145,16 @@ public class KnowledgeState {
 					evType == KnowledgePieceEventType.MOVED_AWAY) {
 				getCurrentPiecesMap().remove(component.getPieceEvents().get(i).getPieceId());
 			}
+		}
+		
+		// Update currentSquares with every new square we've received.
+		for (ClientSquare newCS : component.getSquareUpdates()) {
+			currentSquares[newCS.getPosition().x][newCS.getPosition().y] = newCS;
+		}
+		
+		// Add or replace updated pieces.
+		for (ClientPiece newCP : component.getPieceUpdates()) {
+			getCurrentPiecesMap().put(newCP.getId(), newCP);
 		}
 		
 		// Update any game state vars that changed.

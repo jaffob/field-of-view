@@ -117,7 +117,7 @@ public class Player {
 	public ArrayList<Piece> getPieces() {
 		return pieces;
 	}
-	
+
 	public void addPiece(Piece piece) {
 		pieces.add(piece);
 	}
@@ -232,5 +232,12 @@ public class Player {
 	
 	public boolean getConfirmation(String message) {
 		return getController().getConfirmation(message);
+	}
+
+	public void respawn(FieldOfView game, Class<? extends Piece> type) {
+		if (type.equals(Piece_King.class)) {
+			Square spawnsq = game.getMap().getSquaresOfType(Square_Start.class, getNumber()).get(0);
+			game.spawnPiece(type, getNumber(), spawnsq.getPosition());
+		}
 	}
 }
