@@ -41,6 +41,10 @@ public class Action_Deploy extends Action {
 		if (spawns.isEmpty())
 			return false;
 		
+		// Damage whatever piece triggered the deploy.
+		game.killPiece(getActor(), false);
+		
+		// Spawn the new piece.
 		Vector2D spawnPos = spawns.get(getPlayer(game).selectSquare(spawns));
 		return game.spawnPiece(getDeployClass(), getPlayerNum(), spawnPos);
 	}
