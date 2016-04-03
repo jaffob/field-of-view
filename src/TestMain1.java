@@ -1,6 +1,5 @@
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -46,7 +45,7 @@ public class TestMain1 extends JComponent {
 		// EDITOR
 		if (choice.equals("e")) {
 			System.out.print("Enter map name to load, or blank for new map: ");
-			mappath = console.nextLine();
+			mappath = "maps\\" + console.nextLine();
 			isEditor = true;
 			try {
 				map = new Map(mappath);
@@ -97,7 +96,7 @@ public class TestMain1 extends JComponent {
 		// GAME
 		else {
 			System.out.print("Enter map name to load: ");
-			mappath = console.nextLine();
+			mappath = "maps\\" + console.nextLine();
 			conts = new TestController2[2];
 			conts[0] = new TestController2(this, 1);
 			conts[1] = new TestController2(this, 2);
