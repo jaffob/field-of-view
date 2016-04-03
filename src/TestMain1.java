@@ -1,5 +1,6 @@
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -184,9 +185,9 @@ public class TestMain1 extends JComponent {
 	    		
 	    		for (ClientPiece p : ks.getCurrentPieces()) {
 			    	g.setColor(p.getOwner() == 1 ? Color.RED : Color.BLUE);
-			    	g.fillOval((544 * player) + p.getPosition().x * SQSIZE + 8, p.getPosition().y * SQSIZE + 8, 16, 16);
+			    	g.fillOval((544 * player) + p.getPosition().x * SQSIZE + 4, p.getPosition().y * SQSIZE + 4, 24, 24);
 			    	g.setColor(Color.WHITE);
-			    	g.drawString(p.getGameClass().getName().substring(6, 8), (544 * player) + p.getPosition().x * SQSIZE + 10, p.getPosition().y * SQSIZE + 21);
+			    	g.drawString(p.getGameClass().getName().substring(6, 8) + p.getId(), (544 * player) + p.getPosition().x * SQSIZE + 7, p.getPosition().y * SQSIZE + 21);
 			    }
 	    	}
 		    
