@@ -17,13 +17,13 @@ public class Piece_Swordsman extends Piece {
 			// If this player has a piece adjacent to us, add a target.
 			for (Piece p : game.getPlayer(i).getPieces()) {
 				if (p.getPosition().isAdjacentTo(getPosition())) {
-					action.addTarget(p.getId());
+					action.addPiece(p.getId());
 				}
 			}
 		}
 		
 		// Add the kill action to the list if we found any targets.
-		if (action.hasTargets()) {
+		if (action.hasPieces()) {
 			actions.addAction(action);
 		}
 		

@@ -1,46 +1,18 @@
-import java.util.ArrayList;
 
+public class Action_Kill extends Action_Piece {
 
-public abstract class Action_Kill extends Action {
-
-	private final ArrayList<Integer> targets;
-	
 	public Action_Kill(int player, int actor) {
 		super(player, actor);
-		targets = new ArrayList<Integer>();
 	}
 
-	public ArrayList<Integer> getTargets() {
-		return targets;
-	}
-	
-	public void addTarget(int pieceId) {
-		targets.add(pieceId);
-	}
-	
 	@Override
-	public boolean doAction(FieldOfView game) {
-		
-		if (!hasTargets()) {
-			return false;
-		}
-		
+	public boolean doActionOnPiece(FieldOfView game, Integer pieceId) {
 		addActionPositionAtActor(game);
-		
-		int selectedTarget = getTargets().get(getPlayer(game).selectPiece(getTargets()));
-		game.killPiece(selectedTarget, false);
-		
-		return true;
+		return game.killPiece(pieceId, false);
 	}
-	
+
 	@Override
-	public void sendToKnowledgeHandler(FieldOfView game) {
-		// Clear targets array before sending this action to the knowledge handler.
-		getTargets().clear();
-		super.sendToKnowledgeHandler(game);
-	}
-	
-	public boolean hasTargets() {
-		return !targets.isEmpty();
+	public String getFriendlyName() {
+		return "Kill";
 	}
 }

@@ -28,7 +28,7 @@ public class Piece_Guardian extends Piece {
 					
 					// If this square is occupied, add its occupant as a target and stop the ray.
 					if (currSq.isOccupied()) {
-						action.addTarget(currSq.getOccupant());
+						action.addPiece(currSq.getOccupant());
 						return false;
 					}
 					
@@ -40,7 +40,7 @@ public class Piece_Guardian extends Piece {
 			rays.castAllDirs(getPosition(), game.getMap().getSize());
 			
 			// Add the kill action to the list if we found any targets.
-			if (action.hasTargets()) {
+			if (action.hasPieces()) {
 				actions.addAction(action);
 			}
 		}
