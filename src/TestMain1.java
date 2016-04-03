@@ -45,7 +45,7 @@ public class TestMain1 extends JComponent {
 		// EDITOR
 		if (choice.equals("e")) {
 			System.out.print("Enter map name to load, or blank for new map: ");
-			mappath = "maps\\" + console.nextLine();
+			mappath = "maps\\" + console.nextLine() + ".fov";
 			isEditor = true;
 			try {
 				map = new Map(mappath);
@@ -96,7 +96,7 @@ public class TestMain1 extends JComponent {
 		// GAME
 		else {
 			System.out.print("Enter map name to load: ");
-			mappath = "maps\\" + console.nextLine();
+			mappath = "maps\\" + console.nextLine() + ".fov";
 			conts = new TestController2[2];
 			conts[0] = new TestController2(this, 1);
 			conts[1] = new TestController2(this, 2);
