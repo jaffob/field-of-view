@@ -222,13 +222,18 @@ public class KnowledgeHandler {
 	}
 	
 	public void notifyPieceStateVarChange(Piece piece, String varName) {
+		
+		recalculateKnowledge(piece.getOwner());
+		
 		for (int i = 1; i <= game.getNumberOfPlayers(); i++) {
-			ClientPiece csp = piece.createClientPiece(i);
-			Integer var = csp.getStateVar(varName);
-			
-			// If the state var that changed is known by this player, push a piece update.
-			if (var != null) {
-				getTurnComponent(i).getPieceUpdates().add(csp);
+			if (i == piece.getOwner() || isPieceKnown(i, piece)) {
+				ClientPiece csp = piece.createClientPiece(i);
+				Integer var = csp.getStateVar(varName);
+				
+				// If the state var that changed is known by this player, push a piece update.
+				if (var != null) {
+					getTurnComponent(i).getPieceUpdates().add(csp);
+				}
 			}
 		}
 	}

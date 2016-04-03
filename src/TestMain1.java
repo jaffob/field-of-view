@@ -184,6 +184,10 @@ public class TestMain1 extends JComponent {
 				}
 	    		
 	    		for (ClientPiece p : ks.getCurrentPieces()) {
+	    			if (p.getStateVar("shieldLevel") > 0) {
+	    				g.setColor(Color.YELLOW);
+	    				g.fillOval((544 * player) + p.getPosition().x * SQSIZE + 3, p.getPosition().y * SQSIZE + 3, 26, 26);
+	    			}
 			    	g.setColor(p.getOwner() == 1 ? Color.RED : Color.BLUE);
 			    	g.fillOval((544 * player) + p.getPosition().x * SQSIZE + 4, p.getPosition().y * SQSIZE + 4, 24, 24);
 			    	g.setColor(Color.WHITE);
@@ -260,6 +264,9 @@ public class TestMain1 extends JComponent {
 		}
 		else if (cs.getGameClass().equals(Square_Generator.class)) {
 			return Color.CYAN;
+		}
+		else if (cs.getGameClass().equals(Square_Shield.class)) {
+			return Color.ORANGE;
 		}
 		return Color.DARK_GRAY;
 	}

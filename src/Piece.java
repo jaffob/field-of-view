@@ -201,14 +201,6 @@ public class Piece {
 		this.shieldLevel = shieldLevel;
 	}
 	
-	public void addShieldLevel() {
-		setShieldLevel(shieldLevel + 1);
-	}
-	
-	public void removeShieldLevel() {
-		if (shieldLevel > 0) setShieldLevel(shieldLevel - 1);
-	}
-	
 	
 	// ---------------------------------- //
 	// ------------- Methods ------------ //
