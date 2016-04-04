@@ -9,7 +9,7 @@ import java.util.ArrayList;
 public final class Map {
 
 	public static final String MAP_FILE_FORMAT = "1";
-	public static final Vector2D DEFAULT_MAP_SIZE = new Vector2D(16, 16);
+	public static final Vector2D DEFAULT_MAP_SIZE = new Vector2D(16, 26);
 	
 	private ArrayList<Class<? extends Square>> squareTypes;
 	

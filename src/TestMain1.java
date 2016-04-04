@@ -45,7 +45,7 @@ public class TestMain1 extends JComponent {
 		// EDITOR
 		if (choice.equals("e")) {
 			System.out.print("Enter map name to load, or blank for new map: ");
-			mappath = "maps\\" + console.nextLine() + ".fov";
+			mappath = console.nextLine();
 			isEditor = true;
 			try {
 				map = new Map(mappath);
@@ -116,7 +116,7 @@ public class TestMain1 extends JComponent {
 	protected void paintComponent(Graphics g) {
 	    super.paintComponent(g);
 	    g.setColor(Color.BLACK);
-	    g.fillRect(0, 0, 1024, 512);
+	    g.fillRect(0, 0, 1920, 1080);
 	    
 	    if (isEditor) {
 		    
@@ -150,6 +150,8 @@ public class TestMain1 extends JComponent {
 	    else {
 	    
 	    	for (int player = 0; player < 2; player++) {
+	    		if (game.getTurn() != player + 1)
+	    			continue;
 	    		KnowledgeState ks = conts[player].knowledge;
 	    		ClientSquare[][] sq = ks.getCurrentSquares();
 	    		for (int i = 0; i < sq.length; i++) {
