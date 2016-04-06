@@ -1,4 +1,5 @@
 import java.awt.Point;
+import java.util.ArrayList;
 
 
 public class Vector2D extends Point {
@@ -27,6 +28,10 @@ public class Vector2D extends Point {
 		return new Vector2D(x + v.x, y + v.y);
 	}
 	
+	public Vector2D plus(int dx, int dy) {
+		return new Vector2D(x + dx, y + dy);
+	}
+	
 	/**
 	 * Adds another Vector2D to this Vector2D.
 	 * @param v Other vector
@@ -34,6 +39,11 @@ public class Vector2D extends Point {
 	public void add(Vector2D v) {
 		x += v.x;
 		y += v.y;
+	}
+	
+	public void add(int dx, int dy) {
+		x += dx;
+		y += dy;
 	}
 	
 	public boolean isZero() {
@@ -73,6 +83,32 @@ public class Vector2D extends Point {
 	 */
 	public boolean isInBounds(Vector2D areaSize) {
 		return x >= 0 && y >= 0 && x < areaSize.x && y < areaSize.y;
+	}
+	
+	/**
+	 * Gets a list of four Vector2Ds representing the positions directly
+	 * adjacent to this one.
+	 * @return ArrayList of new Vector2Ds
+	 */
+	public ArrayList<Vector2D> getAdjacentPositions() {
+		return getAdjacentPositions(false);
+	}
+	
+	/**
+	 * Gets a list of the Vector2Ds representing the positions directly
+	 * adjacent to this one.
+	 * @param includeSelf Whether to include this position in the list
+	 * @return ArrayList of new Vector2Ds
+	 */
+	public ArrayList<Vector2D> getAdjacentPositions(boolean includeSelf) {
+		ArrayList<Vector2D> coords = new ArrayList<Vector2D>();
+		if (includeSelf) {
+			coords.add(new Vector2D(this));
+		}
+		for (Direction dir : Direction.values()) {
+			coords.add(this.plus(dir.getUnitVector()));
+		}
+		return coords;
 	}
 
 }

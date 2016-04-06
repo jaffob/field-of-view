@@ -34,7 +34,7 @@ public class Piece_Scout extends Piece {
 		Action_CameraTake take = new Action_CameraTake(getOwner(), getId());
 		
 		// Add squares to place and take depending on adjacent squares.
-		for (Vector2D pos : getAdjacentPositions()) {
+		for (Vector2D pos : getPosition().getAdjacentPositions()) {
 			Square sq = game.getMap().getSquare(pos);
 			if (sq.isOccupied()) {
 				Piece occupant = game.getPieceById(sq.getOccupant());

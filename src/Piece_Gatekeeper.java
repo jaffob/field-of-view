@@ -15,7 +15,7 @@ public class Piece_Gatekeeper extends Piece {
 		if (game.getGameStateVar("generator") > 0) {
 			
 			// Add squares to the Action_Gate for every adjacent gate.
-			for (Vector2D pos : getAdjacentPositions(true)) {
+			for (Vector2D pos : getPosition().getAdjacentPositions(true)) {
 				if (game.getMap().getSquare(pos) instanceof Square_Gate) {
 					action.addSquare(pos);
 				}

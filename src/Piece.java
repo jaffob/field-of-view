@@ -1,5 +1,3 @@
-import java.util.ArrayList;
-
 
 public class Piece {
 
@@ -95,25 +93,6 @@ public class Piece {
 
 	public Vector2D getPosition() {
 		return position;
-	}
-
-	public ArrayList<Vector2D> getAdjacentPositions() {
-		ArrayList<Vector2D> coords = new ArrayList<Vector2D>();
-		for (Direction dir : Direction.values()) {
-			coords.add(getPosition().plus(dir.getUnitVector()));
-		}
-		return coords;
-	}
-	
-	public ArrayList<Vector2D> getAdjacentPositions(boolean includeCurrentPos) {
-		ArrayList<Vector2D> coords = new ArrayList<Vector2D>();
-		if (includeCurrentPos) {
-			coords.add(getPosition());
-		}
-		for (Direction dir : Direction.values()) {
-			coords.add(getPosition().plus(dir.getUnitVector()));
-		}
-		return coords;
 	}
 	
 	public void setPosition(Vector2D position) {
