@@ -91,22 +91,42 @@ public class Vector2D extends Point {
 	 * @return ArrayList of new Vector2Ds
 	 */
 	public ArrayList<Vector2D> getAdjacentPositions() {
-		return getAdjacentPositions(false);
+		return getAdjacentPositions(false, true, false);
 	}
 	
 	/**
 	 * Gets a list of the Vector2Ds representing the positions directly
-	 * adjacent to this one.
-	 * @param includeSelf Whether to include this position in the list
+	 * near this one.
+	 * @param self Include this position in the list
+	 * @param sides Include horizontally and vertically adjacent positions
+	 * @param diags Include diagonally adjacent positions
 	 * @return ArrayList of new Vector2Ds
 	 */
-	public ArrayList<Vector2D> getAdjacentPositions(boolean includeSelf) {
+	public ArrayList<Vector2D> getAdjacentPositions(boolean self, boolean sides, boolean diags) {
 		ArrayList<Vector2D> coords = new ArrayList<Vector2D>();
-		if (includeSelf) {
-			coords.add(new Vector2D(this));
-		}
-		for (Direction dir : Direction.values()) {
-			coords.add(this.plus(dir.getUnitVector()));
+		
+		for (int i = -1; i <= 1; i++) {
+			for (int j = -1; j <= 1; j++) {
+				
+				// Include self
+				if (i == 0 && j == 0) {
+					if (self) {
+						coords.add(new Vector2D(this));
+					}
+				}
+				
+				// Include diagonals
+				else if (i+j == 0 || i+j == 2) {
+					if (diags) {
+						coords.add(plus(i, j));
+					}
+				}
+				
+				// Include sides
+				else if (sides) {
+					coords.add(plus(i, j));
+				}
+			}
 		}
 		return coords;
 	}

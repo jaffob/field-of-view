@@ -15,7 +15,7 @@ public class Action_GrenadierThrow extends Action_Square {
 		addActionPosition(squarePos);
 		
 		// For this square and all adjacent squares...
-		for (Vector2D pos : squarePos.getAdjacentPositions(true)) {
+		for (Vector2D pos : squarePos.getAdjacentPositions(true, true, true)) {
 			
 			// Damage any piece occupying the square.
 			int victim = game.getMap().getSquare(pos).getOccupant();
