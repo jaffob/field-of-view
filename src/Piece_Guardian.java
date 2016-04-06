@@ -3,7 +3,7 @@ public class Piece_Guardian extends Piece {
 
 	public Piece_Guardian(Integer ownerNumber, Vector2D startPosition) {
 		super(ownerNumber, startPosition);
-		setMaxMoves(3);
+		setMaxMoves(8);
 	}
 	
 	@Override
