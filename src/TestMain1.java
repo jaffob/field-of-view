@@ -186,12 +186,12 @@ public class TestMain1 extends JComponent {
 	    		
 	    		for (ClientPiece p : ks.getCurrentPieces()) {
 	    			if (p.getStateVar("shieldLevel") > 0) {
-	    				g.setColor(Color.YELLOW);
-	    				g.fillOval((544 * player) + p.getPosition().x * SQSIZE + 3, p.getPosition().y * SQSIZE + 3, 26, 26);
+	    				g.setColor(Color.BLACK);
+	    				g.fillOval((544 * player) + p.getPosition().x * SQSIZE + 2, p.getPosition().y * SQSIZE + 2, 28, 28);
 	    			}
 			    	g.setColor(p.getOwner() == 1 ? Color.RED : Color.BLUE);
 			    	g.fillOval((544 * player) + p.getPosition().x * SQSIZE + 4, p.getPosition().y * SQSIZE + 4, 24, 24);
-			    	g.setColor(Color.WHITE);
+			    	g.setColor(p.getStateVar("spawnProtected") > 0 ? Color.BLACK : Color.WHITE);
 			    	g.drawString(p.getGameClass().getName().substring(6, 8) + p.getId(), (544 * player) + p.getPosition().x * SQSIZE + 7, p.getPosition().y * SQSIZE + 21);
 			    }
 	    	}

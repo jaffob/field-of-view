@@ -18,6 +18,7 @@ public class Piece {
 	private Vector2D position;
 	private boolean isSelected;
 	private int movesThisTurn;
+	private boolean spawnProtected;
 	private int shieldLevel;
 	
 	public Piece(Integer ownerNumber, Vector2D startPosition) {
@@ -33,6 +34,7 @@ public class Piece {
 		setGoalPiece(false);
 		setInvulnerable(false);
 		setCanUseSpecialSquares(false);
+		setSpawnProtected(false);
 		setShieldLevel(0);
 	}
 	
@@ -63,6 +65,7 @@ public class Piece {
 		cp.setStateVar("isGoalPiece", isGoalPiece() ? 1 : 0);
 		cp.setStateVar("isInvulnerable", isInvulnerable() ? 1 : 0);
 		cp.setStateVar("canUseSpecialSquares", canUseSpecialSquares() ? 1 : 0);
+		cp.setStateVar("spawnProtected", isSpawnProtected() ? 1 : 0);
 		cp.setStateVar("shieldLevel", getShieldLevel());
 		return cp;
 	}
@@ -170,6 +173,14 @@ public class Piece {
 
 	public void setCanUseSpecialSquares(boolean canUseSpecialSquares) {
 		this.canUseSpecialSquares = canUseSpecialSquares;
+	}
+
+	public boolean isSpawnProtected() {
+		return spawnProtected;
+	}
+
+	public void setSpawnProtected(boolean spawnProtected) {
+		this.spawnProtected = spawnProtected;
 	}
 
 	public int getShieldLevel() {
@@ -286,8 +297,16 @@ public class Piece {
 	 * returning false.
 	 * @return Whether the player is destroyed from the damage
 	 */
-	public boolean inflictDamage() {
-		return shieldLevel-- == 0;
+	public boolean inflictDamage(FieldOfView game) {
+		if (isSpawnProtected())
+			return false;
+		if (shieldLevel > 0) {
+			shieldLevel--;
+			game.getKnowledgeHandler().notifyPieceStateVarChange(this, "shieldLevel");
+			return false;
+		}
+		
+		return true;	
 	}
 	
 }

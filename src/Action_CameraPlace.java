@@ -10,7 +10,7 @@ public class Action_CameraPlace extends Action_Square {
 		addActionPositionAtActor(game);
 		addActionPosition(squarePos);
 		
-		if (game.spawnPiece(Piece_Camera.class, getPlayerNum(), squarePos)) {
+		if (game.spawnPiece(Piece_Camera.class, getPlayerNum(), squarePos, false)) {
 			Piece actor = getActorPiece(game);
 			if (actor != null && actor instanceof Piece_Scout) {
 				((Piece_Scout)actor).removeCameraRemaining();

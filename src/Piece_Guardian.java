@@ -10,8 +10,8 @@ public class Piece_Guardian extends Piece {
 	public ActionList getUniqueActions(FieldOfView game) {
 		ActionList actions = super.getUniqueActions(game);
 		
-		// Guardians can only kill if they haven't moved this turn.
-		if (getMovesThisTurn() == 0) {
+		// Guardians can only kill if they've moved up to 1 space.
+		if (getMovesThisTurn() <= 1) {
 			
 			Action_GuardianKill action = new Action_GuardianKill(getOwner(), getId());
 			
@@ -28,7 +28,9 @@ public class Piece_Guardian extends Piece {
 					
 					// If this square is occupied, add its occupant as a target and stop the ray.
 					if (currSq.isOccupied()) {
-						action.addPiece(currSq.getOccupant());
+						if (!game.getPieceById(currSq.getOccupant()).isSpawnProtected()) {
+							action.addPiece(currSq.getOccupant());
+						}
 						return false;
 					}
 					

@@ -48,14 +48,30 @@ public class Player {
 	public void takeTurn(FieldOfView game, int turnNum) {
 		Utils.log("Player " + number + " starts turn (turn #" + game.getTurnCount() + " of game)");
 		
+		ArrayList<Integer> pieceIds = new ArrayList<Integer>();
+		
 		// If we don't have any pieces, we lose. :(
 		if (getPieces().size() == 0) {
 			setVictoryFlag(-1);
 			return;
 		}
 		
+		// For each piece...
+		for (Piece p : getPieces()) {
+			
+			// Remove spawn protection if necessary.
+			if (p.isSpawnProtected()) {
+				p.setSpawnProtected(false);
+				game.getKnowledgeHandler().notifyPieceStateVarChange(p, "spawnProtected");
+			}
+			
+			// Add this piece's ID to pieceIds if we're allowed to select it.
+			if (p.allowSelect(game)) {
+				pieceIds.add(p.getId());
+			}
+		}
+		
 		// Ask the controller to choose a piece.
-		ArrayList<Integer> pieceIds = getPieceIds();
 		Piece selectedPiece = getPieceById(pieceIds.get(selectPiece(pieceIds)));
 		selectedPiece.select();
 		
@@ -237,7 +253,7 @@ public class Player {
 	public void respawn(FieldOfView game, Class<? extends Piece> type) {
 		if (type.equals(Piece_King.class)) {
 			Square spawnsq = game.getMap().getSquaresOfType(Square_Start.class, getNumber()).get(0);
-			game.spawnPiece(type, getNumber(), spawnsq.getPosition());
+			game.spawnPiece(type, getNumber(), spawnsq.getPosition(), true);
 		}
 	}
 }

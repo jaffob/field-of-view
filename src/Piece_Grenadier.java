@@ -19,11 +19,12 @@ public class Piece_Grenadier extends Piece {
 			
 			Action_GrenadierThrow action = new Action_GrenadierThrow(getOwner(), getId());
 			
-			for (int i = -grenadeThrowDist; i <= grenadeThrowDist; i += grenadeThrowDist * 2) {
-				for (int j = -grenadeThrowDist; j <= grenadeThrowDist; j += grenadeThrowDist * 2) {
-					Vector2D pos = getPosition().plus(i, j);
+			for (int i = -1; i <= 1; i++) {
+				for (int j = -1; j <= 1; j++) {
+					Vector2D pos = getPosition().plus(i * getGrenadeThrowDist(), j * getGrenadeThrowDist());
 					
-					if (game.getMap().positionIsInBounds(pos) &&
+					if ((i != 0 || j != 0) &&
+							game.getMap().positionIsInBounds(pos) &&
 							game.getMap().getSquare(pos).isWalkable()) {
 						action.addSquare(pos);
 					}

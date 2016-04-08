@@ -46,7 +46,7 @@ public class Action_Deploy extends Action {
 		
 		// Spawn the new piece.
 		Vector2D spawnPos = spawns.get(getPlayer(game).selectSquare(spawns));
-		return game.spawnPiece(getDeployClass(), getPlayerNum(), spawnPos);
+		return game.spawnPiece(getDeployClass(), getPlayerNum(), spawnPos, true);
 	}
 
 	@Override

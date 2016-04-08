@@ -176,9 +176,10 @@ public class FieldOfView {
 	 * @param type The class of piece to spawn
 	 * @param playerNum The number of the player who will own this piece
 	 * @param spawnPos The position to spawn the piece at
+	 * @param spawnProtected Whether to provide this piece spawn protection
 	 * @return Whether the piece spawned successfully.
 	 */
-	public boolean spawnPiece(Class<? extends Piece> type, int playerNum, Vector2D spawnPos) {
+	public boolean spawnPiece(Class<? extends Piece> type, int playerNum, Vector2D spawnPos, boolean spawnProtected) {
 		
 		Piece newPiece;
 		Square sq = getMap().getSquare(spawnPos);
@@ -201,6 +202,7 @@ public class FieldOfView {
 		}
 		
 		// Do everything needed to spawn the piece.
+		newPiece.setSpawnProtected(spawnProtected);
 		getPlayer(playerNum).addPiece(newPiece);
 		getMap().getSquare(spawnPos).setOccupant(newPiece.getId());
 		getKnowledgeHandler().notifyPieceCreated(newPiece);
@@ -226,7 +228,7 @@ public class FieldOfView {
 			
 			// This is the piece. Possibly destroy it.
 			if (p.getId() == pieceId) {
-				if (forceKill || p.inflictDamage()) {
+				if (forceKill || p.inflictDamage(this)) {
 					
 					// The piece was killed, so remove it from play.
 					getMap().getSquare(p.getPosition()).setOccupant(0);

@@ -16,7 +16,8 @@ public class Piece_Swordsman extends Piece {
 			
 			// If this player has a piece adjacent to us, add a target.
 			for (Piece p : game.getPlayer(i).getPieces()) {
-				if (p.getPosition().isAdjacentTo(getPosition())) {
+				if (p.getPosition().isAdjacentTo(getPosition()) &&
+						!p.isSpawnProtected()) {
 					action.addPiece(p.getId());
 				}
 			}
