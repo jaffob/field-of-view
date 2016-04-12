@@ -11,8 +11,8 @@ public class Square_Gate extends Square {
 	protected void absorbPropertyVal(int properties) {
 		super.absorbPropertyVal(properties);
 		
-		// Use the 4th bit to determine if this gate starts open.
-		boolean startOpen = (properties & 0b1000) != 0;
+		// Use the 5th bit to determine if this gate starts open.
+		boolean startOpen = (properties & 0b10000) != 0;
 		setOpen(startOpen);
 		setTransparent(startOpen);
 		setWalkable(startOpen);
@@ -20,7 +20,7 @@ public class Square_Gate extends Square {
 	
 	@Override
 	public int createPropertyVal() {
-		return super.createPropertyVal() + (isOpen() ? 0b1000 : 0);
+		return super.createPropertyVal() + (isOpen() ? 0b10000 : 0);
 	}
 	
 	@Override

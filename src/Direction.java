@@ -26,4 +26,33 @@ public enum Direction {
 		}
 		return "";
 	}
+	
+	public int toInteger() {
+		switch (this) {
+		case DOWN:
+			return 0;
+		case LEFT:
+			return 1;
+		case RIGHT:
+			return 2;
+		case UP:
+			return 3;
+		}
+		return -1;
+	}
+	
+	public static Direction fromInteger(int i) {
+		switch (i) {
+		case 0:
+			return DOWN;
+		case 1:
+			return LEFT;
+		case 2:
+			return RIGHT;
+		case 3:
+			return UP;
+		}
+		
+		return null;
+	}
 }

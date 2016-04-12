@@ -27,12 +27,12 @@ public abstract class Square {
 	 * @param properties Byte of property data
 	 */
 	protected void absorbPropertyVal(int properties) {
-		// First 3 bits represent the side.
-		setSide(properties & 0b111);
+		// First 4 bits represent the side.
+		setSide(properties & 0b1111);
 	}
 	
 	public int createPropertyVal() {
-		return side;
+		return side & 0b1111;
 	}
 	
 	public ClientSquare createClientSquare(boolean isKnown) {
