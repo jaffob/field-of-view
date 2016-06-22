@@ -38,6 +38,7 @@ public class Square_Deploy extends Square {
 				actions.addAction(new Action_Deploy(piece.getOwner(), piece.getId(), Piece_Grenadier.class, "Grenadier"));
 				actions.addAction(new Action_Deploy(piece.getOwner(), piece.getId(), Piece_Gatekeeper.class, "Gatekeeper"));
 				actions.addAction(new Action_Deploy(piece.getOwner(), piece.getId(), Piece_Scout.class, "Scout"));
+				actions.addAction(new Action_Deploy(piece.getOwner(), piece.getId(), Piece_Infiltrator.class, "Infiltrator"));
 			}
 		}
 		
